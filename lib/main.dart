@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/database/database.dart';
 import 'package:the_djenggot/routing/app_routing.dart';
@@ -26,8 +25,7 @@ class MainApp extends StatelessWidget {
       routerConfig: appRouter,
       title: 'TheDjenggot',
       theme: ThemeData(
-          primaryColor: DjenggotAppTheme.background,
-          scaffoldBackgroundColor: DjenggotAppTheme.background),
+          primaryColor: AppTheme.background, scaffoldBackgroundColor: AppTheme.background),
     );
   }
 }
