@@ -13,7 +13,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/add-edit-stock',
       builder: (context, state) {
-        return AddEditStockScren();
+        return AddEditStockScreen();
       },
     ),
   ],
