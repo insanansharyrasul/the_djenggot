@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
 import 'package:the_djenggot/screens/stock_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
+import 'package:the_djenggot/widgets/floating_button.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,12 +17,21 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int pageIndex = 0;
 
-  final pages = [
+  final pages = <Widget>[
     const HomeScreen(),
     const StockScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
   ];
+
+  late final List<Widget> floatingButtonList;
+
+  @override
+  void initState() {
+    super.initState();
+    floatingButtonList = [
+      floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
+      floatingButton(icon: Iconsax.add, onPressed: () {context.push('/add-edit-stock');}),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +41,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: double.infinity,
-          child: Stack(children: [pages[pageIndex]]),
+          child: IndexedStack(index: pageIndex, children: pages),
         ),
       ),
       bottomNavigationBar: buildMyNavBar(context),
+      floatingActionButton: (pageIndex >= 0 && pageIndex < floatingButtonList.length)
+          ? floatingButtonList[pageIndex]
+          : null,
     );
   }
 
