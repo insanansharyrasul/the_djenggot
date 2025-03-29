@@ -76,4 +76,28 @@ class DjenggotAppTheme {
     letterSpacing: 0.2,
     color: lightText, // was lightText
   );
+
+  static const TextStyle appBarTitle = TextStyle(
+    fontFamily: DjenggotAppTheme.fontName,
+    fontWeight: FontWeight.w500,
+    fontSize: 18,
+    letterSpacing: 0.5,
+    color: Colors.black, // Replace with your theme color
+  );
+
+  static const TextStyle buttonText = TextStyle(
+    fontFamily: DjenggotAppTheme.fontName,
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+    letterSpacing: 0.5,
+    color: DjenggotAppTheme.nearlyDarkBlue, // Replace with your theme color
+  );
+
+  static const TextStyle textField = TextStyle(
+    fontFamily: DjenggotAppTheme.fontName,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    letterSpacing: 0.5,
+    color: DjenggotAppTheme.nearlyDarkBlue, // Replace with your theme color
+  );
 }

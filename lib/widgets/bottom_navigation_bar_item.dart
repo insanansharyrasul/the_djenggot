@@ -16,7 +16,7 @@ Widget bottomNavItem(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
-            end: const Alignment(0, 0.1),
+            end: const Alignment(0, 0.01),
             colors: [
               pageIndex == currentPageIndex
                   ? DjenggotAppTheme.nearlyBlue
