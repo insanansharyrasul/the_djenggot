@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DjenggotAppTheme {
-  DjenggotAppTheme._();
+class AppTheme {
+  AppTheme._();
   static const Color nearlyWhite = Color(0xFFFAFAFA);
   static const Color white = Color(0xFFFFFFFF);
   static const Color background = Color(0xFFF2F3F8);
@@ -78,7 +78,7 @@ class DjenggotAppTheme {
   );
 
   static const TextStyle appBarTitle = TextStyle(
-    fontFamily: DjenggotAppTheme.fontName,
+    fontFamily: AppTheme.fontName,
     fontWeight: FontWeight.w500,
     fontSize: 18,
     letterSpacing: 0.5,
@@ -86,18 +86,18 @@ class DjenggotAppTheme {
   );
 
   static const TextStyle buttonText = TextStyle(
-    fontFamily: DjenggotAppTheme.fontName,
+    fontFamily: AppTheme.fontName,
     fontWeight: FontWeight.w500,
     fontSize: 16,
     letterSpacing: 0.5,
-    color: DjenggotAppTheme.nearlyDarkBlue, // Replace with your theme color
+    color: AppTheme.nearlyDarkBlue, // Replace with your theme color
   );
 
   static const TextStyle textField = TextStyle(
-    fontFamily: DjenggotAppTheme.fontName,
+    fontFamily: AppTheme.fontName,
     fontWeight: FontWeight.w500,
     fontSize: 16,
     letterSpacing: 0.5,
-    color: DjenggotAppTheme.nearlyBlue, // Replace with your theme color
+    color: AppTheme.nearlyBlue, // Replace with your theme color
   );
 }

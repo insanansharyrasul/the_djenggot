@@ -5,8 +5,7 @@ class TileView extends StatelessWidget {
   final String titleTxt;
   final String subTxt;
 
-  const TileView(
-      {super.key, this.titleTxt = "", this.subTxt = ""});
+  const TileView({super.key, this.titleTxt = "", this.subTxt = ""});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +18,11 @@ class TileView extends StatelessWidget {
               titleTxt,
               textAlign: TextAlign.left,
               style: TextStyle(
-                fontFamily: DjenggotAppTheme.fontName,
+                fontFamily: AppTheme.fontName,
                 fontWeight: FontWeight.w500,
                 fontSize: 18,
                 letterSpacing: 0.5,
-                color: DjenggotAppTheme.lightText,
+                color: AppTheme.lightText,
               ),
             ),
           ),

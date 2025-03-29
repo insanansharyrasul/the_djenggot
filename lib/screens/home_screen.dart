@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   "Warung Djenggot",
                   style: TextStyle(
-                    fontFamily: DjenggotAppTheme.fontName,
+                    fontFamily: AppTheme.fontName,
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
                     letterSpacing: 0.5,

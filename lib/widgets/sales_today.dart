@@ -9,10 +9,10 @@ class SalesToday extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: DjenggotAppTheme.white,
+        color: AppTheme.white,
         borderRadius: BorderRadius.all(Radius.circular(16.0)),
         border: Border.all(
-          color: DjenggotAppTheme.grey.withValues(alpha: 0.2),
+          color: AppTheme.grey.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -27,11 +27,11 @@ class SalesToday extends StatelessWidget {
                   child: Text(
                     'Pemasukan',
                     style: TextStyle(
-                      fontFamily: DjenggotAppTheme.fontName,
+                      fontFamily: AppTheme.fontName,
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
                       letterSpacing: 0.5,
-                      color: DjenggotAppTheme.lightText,
+                      color: AppTheme.lightText,
                     ),
                   ),
                 ),
@@ -44,11 +44,11 @@ class SalesToday extends StatelessWidget {
             Text(
               "100.000.000",
               style: TextStyle(
-                fontFamily: DjenggotAppTheme.fontName,
+                fontFamily: AppTheme.fontName,
                 fontWeight: FontWeight.w300,
                 fontSize: 54,
                 letterSpacing: 0.5,
-                color: DjenggotAppTheme.lightText,
+                color: AppTheme.lightText,
               ),
             ),
           ],

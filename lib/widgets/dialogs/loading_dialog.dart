@@ -25,7 +25,7 @@ class LoadingDialog extends StatelessWidget {
                 height: 48,
                 width: 48,
                 child: CircularProgressIndicator(
-                  color: DjenggotAppTheme.background,
+                  color: AppTheme.background,
                 ),
               ),
               const SizedBox(

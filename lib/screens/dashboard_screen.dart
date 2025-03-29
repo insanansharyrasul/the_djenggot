@@ -29,7 +29,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     floatingButtonList = [
       floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
-      floatingButton(icon: Iconsax.add, onPressed: () {context.push('/add-edit-stock');}),
+      floatingButton(
+          icon: Iconsax.add,
+          onPressed: () {
+            context.push('/add-edit-stock');
+          }),
     ];
   }
 
@@ -55,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       height: 80,
       decoration: const BoxDecoration(
-        color: DjenggotAppTheme.background,
+        color: AppTheme.background,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

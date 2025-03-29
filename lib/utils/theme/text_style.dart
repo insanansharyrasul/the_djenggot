@@ -6,7 +6,7 @@ TextStyle createPrimaryTextStyle(double fontSize) {
     fontSize: fontSize,
     fontWeight: FontWeight.normal,
     fontFamily: 'Lexend',
-    color: DjenggotAppTheme.white,
+    color: AppTheme.white,
   );
 }
 
@@ -15,7 +15,7 @@ TextStyle createPrimaryBoldTextStyle(double fontSize) {
     fontSize: fontSize,
     fontWeight: FontWeight.bold,
     fontFamily: 'Lexend',
-    color: DjenggotAppTheme.white,
+    color: AppTheme.white,
   );
 }
 
@@ -24,7 +24,7 @@ TextStyle createPrimaryMediumTextStyle(double fontSize) {
     fontSize: fontSize,
     fontWeight: FontWeight.w500,
     fontFamily: 'Lexend',
-    color: DjenggotAppTheme.white,
+    color: AppTheme.white,
   );
 }
 
@@ -33,7 +33,7 @@ TextStyle createPrimaryThinTextStyle(double fontSize) {
     fontSize: fontSize,
     fontWeight: FontWeight.w300,
     fontFamily: 'Lexend',
-    color: DjenggotAppTheme.white,
+    color: AppTheme.white,
   );
 }
 
@@ -156,11 +156,7 @@ TextStyle createGreenTextStyle(double fontSize) {
 
 TextStyle createGreenBoldTextStyle(double fontSize) {
   return TextStyle(
-    fontSize: fontSize,
-    fontWeight: FontWeight.bold,
-    fontFamily: 'Lexend',
-    color: Colors.green
-  );
+      fontSize: fontSize, fontWeight: FontWeight.bold, fontFamily: 'Lexend', color: Colors.green);
 }
 
 TextStyle createGreenMediumTextStyle(double fontSize) {
@@ -192,11 +188,7 @@ TextStyle createYellowTextStyle(double fontSize) {
 
 TextStyle createYellowBoldTextStyle(double fontSize) {
   return TextStyle(
-    fontSize: fontSize,
-    fontWeight: FontWeight.bold,
-    fontFamily: 'Lexend',
-    color: Colors.orange
-  );
+      fontSize: fontSize, fontWeight: FontWeight.bold, fontFamily: 'Lexend', color: Colors.orange);
 }
 
 TextStyle createYellowMediumTextStyle(double fontSize) {
@@ -228,11 +220,7 @@ TextStyle createRedTextStyle(double fontSize) {
 
 TextStyle createRedBoldTextStyle(double fontSize) {
   return TextStyle(
-    fontSize: fontSize,
-    fontWeight: FontWeight.bold,
-    fontFamily: 'Lexend',
-    color: Colors.red
-  );
+      fontSize: fontSize, fontWeight: FontWeight.bold, fontFamily: 'Lexend', color: Colors.red);
 }
 
 TextStyle createRedMediumTextStyle(double fontSize) {

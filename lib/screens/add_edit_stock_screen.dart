@@ -21,12 +21,12 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DjenggotAppTheme.background,
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: DjenggotAppTheme.background,
+        backgroundColor: AppTheme.background,
         centerTitle: true,
-        title: const Text("Add/Edit Stock", style: DjenggotAppTheme.appBarTitle),
+        title: const Text("Add/Edit Stock", style: AppTheme.appBarTitle),
         leading: IconButton(
           icon: const Icon(Iconsax.arrow_left_2),
           onPressed: () {
@@ -43,7 +43,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Nama Stok", style: DjenggotAppTheme.textField),
+                  Text("Nama Stok", style: AppTheme.textField),
                   const SizedBox(height: 8),
                   InputField(
                     controller: stockName,
@@ -52,7 +52,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     keyboardType: TextInputType.text,
                   ),
                   const SizedBox(height: 8),
-                  Text("Kuantitas Stok", style: DjenggotAppTheme.textField),
+                  Text("Kuantitas Stok", style: AppTheme.textField),
                   const SizedBox(height: 8),
                   InputField(
                     controller: stockQuantity,
@@ -75,11 +75,11 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                         );
                         context.read<StockBloc>().add(
-                          AddStock(
-                            stockName: stockName.text,
-                            stockQuantity: int.parse(stockQuantity.text),
-                          ),
-                        );
+                              AddStock(
+                                stockName: stockName.text,
+                                stockQuantity: int.parse(stockQuantity.text),
+                              ),
+                            );
                         // Simpan data ke database
                         Navigator.pop(context);
 
@@ -103,7 +103,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         // Handle save action
                       }
                     },
-                    child: Text("Simpan", style: DjenggotAppTheme.buttonText),
+                    child: Text("Simpan", style: AppTheme.buttonText),
                   ),
                 ],
               ),

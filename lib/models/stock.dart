@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class Stock {
   String id;
   String name;
@@ -18,15 +16,6 @@ class Stock {
       quantity: map['quantity'],
     );
   }
-
-  // factory Stock.create({required String name, required int quantity}) {
-  //   final String uniqueId = const Uuid().v4(); // Generate a unique ID
-  //   return Stock(
-  //     id: uniqueId,
-  //     name: name,
-  //     quantity: quantity,
-  //   );
-  // }
 
   Map<String, dynamic> toMap() {
     return {

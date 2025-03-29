@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 
-Widget bottomNavItem(
-  GestureTapCallback onTap,
-  IconData icon,
-  int pageIndex,
-  int currentPageIndex,
-  String itemName
-) =>
+Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int currentPageIndex,
+        String itemName) =>
     GestureDetector(
       onTap: onTap,
       child: Container(
@@ -18,10 +13,8 @@ Widget bottomNavItem(
             begin: Alignment.topCenter,
             end: const Alignment(0, 0.01),
             colors: [
-              pageIndex == currentPageIndex
-                  ? DjenggotAppTheme.nearlyBlue
-                  : DjenggotAppTheme.background,
-              DjenggotAppTheme.background,
+              pageIndex == currentPageIndex ? AppTheme.nearlyBlue : AppTheme.background,
+              AppTheme.background,
             ],
           ),
           borderRadius: BorderRadius.circular(8),
@@ -32,7 +25,7 @@ Widget bottomNavItem(
             Icon(
               icon,
               color: pageIndex == currentPageIndex
-                  ? DjenggotAppTheme.nearlyBlue
+                  ? AppTheme.nearlyBlue
                   : pageIndex == 5
                       ? Colors.red
                       : Colors.grey,
@@ -41,14 +34,13 @@ Widget bottomNavItem(
             Text(
               itemName,
               style: TextStyle(
-                color: pageIndex == currentPageIndex
-                    ? DjenggotAppTheme.nearlyBlue
-                    : pageIndex == 5
-                        ? Colors.red
-                        : Colors.grey,
-                fontSize: 12,
-                fontFamily: DjenggotAppTheme.fontName
-              ),
+                  color: pageIndex == currentPageIndex
+                      ? AppTheme.nearlyBlue
+                      : pageIndex == 5
+                          ? Colors.red
+                          : Colors.grey,
+                  fontSize: 12,
+                  fontFamily: AppTheme.fontName),
             ),
           ],
         ),

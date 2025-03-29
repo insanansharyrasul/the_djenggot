@@ -7,7 +7,7 @@ Widget floatingButton({
 }) {
   return FloatingActionButton(
     onPressed: onPressed,
-    backgroundColor: DjenggotAppTheme.nearlyBlue,
+    backgroundColor: AppTheme.nearlyBlue,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
