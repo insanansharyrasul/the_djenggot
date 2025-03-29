@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+class StockScreen extends StatelessWidget {
+  const StockScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +11,8 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Splash Screen"),
-            SizedBox(height: 8),
-            ElevatedButton(onPressed: () => context.push('/home'), child: Text("Go to HomePage"))
+            Text("Stock"),
+            ElevatedButton(onPressed: () => context.pop(), child: Text("Back"))
           ],
         ),
       ),
