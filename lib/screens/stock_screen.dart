@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 
 class StockScreen extends StatefulWidget {
@@ -10,6 +12,12 @@ class StockScreen extends StatefulWidget {
 
 class _StockScreenState extends State<StockScreen> {
   TextEditingController search = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<StockBloc>(context).add(LoadStock());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +34,26 @@ class _StockScreenState extends State<StockScreen> {
           ),
         ),
         const SizedBox(height: 16),
+        BlocBuilder<StockBloc, StockState>(builder: (context, state) {
+          if (state is StockLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is StockLoaded) {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.stocks.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(state.stocks[index].name),
+                  subtitle: Text("Kuantitas: ${state.stocks[index].quantity}"),
+                );
+              },
+            );
+          } 
+          return Container();
+        })
 
         
       ],

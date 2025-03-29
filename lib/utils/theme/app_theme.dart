@@ -96,8 +96,8 @@ class DjenggotAppTheme {
   static const TextStyle textField = TextStyle(
     fontFamily: DjenggotAppTheme.fontName,
     fontWeight: FontWeight.w500,
-    fontSize: 12,
+    fontSize: 16,
     letterSpacing: 0.5,
-    color: DjenggotAppTheme.nearlyDarkBlue, // Replace with your theme color
+    color: DjenggotAppTheme.nearlyBlue, // Replace with your theme color
   );
 }

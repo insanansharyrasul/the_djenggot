@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:the_djenggot/models/stock.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
@@ -21,8 +22,10 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE table (
-        nama_kolom TIPE_DATA TAMBAHAN,
+      CREATE TABLE stok (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        quantity INTEGER NOT NULL
       )
     ''');
   }
@@ -32,8 +35,8 @@ class DatabaseHelper {
     Database db = await instance.db;
     return await db.query(
       tableName,
-      where: where,
-      whereArgs: whereAgrs,
+      // where: where,
+      // whereArgs: whereAgrs,
     );
   }
 
@@ -64,5 +67,10 @@ class DatabaseHelper {
   Future<int> truncateQuery(String tableName) async {
     Database db = await instance.db;
     return await db.delete(tableName);
+  }
+
+  Future<List<Stock>> getAllStocks() async {
+    final List<Map<String, dynamic>> maps = await getAllQuery('stok', '', []);
+    return maps.map((map) => Stock.fromMap(map)).toList();
   }
 }

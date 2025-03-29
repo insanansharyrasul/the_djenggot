@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/input_field.dart';
 
 class AddEditStockScreen extends StatefulWidget {
   const AddEditStockScreen({super.key});
@@ -10,6 +14,7 @@ class AddEditStockScreen extends StatefulWidget {
 }
 
 class _AddEditStockScreenState extends State<AddEditStockScreen> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController stockName = TextEditingController();
   TextEditingController stockQuantity = TextEditingController();
   TextEditingController category = TextEditingController();
@@ -29,37 +34,82 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              decoration:
-                  InputDecoration(labelText: "Nama Stok", labelStyle: DjenggotAppTheme.textField),
+      body: ListView(
+        children: [
+          Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Nama Stok", style: DjenggotAppTheme.textField),
+                  const SizedBox(height: 8),
+                  InputField(
+                    controller: stockName,
+                    hintText: "Stok",
+                    errorText: "Nama Stok tidak boleh kosong",
+                    keyboardType: TextInputType.text,
+                  ),
+                  const SizedBox(height: 8),
+                  Text("Kuantitas Stok", style: DjenggotAppTheme.textField),
+                  const SizedBox(height: 8),
+                  InputField(
+                    controller: stockQuantity,
+                    hintText: "Kuantitas",
+                    errorText: "Kuantitas tidak boleh kosong dan harus berupa angka",
+                    keyboardType: TextInputType.number,
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext dialogContext) => AppDialog(
+                            type: "loading",
+                            title: "Memproses",
+                            message: "Mohon tunggu...",
+                            onOkPress: () {},
+                          ),
+                        );
+                        context.read<StockBloc>().add(
+                          AddStock(
+                            stockName: stockName.text,
+                            stockQuantity: int.parse(stockQuantity.text),
+                          ),
+                        );
+                        // Simpan data ke database
+                        Navigator.pop(context);
+
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext dialogContext) => AppDialog(
+                            type: "success",
+                            title: "Pengajuan Berhasil",
+                            message: "Kembali ke dashboard...",
+                            onOkPress: () {},
+                          ),
+                        );
+                        Future.delayed(const Duration(seconds: 2), () {
+                          // dismiss loading dialog
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          // back to dashboard
+                          // Navigator.of(context).pop(true);
+                        });
+                        // Handle save action
+                      }
+                    },
+                    child: Text("Simpan", style: DjenggotAppTheme.buttonText),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                  labelText: "Kuantitas Stok", labelStyle: DjenggotAppTheme.textField),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            Text("Kategori Stok", style: DjenggotAppTheme.textField),
-            SizedBox(height: 8),
-            DropdownButton(
-              items: [DropdownMenuItem(child: Text("a"))],
-              onChanged: (value) {},
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle save action
-              },
-              child: Text("Simpan", style: DjenggotAppTheme.buttonText),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
