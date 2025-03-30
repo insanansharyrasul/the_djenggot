@@ -29,6 +29,18 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       final stocks = await _database.getAllStocks();
       emit(StockLoaded(stocks));
     });
-  }
 
+    on<UpdateStock>((event, emit) async {
+      await _database.updateQuery(
+        'stok',
+        {
+          'name': event.newName,
+          'quantity': event.newQuantity,
+        },
+        event.stock.id,
+      );
+      final stocks = await _database.getAllStocks();
+      emit(StockLoaded(stocks));
+    });
+  }
 }

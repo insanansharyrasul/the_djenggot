@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
+import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 
 class AddEditStockScreen extends StatefulWidget {
-  const AddEditStockScreen({super.key});
+  final Stock? stock;
+  const AddEditStockScreen({super.key, this.stock});
 
   @override
   State<AddEditStockScreen> createState() => _AddEditStockScreenState();
@@ -18,6 +20,16 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   TextEditingController stockName = TextEditingController();
   TextEditingController stockQuantity = TextEditingController();
   TextEditingController category = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.stock != null) {
+      stockName.text = widget.stock!.name;
+      stockQuantity.text = widget.stock!.quantity.toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +38,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
-        title: const Text("Add/Edit Stock", style: AppTheme.appBarTitle),
+        title:
+            Text(widget.stock == null ? "Tambah Stok" : "Update Stok", style: AppTheme.appBarTitle),
         leading: IconButton(
           icon: const Icon(Iconsax.arrow_left_2),
           onPressed: () {
@@ -74,12 +87,24 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             onOkPress: () {},
                           ),
                         );
-                        context.read<StockBloc>().add(
-                              AddStock(
-                                stockName: stockName.text,
-                                stockQuantity: int.parse(stockQuantity.text),
-                              ),
-                            );
+
+                        if (widget.stock != null) {
+                          context.read<StockBloc>().add(
+                                UpdateStock(
+                                  widget.stock!,
+                                  stockName.text,
+                                  stockQuantity.text,
+                                ),
+                              );
+                        } else {
+                          context.read<StockBloc>().add(
+                                AddStock(
+                                  stockName: stockName.text,
+                                  stockQuantity: int.parse(stockQuantity.text),
+                                ),
+                              );
+                        }
+                        // Add new stock
                         // Simpan data ke database
                         Navigator.pop(context);
 
@@ -103,7 +128,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         // Handle save action
                       }
                     },
-                    child: Text("Simpan", style: AppTheme.buttonText),
+                    child: Text(widget.stock == null ? "Simpan" : "Update",
+                        style: AppTheme.buttonText),
                   ),
                 ],
               ),

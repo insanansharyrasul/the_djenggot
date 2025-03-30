@@ -69,6 +69,16 @@ class DatabaseHelper {
     return await db.delete(tableName);
   }
 
+  Future<int> updateQuery(String tableName, Map<String, dynamic> model, String id) async {
+    Database db = await instance.db;
+    return await db.update(
+      tableName,
+      model,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<List<Stock>> getAllStocks() async {
     final List<Map<String, dynamic>> maps = await getAllQuery('stok', '', []);
     return maps.map((map) => Stock.fromMap(map)).toList();

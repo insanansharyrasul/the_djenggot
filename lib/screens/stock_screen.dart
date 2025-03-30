@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 
@@ -46,8 +48,20 @@ class _StockScreenState extends State<StockScreen> {
               itemCount: state.stocks.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(state.stocks[index].name),
-                  subtitle: Text("Kuantitas: ${state.stocks[index].quantity}"),
+                  title: Text(
+                    state.stocks[index].name,
+                    style: AppTheme.textField,
+                  ),
+                  subtitle: Text(
+                    "Kuantitas: ${state.stocks[index].quantity}",
+                    style: AppTheme.subtitle,
+                  ),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      context.push('/add-edit-stock', extra: state.stocks[index]);
+                    },
+                    child: const Icon(Iconsax.edit),
+                  ),
                 );
               },
             );

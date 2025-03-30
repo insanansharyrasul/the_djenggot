@@ -25,7 +25,9 @@ class MainApp extends StatelessWidget {
       routerConfig: appRouter,
       title: 'TheDjenggot',
       theme: ThemeData(
-          primaryColor: AppTheme.background, scaffoldBackgroundColor: AppTheme.background),
+        primaryColor: AppTheme.background,
+        scaffoldBackgroundColor: AppTheme.background,
+      ),
     );
   }
 }

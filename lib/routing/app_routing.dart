@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/screens/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/dashboard_screen.dart';
 
@@ -13,7 +14,8 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/add-edit-stock',
       builder: (context, state) {
-        return AddEditStockScreen();
+        final stock = state.extra as Stock?;
+        return AddEditStockScreen(stock: stock);
       },
     ),
   ],

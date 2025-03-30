@@ -17,7 +17,9 @@ class AddStock extends StockEvent {
 
 class UpdateStock extends StockEvent {
   final Stock stock;
-  UpdateStock(this.stock);
+  final String newName;
+  final String newQuantity;
+  UpdateStock(this.stock, this.newName, this.newQuantity);
 }
 
 class DeleteStock extends StockEvent {
