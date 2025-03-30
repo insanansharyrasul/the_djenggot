@@ -6,7 +6,7 @@ TextStyle createPrimaryTextStyle(double fontSize) {
     fontSize: fontSize,
     fontWeight: FontWeight.normal,
     fontFamily: 'Lexend',
-    color: AppTheme.white,
+    color: AppTheme.darkGrey,
   );
 }
 

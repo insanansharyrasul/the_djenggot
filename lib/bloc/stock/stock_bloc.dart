@@ -42,5 +42,11 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       final stocks = await _database.getAllStocks();
       emit(StockLoaded(stocks));
     });
+
+    on<DeleteStock>((event, emit) async {
+      await _database.deleteQuery('stok', event.id);
+      final stocks = await _database.getAllStocks();
+      emit(StockLoaded(stocks));
+    });
   }
 }

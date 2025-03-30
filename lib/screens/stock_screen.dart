@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -56,11 +57,38 @@ class _StockScreenState extends State<StockScreen> {
                     "Kuantitas: ${state.stocks[index].quantity}",
                     style: AppTheme.subtitle,
                   ),
-                  trailing: GestureDetector(
-                    onTap: () {
-                      context.push('/add-edit-stock', extra: state.stocks[index]);
-                    },
-                    child: const Icon(Iconsax.edit),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            context.push('/add-edit-stock', extra: state.stocks[index]);
+                          },
+                          child: const Icon(Iconsax.edit)),
+                      const SizedBox(width: 16),
+                      GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AppDialog(
+                                  type: "confirm",
+                                  title: "Anda akan menghapus stok ini!",
+                                  message: "Apakah anda yakin?",
+                                  okTitle: "Hapus",
+                                  cancelTitle: "Batal",
+                                  onOkPress: () {
+                                    Navigator.pop(context);
+                                    BlocProvider.of<StockBloc>(context).add(
+                                      DeleteStock(state.stocks[index].id),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          child: const Icon(Iconsax.trash, color: Colors.red)),
+                    ],
                   ),
                 );
               },
