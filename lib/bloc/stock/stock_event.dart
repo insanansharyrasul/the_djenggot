@@ -25,3 +25,8 @@ class DeleteStock extends StockEvent {
   final String id;
   DeleteStock(this.id);
 }
+
+class SearchStock extends StockEvent {
+  final String query;
+  SearchStock(this.query);
+}

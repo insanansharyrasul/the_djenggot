@@ -41,10 +41,29 @@ class _StockScreenState extends State<StockScreen> {
               color: Colors.black,
             ),
           ),
+          SizedBox(height: 16),
           Row(
             children: [
+              Expanded(child: SearchBar(
+                controller: search,
+                elevation: WidgetStateProperty.all(0.0),
+                backgroundColor: WidgetStateProperty.all(AppTheme.white),
+                hintText: "Cari Stok",
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: AppTheme.white),
+                  ),
+                ),
+                onChanged: (value) {
+                  BlocProvider.of<StockBloc>(context).add(
+                    SearchStock(value),
+                  );
+                },
+              )),
               PopupMenuButton(
                 icon: Icon(Iconsax.sort),
+                color:  AppTheme.white,
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: "name",

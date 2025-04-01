@@ -35,8 +35,8 @@ class DatabaseHelper {
     Database db = await instance.db;
     return await db.query(
       tableName,
-      // where: where,
-      // whereArgs: whereAgrs,
+      where: (where != '' && where.isNotEmpty) ? where : null,
+      whereArgs: (whereAgrs.isNotEmpty) ? whereAgrs : null,
     );
   }
 
@@ -81,6 +81,15 @@ class DatabaseHelper {
 
   Future<List<Stock>> getAllStocks() async {
     final List<Map<String, dynamic>> maps = await getAllQuery('stok', '', []);
+    return maps.map((map) => Stock.fromMap(map)).toList();
+  }
+
+  Future<List<Stock>> searchStocks(String query) async {
+    final List<Map<String, dynamic>> maps = await getAllQuery(
+      'stok',
+      'name LIKE ?',
+      ['%$query%'],
+    );
     return maps.map((map) => Stock.fromMap(map)).toList();
   }
 }
