@@ -1,5 +1,4 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_djenggot/database/database.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:uuid/uuid.dart';

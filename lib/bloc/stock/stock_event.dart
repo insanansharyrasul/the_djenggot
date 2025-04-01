@@ -1,7 +1,6 @@
 part of 'stock_bloc.dart';
 
-@immutable
-sealed class StockEvent {}
+abstract class StockEvent {}
 
 class LoadStock extends StockEvent {}
 

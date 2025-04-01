@@ -1,7 +1,6 @@
 part of 'stock_bloc.dart';
 
-@immutable
-sealed class StockState {}
+abstract class StockState {}
 
 final class StockLoading extends StockState {}
 

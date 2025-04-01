@@ -111,7 +111,7 @@ class _StockScreenState extends State<StockScreen> {
                       children: [
                         GestureDetector(
                             onTap: () {
-                              context.push('/add-edit-stock', extra: state.stocks[index]);
+                              context.push('/add-edit-stock', extra: sortedStocks[index]);
                             },
                             child: const Icon(Iconsax.edit)),
                         const SizedBox(width: 16),
