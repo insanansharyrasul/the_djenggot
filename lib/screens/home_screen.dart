@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       children: [
         Padding(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(19),
           child: Row(
             children: [
               GestureDetector(
@@ -38,7 +38,12 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        SalesToday()
+        Row(
+          children: [
+            Expanded(child: SalesToday()),
+            Expanded(child: SalesToday()),
+          ],
+        )
       ],
     );
   }

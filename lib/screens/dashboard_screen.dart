@@ -15,6 +15,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final PageController pageController = PageController();
   int pageIndex = 0;
 
   final pages = <Widget>[
@@ -42,10 +43,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: double.infinity,
-          child: IndexedStack(index: pageIndex, children: pages),
+        child: PageView(
+          controller: pageController,
+          onPageChanged: (index) {
+            setState(() {
+              pageIndex = index;
+            });
+          },
+          children: pages,
         ),
       ),
       bottomNavigationBar: buildMyNavBar(context),
@@ -65,28 +70,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           bottomNavItem(
-            () => setState(() => pageIndex = 0),
+            () {
+              pageController.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+              pageController.jumpToPage(0);
+              setState(() => pageIndex = 0);
+            },
             Iconsax.home,
             0,
             pageIndex,
             "Beranda",
           ),
           bottomNavItem(
-            () => setState(() => pageIndex = 1),
+            () {
+              pageController.jumpToPage(1);
+              setState(() => pageIndex = 1);
+            },
             Iconsax.box,
             1,
             pageIndex,
             "Stok",
           ),
           bottomNavItem(
-            () => setState(() => pageIndex = 2),
+            // () => setState(() => pageIndex = 2),
+            () {
+              pageController.jumpToPage(2);
+              setState(() => pageIndex = 2);
+            },
             Iconsax.receipt,
             2,
             pageIndex,
             "Laporan",
           ),
           bottomNavItem(
-            () => setState(() => pageIndex = 3),
+            // () => setState(() => pageIndex = 3),
+            () {
+              pageController.jumpToPage(3);
+              setState(() => pageIndex = 3);
+            },
             Iconsax.setting,
             3,
             pageIndex,

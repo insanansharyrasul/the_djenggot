@@ -118,7 +118,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             onOkPress: () {},
                           ),
                         );
-                        Future.delayed(const Duration(seconds: 2), () {
+                        Future.delayed(const Duration(seconds: 1), () {
                           // dismiss loading dialog
                           Navigator.pop(context);
                           Navigator.pop(context);
