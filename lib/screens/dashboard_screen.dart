@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
+import 'package:the_djenggot/screens/menu_screen.dart';
 import 'package:the_djenggot/screens/stock_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
@@ -21,6 +22,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final pages = <Widget>[
     const HomeScreen(),
     const StockScreen(),
+    const MenuScreen(),
   ];
 
   late final List<Widget> floatingButtonList;
@@ -31,10 +33,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     floatingButtonList = [
       floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
       floatingButton(
-          icon: Iconsax.add,
-          onPressed: () {
-            context.push('/add-edit-stock');
-          }),
+        icon: Iconsax.add,
+        onPressed: () {
+          context.push('/add-edit-stock');
+        },
+      ),
+      floatingButton(
+        icon: Iconsax.add,
+        onPressed: () {
+          context.push('/add-edit-menu');
+        },
+      ),
     ];
   }
 
@@ -71,7 +80,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           bottomNavItem(
             () {
-              pageController.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
               pageController.jumpToPage(0);
               setState(() => pageIndex = 0);
             },
@@ -91,24 +99,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
             "Stok",
           ),
           bottomNavItem(
-            // () => setState(() => pageIndex = 2),
             () {
               pageController.jumpToPage(2);
               setState(() => pageIndex = 2);
             },
-            Iconsax.receipt,
+            Iconsax.menu_board,
             2,
+            pageIndex,
+            "Menu",
+          ),
+          bottomNavItem(
+            // () => setState(() => pageIndex = 2),
+            () {
+              pageController.jumpToPage(3);
+              setState(() => pageIndex = 3);
+            },
+            Iconsax.receipt,
+            3,
             pageIndex,
             "Laporan",
           ),
           bottomNavItem(
             // () => setState(() => pageIndex = 3),
             () {
-              pageController.jumpToPage(3);
-              setState(() => pageIndex = 3);
+              pageController.jumpToPage(4);
+              setState(() => pageIndex = 4);
             },
             Iconsax.setting,
-            3,
+            4,
             pageIndex,
             "Settings",
           ),

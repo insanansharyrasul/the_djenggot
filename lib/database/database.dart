@@ -17,7 +17,12 @@ class DatabaseHelper {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'djenggot.db');
 
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _onCreate,
+      // onUpgrade: _onUpgrade,
+    );
   }
 
   Future _onCreate(Database db, int version) async {
@@ -28,8 +33,18 @@ class DatabaseHelper {
         quantity INTEGER NOT NULL
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE menu (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        price REAL NOT NULL,
+        image BLOB NOT NULL
+      )
+    ''');
   }
 
+  // Future _onUpgrade(Database db, int oldVersion, int newVersion) async {}
   Future<List<Map<String, dynamic>>> getAllQuery(
       String tableName, String where, List<dynamic> whereAgrs) async {
     Database db = await instance.db;

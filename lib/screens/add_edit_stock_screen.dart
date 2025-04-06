@@ -135,7 +135,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   ),
                 ],
               ),
-            ),
+            ),        
           ),
         ],
       ),
