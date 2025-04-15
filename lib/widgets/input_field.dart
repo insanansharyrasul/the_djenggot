@@ -8,16 +8,16 @@ class InputField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
-    required this.errorText,
     required this.keyboardType,
     this.enableCommaSeparator = false,
+    this.validator,
   });
 
   final TextEditingController controller;
   final String hintText;
-  final String errorText;
   final TextInputType keyboardType;
   final bool? enableCommaSeparator;
+  final FormFieldValidator<String?>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +67,7 @@ class InputField extends StatelessWidget {
         ),
         style: createBlackTextStyle(14),
         keyboardType: keyboardType,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return errorText;
-          }
-          return null;
-        },
+        validator: validator,
       ),
     );
   }
