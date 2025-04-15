@@ -14,13 +14,14 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     });
 
     on<AddMenu>((event, emit) async {
-      final String uniqueId = const Uuid().v4();
+      final String uniqueId = "menu-${const Uuid().v4()}";
       await _menuRepository.addMenu(
         {
-          'id': uniqueId,
+          'id_menu': uniqueId,
           'name': event.menuName,
           'price': event.menuPrice,
           'image': event.menuImage,
+          'id_menu_type': event.menuType
         },
       );
     });

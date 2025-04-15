@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:the_djenggot/models/stock.dart';
+import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/screens/add_edit_menu_screen.dart';
+import 'package:the_djenggot/screens/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/dashboard_screen.dart';
 
@@ -22,6 +24,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/add-edit-menu',
       builder: (context, state) {
         return const AddEditMenuScreen();
+      },
+    ),
+    GoRoute(
+      path: '/add-edit-menu-type',
+      builder: (context, state) {
+        final menuType = state.extra as MenuType?;
+        return AddEditMenuTypeScreen(menuType: menuType);
       },
     ),
   ],

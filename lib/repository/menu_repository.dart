@@ -5,26 +5,26 @@ class MenuRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
   Future<List<Menu>> getAllMenus() async {
-    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('menu', '', []);
+    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('MENU', '', []);
     return maps.map((map) => Menu.fromMap(map)).toList();
   }
 
   Future<int> addMenu(Map<String, dynamic> model) async {
     return await _databaseHelper.insertQuery(
-      'menu',
+      'MENU',
       model,
     );
   }
 
   Future<int> updateMenu(Map<String, dynamic> model, String id) async {
     return await _databaseHelper.updateQuery(
-      'menu',
+      'MENU',
       model,
       id,
     );
   }
 
   Future<int> deleteMenu(String id) async {
-    return await _databaseHelper.deleteQuery('menu', id);
+    return await _databaseHelper.deleteQuery('MENU', id);
   }
 }

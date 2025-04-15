@@ -1,6 +1,5 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:the_djenggot/models/stock.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
@@ -26,25 +25,78 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE stok (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        quantity INTEGER NOT NULL
-      )
-    ''');
+    await db.transaction((txn) async {
+      // TYPE TABLE
+      await txn.execute('''
+        CREATE TABLE TRANSACTION_TYPE (
+          id_transaction_type TEXT PRIMARY KEY,
+          name TEXT NOT NULL
+        )
+      ''');
 
-    await db.execute('''
-      CREATE TABLE menu (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        price REAL NOT NULL,
-        image BLOB NOT NULL
-      )
-    ''');
+      await txn.execute('''
+        CREATE TABLE MENU_TYPE (
+          id_menu_type TEXT PRIMARY KEY,
+          name TEXT NOT NULL
+        )
+      ''');
+
+      await txn.execute('''
+        CREATE TABLE STOCK_TYPE (
+          id_stock_type TEXT PRIMARY KEY,
+          name TEXT NOT NULL
+        )
+      ''');
+
+      // TRANSACTION TABLE
+      await txn.execute('''
+        CREATE TABLE TRANSACTION_HISTORY (
+          id_transaction_history TEXT PRIMARY KEY,
+          id_transaction_type TEXT NOT NULL,
+          amount REAL NOT NULL,
+          image_evident BLOB NOT NULL,
+          timestamp TEXT NOT NULL,  
+          FOREIGN KEY (id_transaction_type) REFERENCES TRANSACTION_TYPE(id_transaction_type) ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      ''');
+
+      await txn.execute('''
+        CREATE TABLE TRANSACTION_ITEM (
+          id_transaction_item TEXT PRIMARY KEY,
+          id_transaction_history TEXT NOT NULL,
+          id_menu TEXT NOT NULL,
+          quantity INTEGER NOT NULL,
+          FOREIGN KEY (id_transaction_history) REFERENCES TRANSACTION_HISTORY(id_transaction_history) ON DELETE CASCADE ON UPDATE CASCADE,
+          FOREIGN KEY (id_menu) REFERENCES MENU(id_menu) ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      ''');
+
+      // STOCK TABLE
+      await txn.execute('''
+        CREATE TABLE STOCK (
+          id_stock TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          quantity INTEGER NOT NULL,
+          id_stock_type TEXT NOT NULL,
+          threshold INTEGER NOT NULL,
+          FOREIGN KEY (id_stock_type) REFERENCES STOCK_TYPE(id_stock_type) ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      ''');
+
+      // MENU TABLE
+      await txn.execute('''
+        CREATE TABLE MENU (
+          id_menu TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          price REAL NOT NULL,
+          image BLOB NOT NULL,
+          id_menu_type TEXT NOT NULL,
+          FOREIGN KEY (id_menu_type) REFERENCES MENU_TYPE(id_menu_type) ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      ''');
+    });
   }
 
-  // Future _onUpgrade(Database db, int oldVersion, int newVersion) async {}
   Future<List<Map<String, dynamic>>> getAllQuery(
       String tableName, String where, List<dynamic> whereAgrs) async {
     Database db = await instance.db;
@@ -92,19 +144,5 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
-  }
-
-  Future<List<Stock>> getAllStocks() async {
-    final List<Map<String, dynamic>> maps = await getAllQuery('stok', '', []);
-    return maps.map((map) => Stock.fromMap(map)).toList();
-  }
-
-  Future<List<Stock>> searchStocks(String query) async {
-    final List<Map<String, dynamic>> maps = await getAllQuery(
-      'stok',
-      'name LIKE ?',
-      ['%$query%'],
-    );
-    return maps.map((map) => Stock.fromMap(map)).toList();
   }
 }

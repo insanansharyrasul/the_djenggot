@@ -11,7 +11,7 @@ class Stock {
 
   factory Stock.fromMap(Map<String, dynamic> map) {
     return Stock(
-      id: map['id'],
+      id: map['id_stock'],
       name: map['name'],
       quantity: map['quantity'],
     );

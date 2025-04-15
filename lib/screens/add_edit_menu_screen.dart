@@ -14,7 +14,6 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/currency_input_formatter.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
-
 class AddEditMenuScreen extends StatefulWidget {
   final Menu? menu;
   const AddEditMenuScreen({super.key, this.menu});
@@ -92,24 +91,41 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                   InputField(
                     controller: name,
                     hintText: "Menu Name",
-                    errorText: "Menu tidak boleh kosong",
                     keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Menu tidak boleh kosong";
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 16),
                   Text("Price", style: AppTheme.textField),
                   InputField(
                     controller: price,
                     hintText: "Price",
-                    errorText: "Harga tidak boleh kosong",
                     keyboardType: TextInputType.numberWithOptions(),
                     enableCommaSeparator: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Menu tidak boleh kosong";
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       getImage(ImageSource.camera);
                     },
-                    child: Text("Pick Image", style: AppTheme.buttonText),
+                    child: Text("Pick Image from Camera", style: AppTheme.buttonText),
+                  ),
+                  SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      getImage(ImageSource.gallery);
+                    },
+                    child: Text("Pick Image from Gallery", style: AppTheme.buttonText),
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
@@ -130,7 +146,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
 
                         if (widget.menu != null) {
                           context.read<MenuBloc>().add(
-                                UpdateMenu(widget.menu!.id, name.text, double.parse(price.text)),
+                                UpdateMenu(widget.menu!.idMenu, name.text, double.parse(price.text),
+                                    "id_menu_type"),
                               );
                         } else {
                           Uint8List imageBytes = await image!.readAsBytes();
@@ -139,6 +156,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                   menuName: name.text,
                                   menuPrice: numericPrice,
                                   menuImage: imageBytes,
+                                  menuType: "id_menu_type",
                                 ),
                               );
                         }
@@ -146,6 +164,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                         // Simpan data ke database
                         Navigator.pop(context);
 
+
+                        // TODO: ADD OPTION TO CHOOSE WHAT TYPE OF MENU
                         showDialog(
                           barrierDismissible: false,
                           context: context,

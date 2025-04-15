@@ -63,8 +63,13 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   InputField(
                     controller: stockName,
                     hintText: "Stok",
-                    errorText: "Nama Stok tidak boleh kosong",
                     keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Nama Stok tidak boleh kosong";
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 8),
                   Text("Kuantitas Stok", style: AppTheme.textField),
@@ -72,8 +77,16 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   InputField(
                     controller: stockQuantity,
                     hintText: "Kuantitas",
-                    errorText: "Kuantitas tidak boleh kosong dan harus berupa angka",
                     keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Kuantitas tidak boleh kosong";
+                      }
+                      if (int.tryParse(value) == null) {
+                        return "Kuantitas harus berupa angka";
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
@@ -89,6 +102,48 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             onOkPress: () {},
                           ),
                         );
+
+                        if (stockQuantity.text.isEmpty) {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext dialogContext) => AppDialog(
+                              type: "error",
+                              title: "Error",
+                              message: "Kuantitas tidak boleh kosong",
+                              onOkPress: () {},
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (stockName.text.isEmpty) {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext dialogContext) => AppDialog(
+                              type: "error",
+                              title: "Error",
+                              message: "Nama Stok tidak boleh kosong",
+                              onOkPress: () {},
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (int.tryParse(stockQuantity.text) == null) {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext dialogContext) => AppDialog(
+                              type: "error",
+                              title: "Error",
+                              message: "Kuantitas harus berupa angka",
+                              onOkPress: () {},
+                            ),
+                          );
+                          return;
+                        }
 
                         if (widget.stock != null) {
                           context.read<StockBloc>().add(
@@ -120,7 +175,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             onOkPress: () {},
                           ),
                         );
-                        Future.delayed(const Duration(seconds: 1), () {
+
+                        // TODO: ADD OPTION TO CHOOSE WHAT TYPE OF STOCK
+                        Future.delayed(const Duration(milliseconds  : 500), () {
                           // dismiss loading dialog
                           Navigator.pop(context);
                           Navigator.pop(context);
@@ -135,7 +192,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   ),
                 ],
               ),
-            ),        
+            ),
           ),
         ],
       ),
