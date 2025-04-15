@@ -7,6 +7,7 @@ import 'package:the_djenggot/bloc/type/menu_type/menu_type_event.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 
 class AddEditMenuTypeScreen extends StatefulWidget {
@@ -20,12 +21,14 @@ class AddEditMenuTypeScreen extends StatefulWidget {
 class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
+  final TextEditingController iconController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     if (widget.menuType != null) {
       name.text = widget.menuType!.name;
+      iconController.text = widget.menuType!.icon ?? '';
     }
   }
 
@@ -69,7 +72,25 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                     },
                   ),
                   SizedBox(height: 16),
+                  Text("Icon (Optional)", style: AppTheme.textField),
                   ElevatedButton(
+                    style: AppTheme.buttonStyle,
+                    onPressed: () {
+                      showIconPickerBottomSheet(
+                        context,
+                        currentIconName: iconController.text,
+                        onIconSelected: (iconName, icon) {
+                          setState(() {
+                            iconController.text = iconName;
+                          });
+                        },
+                      );
+                    },
+                    child: const Text("Select Icon", style: AppTheme.buttonText),
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    style: AppTheme.buttonStyle,
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         showDialog(
@@ -85,15 +106,19 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
 
                         if (widget.menuType != null) {
                           context.read<MenuTypeBloc>().add(
-                            UpdateMenuType(
-                              widget.menuType!,
-                              name.text,
-                            ),
-                          );
+                                UpdateMenuType(
+                                  widget.menuType!,
+                                  name.text,
+                                  icon: iconController.text.isEmpty ? null : iconController.text,
+                                ),
+                              );
                         } else {
                           context.read<MenuTypeBloc>().add(
-                            AddMenuType(name.text),
-                          );
+                                AddMenuType(
+                                  name.text,
+                                  icon: iconController.text.isEmpty ? null : iconController.text,
+                                ),
+                              );
                         }
                         // Add new menu
                         // Simpan data ke database

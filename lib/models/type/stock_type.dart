@@ -3,13 +3,15 @@ import 'package:equatable/equatable.dart';
 class StockType extends Equatable {
   final String id;
   final String name;
+  final String? icon;
 
-  const StockType({required this.id, required this.name});
+  const StockType({required this.id, required this.name, this.icon});
 
   factory StockType.fromMap(Map<String, dynamic> map) {
     return StockType(
       id: map['id_stock_type'],
       name: map['name'],
+      icon: map['icon'],
     );
   }
 
@@ -17,9 +19,10 @@ class StockType extends Equatable {
     return {
       'id_stock_type': id,
       'name': name,
+      'icon': icon,
     };
   }
 
   @override
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id, name, icon];
 }

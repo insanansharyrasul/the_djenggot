@@ -19,7 +19,7 @@ class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeStat
 
     on<AddTransactionType>((event, emit) async {
       try {
-        await _repository.addTransactionType(event.name);
+        await _repository.addTransactionType(event.name, icon: event.icon);
         final transactionTypes = await _repository.getAllTransactionTypes();
         emit(TransactionTypeLoaded(transactionTypes));
       } catch (e) {
@@ -29,7 +29,8 @@ class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeStat
 
     on<UpdateTransactionType>((event, emit) async {
       try {
-        await _repository.updateTransactionType(event.transactionType, event.newName);
+        await _repository.updateTransactionType(event.transactionType, event.newName,
+            icon: event.icon);
         final transactionTypes = await _repository.getAllTransactionTypes();
         emit(TransactionTypeLoaded(transactionTypes));
       } catch (e) {

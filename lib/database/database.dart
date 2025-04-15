@@ -30,21 +30,24 @@ class DatabaseHelper {
       await txn.execute('''
         CREATE TABLE TRANSACTION_TYPE (
           id_transaction_type TEXT PRIMARY KEY,
-          name TEXT NOT NULL
+          name TEXT NOT NULL,
+          icon TEXT
         )
       ''');
 
       await txn.execute('''
         CREATE TABLE MENU_TYPE (
           id_menu_type TEXT PRIMARY KEY,
-          name TEXT NOT NULL
+          name TEXT NOT NULL,
+          icon TEXT
         )
       ''');
 
       await txn.execute('''
         CREATE TABLE STOCK_TYPE (
           id_stock_type TEXT PRIMARY KEY,
-          name TEXT NOT NULL
+          name TEXT NOT NULL,
+          icon TEXT
         )
       ''');
 

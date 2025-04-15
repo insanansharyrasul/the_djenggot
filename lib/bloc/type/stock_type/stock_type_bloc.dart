@@ -19,7 +19,7 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
 
     on<AddStockType>((event, emit) async {
       try {
-        await _repository.addStockType(event.name);
+        await _repository.addStockType(event.name, icon: event.icon);
         final stockTypes = await _repository.getAllStockTypes();
         emit(StockTypeLoaded(stockTypes));
       } catch (e) {
@@ -29,7 +29,7 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
 
     on<UpdateStockType>((event, emit) async {
       try {
-        await _repository.updateStockType(event.stockType, event.newName);
+        await _repository.updateStockType(event.stockType, event.newName, icon: event.icon);
         final stockTypes = await _repository.getAllStockTypes();
         emit(StockTypeLoaded(stockTypes));
       } catch (e) {

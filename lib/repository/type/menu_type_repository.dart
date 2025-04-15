@@ -19,21 +19,25 @@ class MenuTypeRepository {
     return maps.map((map) => MenuType.fromMap(map)).toList();
   }
 
-  Future<int> addMenuType(String name) async {
+  Future<int> addMenuType(String name, {String? icon}) async {
     final String uniqueId = "menu-type-${const Uuid().v4()}";
     return await _databaseHelper.insertQuery(
       'MENU_TYPE',
       {
         'id_menu_type': uniqueId,
         'name': name,
+        'icon': icon,
       },
     );
   }
 
-  Future<int> updateMenuType(MenuType menuType, String newName) async {
+  Future<int> updateMenuType(MenuType menuType, String newName, {String? icon}) async {
     return await _databaseHelper.updateQuery(
       'MENU_TYPE',
-      {'name': newName},
+      {
+        'name': newName,
+        'icon': icon ?? menuType.icon,
+      },
       menuType.id,
     );
   }

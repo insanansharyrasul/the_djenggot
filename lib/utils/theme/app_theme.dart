@@ -100,4 +100,13 @@ class AppTheme {
     letterSpacing: 0.5,
     color: AppTheme.nearlyBlue, // Replace with your theme color
   );
+
+  static ButtonStyle buttonStyle = ButtonStyle(
+    backgroundColor: WidgetStatePropertyAll<Color>(AppTheme.white),
+    shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+    ),
+  );
 }

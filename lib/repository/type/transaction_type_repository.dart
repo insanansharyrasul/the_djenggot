@@ -20,21 +20,26 @@ class TransactionTypeRepository {
     return maps.map((map) => TransactionType.fromMap(map)).toList();
   }
 
-  Future<int> addTransactionType(String name) async {
+  Future<int> addTransactionType(String name, {String? icon}) async {
     final String uniqueId = "transaction-type-${const Uuid().v4()}";
     return await _databaseHelper.insertQuery(
       'TRANSACTION_TYPE',
       {
         'id_transaction_type': uniqueId,
         'name': name,
+        'icon': icon,
       },
     );
   }
 
-  Future<int> updateTransactionType(TransactionType transactionType, String newName) async {
+  Future<int> updateTransactionType(TransactionType transactionType, String newName,
+      {String? icon}) async {
     return await _databaseHelper.updateQuery(
       'TRANSACTION_TYPE',
-      {'name': newName},
+      {
+        'name': newName,
+        'icon': icon ?? transactionType.icon,
+      },
       transactionType.id,
     );
   }

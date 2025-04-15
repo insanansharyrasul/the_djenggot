@@ -12,21 +12,23 @@ class LoadMenuTypes extends MenuTypeEvent {}
 
 class AddMenuType extends MenuTypeEvent {
   final String name;
+  final String? icon;
 
-  const AddMenuType(this.name);
+  const AddMenuType(this.name, {this.icon});
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [name, icon];
 }
 
 class UpdateMenuType extends MenuTypeEvent {
   final MenuType menuType;
   final String newName;
+  final String? icon;
 
-  const UpdateMenuType(this.menuType, this.newName);
+  const UpdateMenuType(this.menuType, this.newName, {this.icon});
 
   @override
-  List<Object?> get props => [menuType, newName];
+  List<Object?> get props => [menuType, newName, icon];
 }
 
 class DeleteMenuType extends MenuTypeEvent {

@@ -12,21 +12,23 @@ class LoadTransactionTypes extends TransactionTypeEvent {}
 
 class AddTransactionType extends TransactionTypeEvent {
   final String name;
+  final String? icon;
 
-  const AddTransactionType(this.name);
+  const AddTransactionType(this.name, {this.icon});
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [name, icon];
 }
 
 class UpdateTransactionType extends TransactionTypeEvent {
   final TransactionType transactionType;
   final String newName;
+  final String? icon;
 
-  const UpdateTransactionType(this.transactionType, this.newName);
+  const UpdateTransactionType(this.transactionType, this.newName, {this.icon});
 
   @override
-  List<Object?> get props => [transactionType, newName];
+  List<Object?> get props => [transactionType, newName, icon];
 }
 
 class DeleteTransactionType extends TransactionTypeEvent {

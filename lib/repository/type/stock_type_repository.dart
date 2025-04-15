@@ -19,21 +19,25 @@ class StockTypeRepository {
     return maps.map((map) => StockType.fromMap(map)).toList();
   }
 
-  Future<int> addStockType(String name) async {
+  Future<int> addStockType(String name, {String? icon}) async {
     final String uniqueId = "stock-type-${const Uuid().v4()}";
     return await _databaseHelper.insertQuery(
       'STOCK_TYPE',
       {
         'id_stock_type': uniqueId,
         'name': name,
+        'icon': icon,
       },
     );
   }
 
-  Future<int> updateStockType(StockType stockType, String newName) async {
+  Future<int> updateStockType(StockType stockType, String newName, {String? icon}) async {
     return await _databaseHelper.updateQuery(
       'STOCK_TYPE',
-      {'name': newName},
+      {
+        'name': newName,
+        'icon': icon ?? stockType.icon,
+      },
       stockType.id,
     );
   }
