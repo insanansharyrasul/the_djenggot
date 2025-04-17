@@ -9,6 +9,7 @@ class InputField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.keyboardType,
+    required this.prefixIcon,
     this.enableCommaSeparator = false,
     this.validator,
   });
@@ -16,6 +17,7 @@ class InputField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType keyboardType;
+  final Icon prefixIcon;
   final bool? enableCommaSeparator;
   final FormFieldValidator<String?>? validator;
 

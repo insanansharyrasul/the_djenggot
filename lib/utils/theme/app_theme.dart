@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   AppTheme._();
+  static const Color primary = Color(0xFF00B6F0);
+
   static const Color nearlyWhite = Color(0xFFFAFAFA);
   static const Color white = Color(0xFFFFFFFF);
   static const Color background = Color(0xFFF2F3F8);
@@ -90,7 +92,7 @@ class AppTheme {
     fontWeight: FontWeight.w500,
     fontSize: 16,
     letterSpacing: 0.5,
-    color: AppTheme.nearlyDarkBlue, // Replace with your theme color
+    color: AppTheme.nearlyWhite, // Replace with your theme color
   );
 
   static const TextStyle textField = TextStyle(
@@ -108,5 +110,20 @@ class AppTheme {
         borderRadius: BorderRadius.circular(8.0),
       ),
     ),
+  );
+
+  static ButtonStyle buttonStyleSecond = ElevatedButton.styleFrom(
+    backgroundColor: AppTheme.primary,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  );
+
+  static const TextStyle buttonTextBold = TextStyle(
+    fontFamily: AppTheme.fontName,
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+    letterSpacing: 0.5,
+    color: AppTheme.nearlyWhite, // Replace with your theme color
   );
 }

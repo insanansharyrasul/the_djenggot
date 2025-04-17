@@ -1,27 +1,27 @@
 class Stock {
-  String id;
-  String name;
-  int quantity;
+  String idStock;
+  String stockName;
+  int stockQuantity;
 
   Stock({
-    required this.id,
-    required this.name,
-    required this.quantity,
+    required this.idStock,
+    required this.stockName,
+    required this.stockQuantity,
   });
 
   factory Stock.fromMap(Map<String, dynamic> map) {
     return Stock(
-      id: map['id_stock'],
-      name: map['name'],
-      quantity: map['quantity'],
+      idStock: map['id_stock'],
+      stockName: map['stock_name'],
+      stockQuantity: map['stock_quantity'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'name': name,
-      'quantity': quantity,
+      'id_stock': idStock,
+      'stock_name': stockName,
+      'stock_quantity': stockQuantity,
     };
   }
 }

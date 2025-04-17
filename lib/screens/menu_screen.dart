@@ -5,6 +5,7 @@ import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/bloc/menu/menu_event.dart';
 import 'package:the_djenggot/bloc/menu/menu_state.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/widgets/icon_picker.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -47,10 +48,10 @@ class _MenuScreenState extends State<MenuScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (menu.image != null)
+                            if (menu.menuImage != null)
                               Expanded(
                                 child: Image.memory(
-                                  menu.image!,
+                                  menu.menuImage!,
                                   height: 500,
                                   fit: BoxFit.fitHeight,
                                   errorBuilder: (context, error, stackTrace) {
@@ -63,7 +64,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 child: Container(color: Colors.grey),
                               ),
                             Text(
-                              menu.name,
+                              menu.menuName,
                               style: TextStyle(
                                 fontFamily: AppTheme.fontName,
                                 fontWeight: FontWeight.w500,
@@ -72,13 +73,21 @@ class _MenuScreenState extends State<MenuScreen> {
                                 color: AppTheme.nearlyBlue,
                               ),
                             ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(getIconFromString(menu.idMenuType.menuTypeIcon)),
+                                Text(menu.idMenuType.menuTypeName),
+                              ],
+                            ),
                             Text(
-                                NumberFormat.currency(
-                                  locale: 'id_ID',
-                                  decimalDigits: 0,
-                                  symbol: 'Rp ',
-                                ).format(menu.price),
-                                style: AppTheme.body2),
+                              NumberFormat.currency(
+                                locale: 'id_ID',
+                                decimalDigits: 0,
+                                symbol: 'Rp ',
+                              ).format(menu.menuPrice),
+                              style: AppTheme.body2,
+                            ),
                           ],
                         ),
                       ),

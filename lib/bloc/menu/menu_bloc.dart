@@ -9,7 +9,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
   MenuBloc(this._menuRepository) : super(MenuLoading()) {
     on<LoadMenu>((event, emit) async {
       emit(MenuLoading());
-      final menus = await _menuRepository.getAllMenus();
+      final menus = await _menuRepository.getMenusWithTypeObjects();
       emit(MenuLoaded(menus));
     });
 
@@ -18,9 +18,9 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
       await _menuRepository.addMenu(
         {
           'id_menu': uniqueId,
-          'name': event.menuName,
-          'price': event.menuPrice,
-          'image': event.menuImage,
+          'menu_name': event.menuName,
+          'menu_price': event.menuPrice,
+          'menu_image': event.menuImage,
           'id_menu_type': event.menuType
         },
       );

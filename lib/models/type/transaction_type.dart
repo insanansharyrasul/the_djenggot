@@ -1,28 +1,28 @@
 import 'package:equatable/equatable.dart';
 
 class TransactionType extends Equatable {
-  final String id;
-  final String name;
-  final String? icon;
+  final String idTransactionType;
+  final String stockName;
+  final String? stockIcon;
 
-  const TransactionType({required this.id, required this.name, this.icon});
+  const TransactionType({required this.idTransactionType, required this.stockName, this.stockIcon});
 
   factory TransactionType.fromMap(Map<String, dynamic> map) {
     return TransactionType(
-      id: map['id_transaction_type'],
-      name: map['name'],
-      icon: map['icon'],
+      idTransactionType: map['id_transaction_type'],
+      stockName: map['stock_name'],
+      stockIcon: map['stock_icon'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id_transaction_type': id,
-      'name': name,
-      'icon': icon,
+      'id_transaction_type': idTransactionType,
+      'stock_name': stockName,
+      'stock_icon': stockIcon,
     };
   }
 
   @override
-  List<Object?> get props => [id, name, icon];
+  List<Object?> get props => [idTransactionType, stockName, stockIcon];
 }

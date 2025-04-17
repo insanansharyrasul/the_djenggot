@@ -38,9 +38,9 @@ class TransactionTypeRepository {
       'TRANSACTION_TYPE',
       {
         'name': newName,
-        'icon': icon ?? transactionType.icon,
+        'icon': icon ?? transactionType.stockIcon,
       },
-      transactionType.id,
+      transactionType.idTransactionType,
     );
   }
 

@@ -13,7 +13,7 @@ class MenuTypeRepository {
   Future<List<MenuType>> searchMenuTypes(String query) async {
     final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery(
       'MENU_TYPE',
-      'name LIKE ?',
+      'menu_type_name LIKE ?',
       ['%$query%'],
     );
     return maps.map((map) => MenuType.fromMap(map)).toList();
@@ -25,8 +25,8 @@ class MenuTypeRepository {
       'MENU_TYPE',
       {
         'id_menu_type': uniqueId,
-        'name': name,
-        'icon': icon,
+        'menu_type_name': name,
+        'menu_type_icon': icon,
       },
     );
   }
@@ -35,10 +35,10 @@ class MenuTypeRepository {
     return await _databaseHelper.updateQuery(
       'MENU_TYPE',
       {
-        'name': newName,
-        'icon': icon ?? menuType.icon,
+        'menu_type_name': newName,
+        'menu_type_icon': icon ?? menuType.menuTypeIcon,
       },
-      menuType.id,
+      menuType.idMenuType,
     );
   }
 

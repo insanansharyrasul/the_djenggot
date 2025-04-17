@@ -27,8 +27,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   void initState() {
     super.initState();
     if (widget.stock != null) {
-      stockName.text = widget.stock!.name;
-      stockQuantity.text = widget.stock!.quantity.toString();
+      stockName.text = widget.stock!.stockName;
+      stockQuantity.text = widget.stock!.stockQuantity.toString();
     }
   }
 
@@ -61,6 +61,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   Text("Nama Stok", style: AppTheme.textField),
                   const SizedBox(height: 8),
                   InputField(
+                    prefixIcon: const Icon(Iconsax.box),
                     controller: stockName,
                     hintText: "Stok",
                     keyboardType: TextInputType.text,
@@ -75,6 +76,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   Text("Kuantitas Stok", style: AppTheme.textField),
                   const SizedBox(height: 8),
                   InputField(
+                    prefixIcon: const Icon(Iconsax.box),
                     controller: stockQuantity,
                     hintText: "Kuantitas",
                     keyboardType: TextInputType.number,
@@ -89,7 +91,11 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     },
                   ),
                   SizedBox(height: 20),
+                  Text("Kategori Stok (Optional)", style: AppTheme.textField),
+                  const SizedBox(height: 8),
+                  // DropdownButton(items: , onChanged: onChanged)
                   ElevatedButton(
+                    style: AppTheme.buttonStyle,
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         showDialog(
@@ -177,7 +183,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         );
 
                         // TODO: ADD OPTION TO CHOOSE WHAT TYPE OF STOCK
-                        Future.delayed(const Duration(milliseconds  : 500), () {
+                        Future.delayed(const Duration(milliseconds: 500), () {
                           // dismiss loading dialog
                           Navigator.pop(context);
                           Navigator.pop(context);
@@ -187,8 +193,10 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         // Handle save action
                       }
                     },
-                    child: Text(widget.stock == null ? "Simpan" : "Update",
-                        style: AppTheme.buttonText),
+                    child: Text(
+                      widget.stock == null ? "Simpan" : "Update",
+                      style: AppTheme.buttonText,
+                    ),
                   ),
                 ],
               ),

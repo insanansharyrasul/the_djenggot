@@ -20,8 +20,8 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       await _stockRepository.addStok(
         {
           'id_stok': uniqueId,
-          'name': event.stockName,
-          'quantity': event.stockQuantity,
+          'stock_name': event.stockName,
+          'stock_quantity': event.stockQuantity,
         },
       );
       final stocks = await _stockRepository.getAllStocks();
@@ -31,10 +31,10 @@ class StockBloc extends Bloc<StockEvent, StockState> {
     on<UpdateStock>((event, emit) async {
       await _stockRepository.updateStok(
         {
-          'name': event.newName,
-          'quantity': event.newQuantity,
+          'stock_name': event.newName,
+          'stock_quantity': event.newQuantity,
         },
-        event.stock.id,
+        event.stock.idStock,
       );
       final stocks = await _stockRepository.getAllStocks();
       emit(StockLoaded(stocks));

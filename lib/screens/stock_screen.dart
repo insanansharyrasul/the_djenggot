@@ -108,9 +108,9 @@ class _StockScreenState extends State<StockScreen> {
                   ..sort((a, b) {
                     int comparison;
                     if (sortBy == "name") {
-                      comparison = a.name.compareTo(b.name);
+                      comparison = a.stockName.compareTo(b.stockName);
                     } else {
-                      comparison = a.quantity.compareTo(b.quantity);
+                      comparison = a.stockQuantity.compareTo(b.stockQuantity);
                     }
                     return descending == "asc" ? comparison : -comparison;
                   });
@@ -123,12 +123,12 @@ class _StockScreenState extends State<StockScreen> {
                     return ListTile(
                       title: Text(
                         // state.stocks[index].name,
-                        sortedStocks[index].name,
+                        sortedStocks[index].stockName,
                         style: AppTheme.textField,
                       ),
                       subtitle: Text(
                         // "Kuantitas: ${state.stocks[index].quantity}",
-                        "Kuantitas: ${sortedStocks[index].quantity}",
+                        "Kuantitas: ${sortedStocks[index].stockQuantity}",
                         style: AppTheme.subtitle,
                       ),
                       trailing: Row(
@@ -154,7 +154,7 @@ class _StockScreenState extends State<StockScreen> {
                                       onOkPress: () {
                                         Navigator.pop(context);
                                         BlocProvider.of<StockBloc>(context).add(
-                                          DeleteStock(state.stocks[index].id),
+                                          DeleteStock(state.stocks[index].idStock),
                                         );
                                       },
                                     );

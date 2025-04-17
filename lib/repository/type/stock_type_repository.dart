@@ -36,9 +36,9 @@ class StockTypeRepository {
       'STOCK_TYPE',
       {
         'name': newName,
-        'icon': icon ?? stockType.icon,
+        'icon': icon ?? stockType.stockIcon,
       },
-      stockType.id,
+      stockType.idStockType,
     );
   }
 
