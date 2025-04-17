@@ -121,13 +121,12 @@ class _StockScreenState extends State<StockScreen> {
                   itemCount: sortedStocks.length,
                   itemBuilder: (context, index) {
                     return ListTile(
+
                       title: Text(
-                        // state.stocks[index].name,
                         sortedStocks[index].stockName,
                         style: AppTheme.textField,
                       ),
                       subtitle: Text(
-                        // "Kuantitas: ${state.stocks[index].quantity}",
                         "Kuantitas: ${sortedStocks[index].stockQuantity}",
                         style: AppTheme.subtitle,
                       ),

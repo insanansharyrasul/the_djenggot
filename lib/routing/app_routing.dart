@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
-import 'package:the_djenggot/screens/add_edit_menu_screen.dart';
-import 'package:the_djenggot/screens/add_edit_menu_type_screen.dart';
-import 'package:the_djenggot/screens/add_edit_stock_screen.dart';
+import 'package:the_djenggot/screens/menu/add_edit_menu_screen.dart';
+import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
+import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/dashboard_screen.dart';
 
 final GoRouter appRouter = GoRouter(

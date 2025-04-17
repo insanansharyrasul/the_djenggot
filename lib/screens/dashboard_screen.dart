@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:the_djenggot/screens/add_edit_stock_type_screen.dart';
+import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
-import 'package:the_djenggot/screens/menu_screen.dart';
-import 'package:the_djenggot/screens/stock_screen.dart';
+import 'package:the_djenggot/screens/menu/menu_screen.dart';
+import 'package:the_djenggot/screens/stock/stock_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
 import 'package:the_djenggot/widgets/floating_button.dart';
