@@ -1,6 +1,5 @@
 import 'package:the_djenggot/database/database.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
-import 'package:uuid/uuid.dart';
 
 class StockTypeRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
@@ -13,32 +12,26 @@ class StockTypeRepository {
   Future<List<StockType>> searchStockTypes(String query) async {
     final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery(
       'STOCK_TYPE',
-      'name LIKE ?',
+      'stock_type_name LIKE ?',
       ['%$query%'],
     );
     return maps.map((map) => StockType.fromMap(map)).toList();
   }
 
-  Future<int> addStockType(String name, {String? icon}) async {
-    final String uniqueId = "stock-type-${const Uuid().v4()}";
+  Future<int> addStockType(StockType stockType) async {
     return await _databaseHelper.insertQuery(
       'STOCK_TYPE',
-      {
-        'id_stock_type': uniqueId,
-        'name': name,
-        'icon': icon,
-      },
+      stockType.toMap()
     );
   }
 
-  Future<int> updateStockType(StockType stockType, String newName, {String? icon}) async {
-    return await _databaseHelper.updateQuery(
+  Future<int> updateStockType(StockType stockType) async {
+    final db = await _databaseHelper.db;
+    return await db.update(
       'STOCK_TYPE',
-      {
-        'name': newName,
-        'icon': icon ?? stockType.stockIcon,
-      },
-      stockType.idStockType,
+      stockType.toMap(),
+      where: 'id_stock_type = ?',
+      whereArgs: [stockType.idStockType],
     );
   }
 

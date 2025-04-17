@@ -19,9 +19,11 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       final String uniqueId = "stok-${const Uuid().v4()}";
       await _stockRepository.addStok(
         {
-          'id_stok': uniqueId,
+          'id_stock': uniqueId,
           'stock_name': event.stockName,
           'stock_quantity': event.stockQuantity,
+          'id_stock_type': event.stockType,
+          'stock_threshold': event.threshold,
         },
       );
       final stocks = await _stockRepository.getAllStocks();
@@ -33,6 +35,8 @@ class StockBloc extends Bloc<StockEvent, StockState> {
         {
           'stock_name': event.newName,
           'stock_quantity': event.newQuantity,
+          'id_stock_type': event.newStockType,
+          'stock_threshold': event.threshold,
         },
         event.stock.idStock,
       );

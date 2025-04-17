@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:the_djenggot/screens/add_edit_menu_type_screen.dart';
+import 'package:the_djenggot/screens/add_edit_stock_type_screen.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
 import 'package:the_djenggot/screens/menu_screen.dart';
 import 'package:the_djenggot/screens/stock_screen.dart';
@@ -24,7 +24,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const HomeScreen(),
     const StockScreen(),
     const MenuScreen(),
-    const AddEditMenuTypeScreen()
+    // const AddEditMenuTypeScreen()
+    AddEditStockTypeScreen()
   ];
 
   late final List<Widget> floatingButtonList;

@@ -19,8 +19,8 @@ class Menu {
   factory Menu.fromMap(Map<String, dynamic> map) {
     return Menu(
       idMenu: map['id_menu'] ?? '',
-      menuName: map['menu_name'] ?? map['menu_name'] ?? '',
-      menuPrice: (map['menu_price'] ?? map['menu_price'] ?? 0).toDouble(),
+      menuName: map['menu_name'] ?? '',
+      menuPrice: (map['menu_price'] ?? 0).toDouble(),
       menuImage: map['image'] != null
           ? Uint8List.fromList(map['image'])
           : map['menu_image'] != null

@@ -33,7 +33,7 @@ List<BlocProvider> getTypeProviders() {
     ),
     BlocProvider<StockTypeBloc>(
       create: (context) => StockTypeBloc(
-        StockTypeRepository(),
+        stockTypeRepository: StockTypeRepository(),
       )..add(LoadStockTypes()),
     ),
     BlocProvider<TransactionTypeBloc>(

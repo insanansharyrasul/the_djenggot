@@ -83,10 +83,10 @@ class DatabaseHelper {
       await txn.execute('''
         CREATE TABLE STOCK (
           id_stock TEXT PRIMARY KEY,
+          id_stock_type TEXT NOT NULL,
           stock_name TEXT NOT NULL,
           stock_quantity INTEGER NOT NULL,
-          id_stock_type TEXT NOT NULL,
-          threshold INTEGER NOT NULL,
+          stock_threshold INTEGER NOT NULL,
           FOREIGN KEY (id_stock_type) REFERENCES STOCK_TYPE(id_stock_type) ON DELETE CASCADE ON UPDATE CASCADE
         )
       ''');
