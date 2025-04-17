@@ -120,15 +120,31 @@ class _StockScreenState extends State<StockScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: sortedStocks.length,
                   itemBuilder: (context, index) {
+                    final stockUnit = sortedStocks[index].idStockType.stockUnit;
                     return ListTile(
-
                       title: Text(
                         sortedStocks[index].stockName,
                         style: AppTheme.textField,
                       ),
-                      subtitle: Text(
-                        "Kuantitas: ${sortedStocks[index].stockQuantity}",
-                        style: AppTheme.subtitle,
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Kuantitas: ${sortedStocks[index].stockQuantity}${stockUnit != null && stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                            style: AppTheme.subtitle,
+                          ),
+                          if (sortedStocks[index].stockThreshold != null &&
+                              sortedStocks[index].stockThreshold! > 0)
+                            Text(
+                              "Batas minimum: ${sortedStocks[index].stockThreshold}${stockUnit != null && stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                              style: AppTheme.subtitle.copyWith(
+                                color: sortedStocks[index].stockQuantity <=
+                                        sortedStocks[index].stockThreshold!
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
+                            ),
+                        ],
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,

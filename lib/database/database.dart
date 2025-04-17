@@ -52,7 +52,8 @@ class DatabaseHelper {
         CREATE TABLE STOCK_TYPE (
           id_stock_type TEXT PRIMARY KEY,
           stock_type_name TEXT NOT NULL,
-          stock_type_icon TEXT
+          stock_type_icon TEXT,
+          stock_unit TEXT NOT NULL
         )
       ''');
 

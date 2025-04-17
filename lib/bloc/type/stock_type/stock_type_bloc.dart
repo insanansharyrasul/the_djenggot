@@ -33,6 +33,7 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
         idStockType: stockTypeId,
         stockTypeName: event.name,
         stockTypeIcon: event.icon,
+        stockUnit: event.unit,
       );
 
       await stockTypeRepository.addStockType(stockType);
@@ -52,6 +53,7 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
         idStockType: event.stockType.idStockType,
         stockTypeName: event.name,
         stockTypeIcon: event.icon,
+        stockUnit: event.unit,
       );
 
       await stockTypeRepository.updateStockType(

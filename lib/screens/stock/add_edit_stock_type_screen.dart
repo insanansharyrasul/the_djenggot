@@ -22,6 +22,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
+  final TextEditingController unitController = TextEditingController();
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
     if (widget.stockType != null) {
       name.text = widget.stockType!.stockTypeName;
       iconController.text = widget.stockType!.stockTypeIcon ?? '';
+      unitController.text = widget.stockType!.stockUnit ?? '';
     }
   }
 
@@ -71,6 +73,14 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                       }
                       return null;
                     },
+                  ),
+                  SizedBox(height: 16),
+                  Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
+                  InputField(
+                    controller: unitController,
+                    hintText: "Satuan Stok",
+                    prefixIcon: const Icon(Iconsax.ruler),
+                    keyboardType: TextInputType.text,
                   ),
                   SizedBox(height: 16),
                   Text("Icon (Optional)", style: AppTheme.textField),
@@ -130,6 +140,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                                     widget.stockType!,
                                     name.text,
                                     icon: iconController.text.isEmpty ? null : iconController.text,
+                                    unit: unitController.text.isEmpty ? null : unitController.text,
                                   ),
                                 );
                           } else {
@@ -137,6 +148,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                                   AddStockType(
                                     name.text,
                                     icon: iconController.text.isEmpty ? null : iconController.text,
+                                    unit: unitController.text.isEmpty ? null : unitController.text,
                                   ),
                                 );
                           }

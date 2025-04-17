@@ -53,10 +53,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
-        title: Text(
-          widget.stock == null ? "Tambah Stok" : "Update Stok", 
-          style: AppTheme.appBarTitle
-        ),
+        title:
+            Text(widget.stock == null ? "Tambah Stok" : "Update Stok", style: AppTheme.appBarTitle),
         leading: IconButton(
           icon: const Icon(Iconsax.arrow_left_2),
           onPressed: () {
@@ -105,20 +103,43 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                       style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    InputField(
-                      controller: stockQuantity,
-                      hintText: "Jumlah Stok",
-                      keyboardType: TextInputType.number,
-                      prefixIcon: const Icon(Iconsax.calculator),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Kuantitas tidak boleh kosong";
-                        }
-                        if (int.tryParse(value) == null) {
-                          return "Kuantitas harus berupa angka";
-                        }
-                        return null;
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InputField(
+                            controller: stockQuantity,
+                            hintText: "Jumlah Stok",
+                            keyboardType: TextInputType.number,
+                            prefixIcon: const Icon(Iconsax.calculator),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Kuantitas tidak boleh kosong";
+                              }
+                              if (int.tryParse(value) == null) {
+                                return "Kuantitas harus berupa angka";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        if (selectedStockType?.stockUnit != null &&
+                            selectedStockType!.stockUnit!.isNotEmpty)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            margin: EdgeInsets.only(left: 8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              selectedStockType!.stockUnit!,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primary,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
 
                     const SizedBox(height: 20),
@@ -127,20 +148,43 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                       style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    InputField(
-                      controller: stockThreshold,
-                      hintText: "Batas Minimum Stok",
-                      keyboardType: TextInputType.number,
-                      prefixIcon: const Icon(Iconsax.warning_2),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Batas minimum tidak boleh kosong";
-                        }
-                        if (int.tryParse(value) == null) {
-                          return "Batas minimum harus berupa angka";
-                        }
-                        return null;
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InputField(
+                            controller: stockThreshold,
+                            hintText: "Batas Minimum Stok",
+                            keyboardType: TextInputType.number,
+                            prefixIcon: const Icon(Iconsax.warning_2),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Batas minimum tidak boleh kosong";
+                              }
+                              if (int.tryParse(value) == null) {
+                                return "Batas minimum harus berupa angka";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        if (selectedStockType?.stockUnit != null &&
+                            selectedStockType!.stockUnit!.isNotEmpty)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            margin: EdgeInsets.only(left: 8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              selectedStockType!.stockUnit!,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primary,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
 
                     const SizedBox(height: 20),
@@ -169,7 +213,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               }
                             }
                           }
-                          
+
                           return Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -294,7 +338,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                     ),
                                   );
                             }
-                            
+
                             Navigator.pop(context);
 
                             showDialog(
