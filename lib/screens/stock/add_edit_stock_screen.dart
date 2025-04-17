@@ -13,6 +13,7 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEditStockScreen extends StatefulWidget {
   final Stock? stock;
@@ -214,49 +215,133 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             }
                           }
 
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: DropdownButtonFormField<StockType>(
-                              value: selectedStockType,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Iconsax.category),
-                                border: InputBorder.none,
-                                hintText: "Pilih Kategori Stok",
-                                hintStyle: TextStyle(color: Colors.grey.shade500),
-                              ),
-                              items: stockTypes.map((type) {
-                                return DropdownMenuItem<StockType>(
-                                  value: type,
-                                  child: Row(
+                          // Check if stock types list is empty
+                          if (stockTypes.isEmpty) {
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.shade50,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.amber.shade200),
+                                  ),
+                                  child: Column(
                                     children: [
-                                      if (type.stockTypeIcon != null &&
-                                          type.stockTypeIcon!.isNotEmpty)
-                                        Icon(
-                                          getIconFromString(type.stockTypeIcon!),
-                                          color: AppTheme.primary,
-                                          size: 18,
+                                      const Icon(
+                                        Iconsax.info_circle,
+                                        color: Colors.amber,
+                                        size: 32,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "Belum ada kategori stok",
+                                        style: AppTheme.textField.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.amber.shade800,
                                         ),
-                                      if (type.stockTypeIcon != null &&
-                                          type.stockTypeIcon!.isNotEmpty)
-                                        const SizedBox(width: 12),
-                                      Text(type.stockTypeName),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Silahkan buat kategori stok terlebih dahulu",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.amber.shade800),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ElevatedButton.icon(
+                                        icon: const Icon(Iconsax.add_circle),
+                                        label: const Text("Buat Kategori Stok"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppTheme.primary,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                            context, 
+                                            '/stock-type/add'
+                                          ).then((_) {
+                                            // Reload stock types when returning from add screen
+                                            context.read<StockTypeBloc>().add(LoadStockTypes());
+                                          });
+                                        },
+                                      ),
                                     ],
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedStockType = newValue;
-                                });
-                              },
-                              dropdownColor: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              icon: const Icon(Iconsax.arrow_down_1),
-                            ),
+                                ),
+                              ],
+                            );
+                          }
+
+                          return Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey.shade300),
+                                ),
+                                child: DropdownButtonFormField<StockType>(
+                                  value: selectedStockType,
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Iconsax.category),
+                                    border: InputBorder.none,
+                                    hintText: "Pilih Kategori Stok",
+                                    hintStyle: TextStyle(color: Colors.grey.shade500),
+                                  ),
+                                  items: stockTypes.map((type) {
+                                    return DropdownMenuItem<StockType>(
+                                      value: type,
+                                      child: Row(
+                                        children: [
+                                          if (type.stockTypeIcon != null &&
+                                              type.stockTypeIcon!.isNotEmpty)
+                                            Icon(
+                                              getIconFromString(type.stockTypeIcon!),
+                                              color: AppTheme.primary,
+                                              size: 18,
+                                            ),
+                                          if (type.stockTypeIcon != null &&
+                                              type.stockTypeIcon!.isNotEmpty)
+                                            const SizedBox(width: 12),
+                                          Text(type.stockTypeName),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedStockType = newValue;
+                                    });
+                                  },
+                                  dropdownColor: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  icon: const Icon(Iconsax.arrow_down_1),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton.icon(
+                                  icon: const Icon(Iconsax.add, size: 16),
+                                  label: const Text("Tambah Kategori Baru"),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppTheme.primary,
+                                  ),
+                                  onPressed: () {
+                                    context.push(
+                                      // context, 
+                                      '/add-edit-stock-type',
+                                    ).then((_) {
+                                      // Reload stock types when returning from add screen
+                                      context.read<StockTypeBloc>().add(LoadStockTypes());
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           );
                         } else if (state is StockTypeError) {
                           return Center(
