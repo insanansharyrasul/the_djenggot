@@ -40,13 +40,16 @@ class StockRepository {
 
   Future<Stock?> getStockWithType(String stockId) async {
     final db = await _databaseHelper.db;
-    final results = await db.rawQuery('''
+    final results = await db.rawQuery(
+      '''
       SELECT s.id_stock, s.stock_name, s.stock_price, s.stock_image, 
              s.id_stock_type, st.stock_type_name, st.stock_type_icon 
       FROM STOCK s
       JOIN STOCK_TYPE st ON s.id_stock_type = st.id_stock_type
       WHERE s.id_stock = ?
-    ''', [stockId]);
+    ''',
+      [stockId],
+    );
 
     if (results.isEmpty) {
       return null;
@@ -100,14 +103,21 @@ class StockRepository {
   }
 
   Future<int> updateStok(Map<String, dynamic> model, String id) async {
-    return await _databaseHelper.updateQuery(
+    final db = await _databaseHelper.db;
+    return await db.update(
       'STOCK',
       model,
-      id,
+      where: 'id_stock = ?',
+      whereArgs: [id],
     );
   }
 
   Future<int> deleteStok(String id) async {
-    return await _databaseHelper.deleteQuery('STOCK', id);
+    final db = await _databaseHelper.db;
+    return await db.delete(
+      'STOCK',
+      where: 'id_stock = ?',
+      whereArgs: [id],
+    );
   }
 }

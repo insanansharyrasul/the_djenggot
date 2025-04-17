@@ -34,17 +34,24 @@ class TransactionTypeRepository {
 
   Future<int> updateTransactionType(TransactionType transactionType, String newName,
       {String? icon}) async {
-    return await _databaseHelper.updateQuery(
+    final db = await _databaseHelper.db;
+    return await db.update(
       'TRANSACTION_TYPE',
       {
         'name': newName,
-        'icon': icon ?? transactionType.stockIcon,
+        'icon': icon,
       },
-      transactionType.idTransactionType,
+      where: 'id_transaction_type = ?',
+      whereArgs: [transactionType.idTransactionType],
     );
   }
 
   Future<int> deleteTransactionType(String id) async {
-    return await _databaseHelper.deleteQuery('TRANSACTION_TYPE', id);
+    final db  = await _databaseHelper.db;
+    return await db.delete(
+      'TRANSACTION_TYPE',
+      where: 'id_transaction_type = ?',
+      whereArgs: [id],
+    );
   }
 }

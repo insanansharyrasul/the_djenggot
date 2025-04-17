@@ -36,6 +36,11 @@ class StockTypeRepository {
   }
 
   Future<int> deleteStockType(String id) async {
-    return await _databaseHelper.deleteQuery('STOCK_TYPE', id);
+    final db = await _databaseHelper.db;
+    return await db.delete(
+      'STOCK_TYPE',
+      where: 'id_stock_type = ?',
+      whereArgs: [id],
+    );
   }
 }

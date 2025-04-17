@@ -107,21 +107,21 @@ class DatabaseHelper {
   }
 
   Future<List<Map<String, dynamic>>> getAllQuery(
-      String tableName, String where, List<dynamic> whereAgrs) async {
+      String tableName, String where, List<dynamic> whereArgs) async {
     Database db = await instance.db;
     return await db.query(
       tableName,
       where: (where != '' && where.isNotEmpty) ? where : null,
-      whereArgs: (whereAgrs.isNotEmpty) ? whereAgrs : null,
+      whereArgs: (whereArgs.isNotEmpty) ? whereArgs : null,
     );
   }
 
-  Future<int> countQuery(String tableName, String where, List<dynamic> whereAgrs) async {
+  Future<int> countQuery(String tableName, String where, List<dynamic> whereArgs) async {
     Database db = await instance.db;
     final result = await db.query(
       tableName,
       where: where,
-      whereArgs: whereAgrs,
+      whereArgs: whereArgs,
     );
     return result.length;
   }
@@ -135,23 +135,9 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> deleteQuery(String tableName, String id) async {
-    Database db = await instance.db;
-    return await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
-  }
-
   Future<int> truncateQuery(String tableName) async {
     Database db = await instance.db;
     return await db.delete(tableName);
   }
 
-  Future<int> updateQuery(String tableName, Map<String, dynamic> model, String id) async {
-    Database db = await instance.db;
-    return await db.update(
-      tableName,
-      model,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
 }

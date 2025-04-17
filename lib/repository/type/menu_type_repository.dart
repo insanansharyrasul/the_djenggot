@@ -32,17 +32,24 @@ class MenuTypeRepository {
   }
 
   Future<int> updateMenuType(MenuType menuType, String newName, {String? icon}) async {
-    return await _databaseHelper.updateQuery(
+    final db = await _databaseHelper.db;
+    return await db.update(
       'MENU_TYPE',
       {
         'menu_type_name': newName,
         'menu_type_icon': icon ?? menuType.menuTypeIcon,
       },
-      menuType.idMenuType,
+      where: 'id_menu_type = ?',
+      whereArgs: [menuType.idMenuType],
     );
   }
 
   Future<int> deleteMenuType(String id) async {
-    return await _databaseHelper.deleteQuery('MENU_TYPE', id);
+    final db = await _databaseHelper.db;
+    return await db.delete(
+      'MENU_TYPE',
+      where: 'id_menu_type = ?',
+      whereArgs: [id],
+    );
   }
 }
