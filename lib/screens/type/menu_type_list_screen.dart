@@ -57,14 +57,14 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
           if (state is MenuTypeLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (state is MenuTypeError) {
             return Center(child: Text('Error: ${state.message}'));
           }
-          
+
           if (state is MenuTypeLoaded) {
             final menuTypes = state.menuTypes;
-            
+
             if (menuTypes.isEmpty) {
               return EmptyState(
                 icon: Iconsax.category,
@@ -72,7 +72,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
                 subtitle: "Tambahkan tipe menu baru dengan menekan tombol '+' di pojok kanan atas.",
               );
             }
-            
+
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: menuTypes.length,
@@ -82,13 +82,13 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
               },
             );
           }
-          
+
           return const Center(child: CircularProgressIndicator());
         },
       ),
     );
   }
-  
+
   Widget _buildMenuTypeCard(BuildContext context, MenuType menuType) {
     return Card(
       elevation: 2,
@@ -129,7 +129,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
       ),
     );
   }
-  
+
   void _showDeleteConfirmation(BuildContext context, MenuType menuType) {
     showDialog(
       context: context,
@@ -139,7 +139,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
         message: "Apakah Anda yakin ingin menghapus tipe menu '${menuType.menuTypeName}'?",
         onOkPress: () async {
           Navigator.pop(dialogContext);
-          
+
           showDialog(
             barrierDismissible: false,
             context: context,
@@ -152,11 +152,11 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
               },
             ),
           );
-          
+
           context.read<MenuTypeBloc>().add(DeleteMenuType(menuType.idMenuType));
-          
+
           Navigator.pop(context);
-          
+
           showDialog(
             barrierDismissible: false,
             context: context,
@@ -168,6 +168,13 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
                 Navigator.pop(successContext);
               },
             ),
+          );
+
+          Future.delayed(
+            Duration(milliseconds: 500),
+            () {
+              Navigator.pop(context);
+            },
           );
         },
         // showCancelButton: true,

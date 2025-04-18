@@ -130,18 +130,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Iconsax.setting,
             4,
             pageIndex,
-            "Settings",
+            "Pengaturan",
           ),
-          // bottomNavItem(
-          //   () {
-          //     pageController.jumpToPage(3);
-          //     setState(() => pageIndex = 3);
-          //   },
-          //   Iconsax.bluetooth_circle,
-          //   3,
-          //   pageIndex,
-          //   "Test",
-          // )
         ],
       ),
     );

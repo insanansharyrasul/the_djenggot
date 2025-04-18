@@ -173,6 +173,10 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
               },
             ),
           );
+
+          Future.delayed(Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+          });
         },
       ),
     );

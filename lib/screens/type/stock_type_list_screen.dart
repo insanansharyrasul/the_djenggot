@@ -175,6 +175,10 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
               },
             ),
           );
+
+          Future.delayed(Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+          });
         },
         // showCancelButton: true,
       ),
