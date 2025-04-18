@@ -51,123 +51,151 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
         ),
       ),
       body: ListView(
+        padding: EdgeInsets.all(16),
         children: [
           Form(
             key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Nama Tipe Menu", style: AppTheme.textField),
-                  InputField(
-                    controller: name,
-                    hintText: "Tipe Menu",
-                    prefixIcon: const Icon(Iconsax.menu),
-                    keyboardType: TextInputType.text,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Nama untuk tipe menu tidak boleh kosong";
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  Text("Icon (Optional)", style: AppTheme.textField),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      label: Text(
-                        "Pilih Icon",
-                        style: AppTheme.buttonTextBold,
-                      ),
-                      style: AppTheme.buttonStyleSecond,
-                      onPressed: () {
-                        showIconPickerBottomSheet(
-                          context,
-                          currentIconName: iconController.text,
-                          onIconSelected: (iconName, icon) {
-                            setState(() {
-                              iconController.text = iconName;
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Divider(),
-                  SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      label: Text(
-                        "Simpan Menu",
-                        style: AppTheme.buttonText.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: AppTheme.buttonStyleSecond,
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext dialogContext) => AppDialog(
-                              type: "loading",
-                              title: "Memproses",
-                              message: "Mohon tunggu...",
-                              onOkPress: () {},
-                            ),
-                          );
-
-                          if (widget.menuType != null) {
-                            context.read<MenuTypeBloc>().add(
-                                  UpdateMenuType(
-                                    widget.menuType!,
-                                    name.text,
-                                    icon: iconController.text.isEmpty ? null : iconController.text,
-                                  ),
-                                );
-                          } else {
-                            context.read<MenuTypeBloc>().add(
-                                  AddMenuType(
-                                    name.text,
-                                    icon: iconController.text.isEmpty ? null : iconController.text,
-                                  ),
-                                );
-                          }
-                          // Add new menu
-                          // Simpan data ke database
-                          Navigator.pop(context);
-
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext dialogContext) => AppDialog(
-                              type: "success",
-                              title: "Pengajuan Berhasil",
-                              message: "Kembali ke dashboard...",
-                              onOkPress: () {},
-                            ),
-                          );
-                          Future.delayed(const Duration(seconds: 1), () {
-                            // dismiss loading dialog
-                            Navigator.pop(context);
-                            // back to dashboard
-                            // Navigator.of(context).pop(true);
-                          });
-                          // Handle save action
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              color: AppTheme.background,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Nama Tipe Menu", style: AppTheme.textField),
+                    InputField(
+                      controller: name,
+                      hintText: "Tipe Menu",
+                      prefixIcon: const Icon(Iconsax.menu),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Nama untuk tipe menu tidak boleh kosong";
                         }
+                        return null;
                       },
-                      // child: Text(widget.menuType == null ? "Save" : "Update",
-                      //     style: AppTheme.buttonText),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 16),
+                    Text("Icon (Optional)", style: AppTheme.textField),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton.icon(
+                              label: Text(
+                                "Pilih Icon",
+                                style: AppTheme.buttonTextBold,
+                              ),
+                              style: AppTheme.buttonStyleSecond,
+                              onPressed: () {
+                                showIconPickerBottomSheet(
+                                  context,
+                                  currentIconName: iconController.text,
+                                  onIconSelected: (iconName, icon) {
+                                    setState(() {
+                                      iconController.text = iconName;
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Icon(
+                            iconController.text.isEmpty
+                                ? Iconsax.menu
+                                : getIconFromString(iconController.text),
+                            size: 40,
+                            color: AppTheme.primary,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Divider(),
+                    SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        label: Text(
+                          "Simpan Menu",
+                          style: AppTheme.buttonText.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: AppTheme.buttonStyleSecond,
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext dialogContext) => AppDialog(
+                                type: "loading",
+                                title: "Memproses",
+                                message: "Mohon tunggu...",
+                                onOkPress: () {},
+                              ),
+                            );
+
+                            if (widget.menuType != null) {
+                              context.read<MenuTypeBloc>().add(
+                                    UpdateMenuType(
+                                      widget.menuType!,
+                                      name.text,
+                                      icon:
+                                          iconController.text.isEmpty ? null : iconController.text,
+                                    ),
+                                  );
+                            } else {
+                              context.read<MenuTypeBloc>().add(
+                                    AddMenuType(
+                                      name.text,
+                                      icon:
+                                          iconController.text.isEmpty ? null : iconController.text,
+                                    ),
+                                  );
+                            }
+                            // Add new menu
+                            // Simpan data ke database
+                            Navigator.pop(context);
+
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext dialogContext) => AppDialog(
+                                type: "success",
+                                title: "Pengajuan Berhasil",
+                                message: "Kembali ke dashboard...",
+                                onOkPress: () {},
+                              ),
+                            );
+                            Future.delayed(const Duration(seconds: 1), () {
+                              // dismiss loading dialog
+                              Navigator.pop(context);
+                              // back to dashboard
+                              // Navigator.of(context).pop(true);
+                            });
+                            // Handle save action
+                          }
+                        },
+                        // child: Text(widget.menuType == null ? "Save" : "Update",
+                        //     style: AppTheme.buttonText),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -53,126 +53,151 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
         ),
       ),
       body: ListView(
+        padding: const EdgeInsets.all(16.0),
         children: [
           Form(
             key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Nama Tipe Stok", style: AppTheme.textField),
-                  InputField(
-                    controller: name,
-                    hintText: "Tipe Stok",
-                    prefixIcon: const Icon(Iconsax.box),
-                    keyboardType: TextInputType.text,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Nama untuk tipe stok tidak boleh kosong";
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
-                  InputField(
-                    controller: unitController,
-                    hintText: "Satuan Stok",
-                    prefixIcon: const Icon(Iconsax.ruler),
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(height: 16),
-                  Text("Icon (Optional)", style: AppTheme.textField),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      label: Text(
-                        "Pilih Icon",
-                        style: AppTheme.buttonTextBold,
-                      ),
-                      style: AppTheme.buttonStyleSecond,
-                      onPressed: () {
-                        showIconPickerBottomSheet(
-                          context,
-                          currentIconName: iconController.text,
-                          onIconSelected: (iconName, icon) {
-                            setState(() {
-                              iconController.text = iconName;
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Divider(),
-                  SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      label: Text(
-                        "Simpan Tipe Stok",
-                        style: AppTheme.buttonText.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: AppTheme.buttonStyleSecond,
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext dialogContext) => AppDialog(
-                              type: "loading",
-                              title: "Memproses",
-                              message: "Mohon tunggu...",
-                              onOkPress: () {},
-                            ),
-                          );
-
-                          if (widget.stockType != null) {
-                            context.read<StockTypeBloc>().add(
-                                  UpdateStockType(
-                                    widget.stockType!,
-                                    name.text,
-                                    icon: iconController.text.isEmpty ? null : iconController.text,
-                                    unit: unitController.text.isEmpty ? null : unitController.text,
-                                  ),
-                                );
-                          } else {
-                            context.read<StockTypeBloc>().add(
-                                  AddStockType(
-                                    name.text,
-                                    icon: iconController.text.isEmpty ? null : iconController.text,
-                                    unit: unitController.text.isEmpty ? null : unitController.text,
-                                  ),
-                                );
-                          }
-
-                          Navigator.pop(context);
-
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext dialogContext) => AppDialog(
-                              type: "success",
-                              title: "Pengajuan Berhasil",
-                              message: "Kembali ke dashboard...",
-                              onOkPress: () {},
-                            ),
-                          );
-                          Future.delayed(const Duration(seconds: 1), () {
-                            Navigator.pop(context);
-                          });
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              color: AppTheme.background,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Nama Tipe Stok", style: AppTheme.textField),
+                    InputField(
+                      controller: name,
+                      hintText: "Tipe Stok",
+                      prefixIcon: const Icon(Iconsax.box),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Nama untuk tipe stok tidak boleh kosong";
                         }
+                        return null;
                       },
                     ),
-                  ),
-                ],
+                    SizedBox(height: 16),
+                    Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
+                    InputField(
+                      controller: unitController,
+                      hintText: "Satuan Stok",
+                      prefixIcon: const Icon(Iconsax.ruler),
+                      keyboardType: TextInputType.text,
+                    ),
+                    SizedBox(height: 16),
+                    Text("Icon (Optional)", style: AppTheme.textField),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton.icon(
+                              label: Text(
+                                "Pilih Icon",
+                                style: AppTheme.buttonTextBold,
+                              ),
+                              style: AppTheme.buttonStyleSecond,
+                              onPressed: () {
+                                showIconPickerBottomSheet(
+                                  context,
+                                  currentIconName: iconController.text,
+                                  onIconSelected: (iconName, icon) {
+                                    setState(() {
+                                      iconController.text = iconName;
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Icon(
+                            iconController.text.isEmpty
+                                ? Icons.add_box
+                                : getIconFromString(iconController.text),
+                            color: AppTheme.primary,
+                            size: 50,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Divider(),
+                    SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        label: Text(
+                          "Simpan Tipe Stok",
+                          style: AppTheme.buttonText.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: AppTheme.buttonStyleSecond,
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext dialogContext) => AppDialog(
+                                type: "loading",
+                                title: "Memproses",
+                                message: "Mohon tunggu...",
+                                onOkPress: () {},
+                              ),
+                            );
+              
+                            if (widget.stockType != null) {
+                              context.read<StockTypeBloc>().add(
+                                    UpdateStockType(
+                                      widget.stockType!,
+                                      name.text,
+                                      icon: iconController.text.isEmpty ? null : iconController.text,
+                                      unit: unitController.text.isEmpty ? null : unitController.text,
+                                    ),
+                                  );
+                            } else {
+                              context.read<StockTypeBloc>().add(
+                                    AddStockType(
+                                      name.text,
+                                      icon: iconController.text.isEmpty ? null : iconController.text,
+                                      unit: unitController.text.isEmpty ? null : unitController.text,
+                                    ),
+                                  );
+                            }
+              
+                            Navigator.pop(context);
+              
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext dialogContext) => AppDialog(
+                                type: "success",
+                                title: "Pengajuan Berhasil",
+                                message: "Kembali ke dashboard...",
+                                onOkPress: () {},
+                              ),
+                            );
+                            Future.delayed(const Duration(seconds: 1), () {
+                              Navigator.pop(context);
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
