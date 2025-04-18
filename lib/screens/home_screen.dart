@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
                     letterSpacing: 0.5,
-                    color: Colors.black, // Replace with your theme color
+                    color: Colors.black, 
                   ),
                 ),
               ),

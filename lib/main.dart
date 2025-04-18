@@ -4,7 +4,7 @@ import 'package:the_djenggot/routing/app_router.dart';
 import 'package:the_djenggot/bloc/providers.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
-// import 'package:the_djenggot/routing/app_routing.dart';
+import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_bloc.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 
 void main() async {
@@ -21,9 +21,11 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final menuTypeBloc = context.read<MenuTypeBloc>();
     final stockTypeBloc = context.read<StockTypeBloc>();
+    final transactionTypeBloc = context.read<TransactionTypeBloc>();
     final appRouter = AppRouter(
       menuTypeBloc: menuTypeBloc,
       stockTypeBloc: stockTypeBloc,
+      transactionTypeBloc: transactionTypeBloc,
     );
 
     return MaterialApp.router(

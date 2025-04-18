@@ -181,6 +181,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             );
                             Future.delayed(const Duration(seconds: 1), () {
                               Navigator.pop(context);
+                              Navigator.pop(context);
                             });
                           }
                         },
