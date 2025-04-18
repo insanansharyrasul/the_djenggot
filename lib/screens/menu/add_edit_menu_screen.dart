@@ -19,6 +19,7 @@ import 'package:the_djenggot/widgets/currency_input_formatter.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEditMenuScreen extends StatefulWidget {
   final Menu? menu;
@@ -299,62 +300,140 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                           // If menu is being edited, try to find its menu type in the list
                           if (widget.menu != null && selectedMenuType == null) {
                             for (var type in menuTypes) {
-                              if (type.idMenuType == widget.menu!.idMenuType) {
+                              if (type.idMenuType == widget.menu!.idMenuType.idMenuType) {
                                 selectedMenuType = type;
                                 break;
                               }
                             }
                           }
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: DropdownButtonFormField<MenuType>(
-                              value: selectedMenuType,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Iconsax.category),
-                                border: InputBorder.none,
-                                // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                hintText: "Pilih Kategori Menu",
-                                hintStyle: TextStyle(color: Colors.grey.shade500),
-                              ),
-                              validator: (value) {
-                                if (value == null) {
-                                  return "Kategori menu harus dipilih";
-                                }
-                                return null;
-                              },
-                              items: menuTypes.map((type) {
-                                return DropdownMenuItem<MenuType>(
-                                  value: type,
-                                  child: Row(
+                          // Check if menu types list is empty
+                          if (menuTypes.isEmpty) {
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.shade50,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.amber.shade200),
+                                  ),
+                                  child: Column(
                                     children: [
-                                      if (type.menuTypeIcon != null &&
-                                          type.menuTypeIcon!.isNotEmpty)
-                                        Icon(
-                                          getIconFromString(type.menuTypeIcon!),
-                                          color: AppTheme.primary,
-                                          size: 18,
+                                      const Icon(
+                                        Iconsax.info_circle,
+                                        color: Colors.amber,
+                                        size: 32,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "Belum ada kategori menu",
+                                        style: AppTheme.textField.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.amber.shade800,
                                         ),
-                                      if (type.menuTypeIcon != null &&
-                                          type.menuTypeIcon!.isNotEmpty)
-                                        const SizedBox(width: 12),
-                                      Text(type.menuTypeName),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Silahkan buat kategori menu terlebih dahulu",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.amber.shade800),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ElevatedButton.icon(
+                                        icon: const Icon(Iconsax.add_circle),
+                                        label: const Text("Buat Kategori Menu"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppTheme.primary,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          context.push('/add-edit-menu-type').then((_) {
+                                            // Reload menu types when returning from add screen
+                                            context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                                          });
+                                        },
+                                      ),
                                     ],
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedMenuType = newValue;
-                                });
-                              },
-                              dropdownColor: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              icon: const Icon(Iconsax.arrow_down_1),
-                            ),
+                                ),
+                              ],
+                            );
+                          }
+
+                          return Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey.shade300),
+                                ),
+                                child: DropdownButtonFormField<MenuType>(
+                                  value: selectedMenuType,
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Iconsax.category),
+                                    border: InputBorder.none,
+                                    // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                    hintText: "Pilih Kategori Menu",
+                                    hintStyle: TextStyle(color: Colors.grey.shade500),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Kategori menu harus dipilih";
+                                    }
+                                    return null;
+                                  },
+                                  items: menuTypes.map((type) {
+                                    return DropdownMenuItem<MenuType>(
+                                      value: type,
+                                      child: Row(
+                                        children: [
+                                          if (type.menuTypeIcon != null &&
+                                              type.menuTypeIcon!.isNotEmpty)
+                                            Icon(
+                                              getIconFromString(type.menuTypeIcon!),
+                                              color: AppTheme.primary,
+                                              size: 18,
+                                            ),
+                                          if (type.menuTypeIcon != null &&
+                                              type.menuTypeIcon!.isNotEmpty)
+                                            const SizedBox(width: 12),
+                                          Text(type.menuTypeName),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedMenuType = newValue;
+                                    });
+                                  },
+                                  dropdownColor: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  icon: const Icon(Iconsax.arrow_down_1),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton.icon(
+                                  icon: const Icon(Iconsax.add, size: 16),
+                                  label: const Text("Tambah Kategori Baru"),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppTheme.primary,
+                                  ),
+                                  onPressed: () {
+                                    context.push('/add-edit-menu-type').then((_) {
+                                      // Reload menu types when returning from add screen
+                                      context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           );
                         } else if (state is MenuTypeError) {
                           return Center(

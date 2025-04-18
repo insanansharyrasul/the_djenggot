@@ -75,15 +75,22 @@ class MenuRepository {
   }
 
   Future<int> updateMenu(Map<String, dynamic> model, String id) async {
-    return await _databaseHelper.updateQuery(
+    final db = await _databaseHelper.db;
+    return await db.update(
       'MENU',
       model,
-      id,
+      where: 'id_menu = ?',
+      whereArgs: [id],
     );
   }
 
   Future<int> deleteMenu(String id) async {
-    return await _databaseHelper.deleteQuery('MENU', id);
+    final db = await _databaseHelper.db;
+    return await db.delete(
+      'MENU',
+      where: 'id_menu = ?',
+      whereArgs: [id],
+    );
   }
 
   Future<List<Map<String, dynamic>>> getMenusWithTypes() async {

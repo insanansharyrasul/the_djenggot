@@ -8,6 +8,8 @@ abstract class StockTypeState extends Equatable {
   List<Object?> get props => [];
 }
 
+class StockTypeInitial extends StockTypeState {}
+
 class StockTypeLoading extends StockTypeState {}
 
 class StockTypeLoaded extends StockTypeState {

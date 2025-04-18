@@ -6,6 +6,7 @@ import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/icon_picker.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -120,16 +121,35 @@ class _StockScreenState extends State<StockScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: sortedStocks.length,
                   itemBuilder: (context, index) {
+                    final stockUnit = sortedStocks[index].idStockType.stockUnit;
                     return ListTile(
+                      leading: Icon(
+                        getIconFromString(sortedStocks[index].idStockType.stockTypeIcon),
+                        color: AppTheme.primary,
+                      ),
                       title: Text(
-                        // state.stocks[index].name,
                         sortedStocks[index].stockName,
                         style: AppTheme.textField,
                       ),
-                      subtitle: Text(
-                        // "Kuantitas: ${state.stocks[index].quantity}",
-                        "Kuantitas: ${sortedStocks[index].stockQuantity}",
-                        style: AppTheme.subtitle,
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Kuantitas: ${sortedStocks[index].stockQuantity}${stockUnit != null && stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                            style: AppTheme.subtitle,
+                          ),
+                          if (sortedStocks[index].stockThreshold != null &&
+                              sortedStocks[index].stockThreshold! > 0)
+                            Text(
+                              "Batas minimum: ${sortedStocks[index].stockThreshold}${stockUnit != null && stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                              style: AppTheme.subtitle.copyWith(
+                                color: sortedStocks[index].stockQuantity <=
+                                        sortedStocks[index].stockThreshold!
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
+                            ),
+                        ],
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
