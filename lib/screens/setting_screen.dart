@@ -149,11 +149,13 @@ class _SettingScreenState extends State<SettingScreen> {
         // Navigate to the menu type management screen
         // This pushes to the add-edit screen with null, which means adding a new type
         // You might want to create a dedicated list screen for types instead
-        context.push('/add-edit-menu-type');
+        // context.push('/add-edit-menu-type');
+        context.push('/menu-types');
         break;
       case 'stock':
         // Navigate to the stock type management screen
-        context.push('/add-edit-stock-type');
+        // context.push('/add-edit-stock-type');
+        context.push('/stock-types');
         break;
       case 'transaction':
         // This would need a new route for transaction types

@@ -7,6 +7,7 @@ import 'package:the_djenggot/screens/menu/menu_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
+import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/floating_button.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -24,9 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const HomeScreen(),
     const StockScreen(),
     const MenuScreen(),
-    const Center(
-      child: Text("Laporan"),
-    ),
+    const EmptyState(title: "Fitur Belum ada", subtitle: "Mohon tunggu ya :D"),
     const SettingScreen()
   ];
 

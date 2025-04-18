@@ -22,6 +22,8 @@ class AppTheme {
   static const Color spacer = Color(0xFFF2F2F2);
   static const String fontName = 'Lexend';
 
+  static const Color danger = Color(0xFFEB5757);
+
   static const TextStyle display1 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,

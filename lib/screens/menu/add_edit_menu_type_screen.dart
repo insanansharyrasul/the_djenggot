@@ -51,14 +51,14 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
         ),
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         children: [
           Form(
             key: _formKey,
             child: Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(16),
               ),
               color: AppTheme.background,
               child: Padding(
@@ -70,7 +70,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                     InputField(
                       controller: name,
                       hintText: "Tipe Menu",
-                      prefixIcon: const Icon(Iconsax.menu),
+                      prefixIcon: const Icon(Iconsax.category),
                       keyboardType: TextInputType.text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -85,7 +85,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
+                        Expanded(
                           child: SizedBox(
                             width: double.infinity,
                             height: 50,
@@ -109,16 +109,15 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
                         Flexible(
                           child: Icon(
                             iconController.text.isEmpty
-                                ? Iconsax.menu
+                                ? Iconsax.category
                                 : getIconFromString(iconController.text),
-                            size: 40,
                             color: AppTheme.primary,
+                            size: 50,
                           ),
-                        )
+                        ),
                       ],
                     ),
                     SizedBox(height: 16),
@@ -129,7 +128,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                       height: 50,
                       child: ElevatedButton.icon(
                         label: Text(
-                          "Simpan Menu",
+                          "Simpan Tipe Menu",
                           style: AppTheme.buttonText.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -167,8 +166,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                                     ),
                                   );
                             }
-                            // Add new menu
-                            // Simpan data ke database
+
                             Navigator.pop(context);
 
                             showDialog(
@@ -182,16 +180,10 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                               ),
                             );
                             Future.delayed(const Duration(seconds: 1), () {
-                              // dismiss loading dialog
                               Navigator.pop(context);
-                              // back to dashboard
-                              // Navigator.of(context).pop(true);
                             });
-                            // Handle save action
                           }
                         },
-                        // child: Text(widget.menuType == null ? "Save" : "Update",
-                        //     style: AppTheme.buttonText),
                       ),
                     ),
                   ],
