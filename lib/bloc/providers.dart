@@ -41,5 +41,10 @@ List<BlocProvider> getTypeProviders() {
         TransactionTypeRepository(),
       )..add(LoadTransactionTypes()),
     ),
+    BlocProvider<TransactionTypeBloc>(
+      create: (context) => TransactionTypeBloc(
+        TransactionTypeRepository(),
+      )..add(LoadTransactionTypes()),
+    ),
   ];
 }

@@ -26,7 +26,10 @@ class AppDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (type == "success") {
-      return SuccessDialog(title: title, message: message);
+      return SuccessDialog(
+        title: title,
+        message: message,
+      );
     } else if (type == "error") {
       return ErrorDialog(
         title: title,

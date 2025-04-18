@@ -2,35 +2,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
-import 'package:the_djenggot/bloc/type/stock_type/stock_type_event.dart';
-import 'package:the_djenggot/models/type/stock_type.dart';
+import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_bloc.dart';
+import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_event.dart';
+import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 
-class AddEditStockTypeScreen extends StatefulWidget {
-  final StockType? stockType;
-  const AddEditStockTypeScreen({super.key, this.stockType});
+class AddEditTransactionTypeScreen extends StatefulWidget {
+  final TransactionType? transactionType;
+  const AddEditTransactionTypeScreen({super.key, this.transactionType});
 
   @override
-  State<AddEditStockTypeScreen> createState() => _AddEditStockTypeScreenState();
+  State<AddEditTransactionTypeScreen> createState() => _AddEditTransactionTypeScreenState();
 }
 
-class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
+class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
-  final TextEditingController unitController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    if (widget.stockType != null) {
-      name.text = widget.stockType!.stockTypeName;
-      iconController.text = widget.stockType!.stockTypeIcon ?? '';
-      unitController.text = widget.stockType!.stockUnit ?? '';
+    if (widget.transactionType != null) {
+      name.text = widget.transactionType!.transactionTypeName;
+      iconController.text = widget.transactionType!.transactionTypeIcon ?? '';
     }
   }
 
@@ -42,7 +40,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
         backgroundColor: AppTheme.background,
         centerTitle: true,
         title: Text(
-          widget.stockType == null ? "Tambah Tipe Stok" : "Update Tipe Stok",
+          widget.transactionType == null ? "Tambah Tipe Transaksi" : "Update Tipe Transaksi",
           style: AppTheme.appBarTitle,
         ),
         leading: IconButton(
@@ -68,26 +66,18 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Nama Tipe Stok", style: AppTheme.textField),
+                    Text("Nama Tipe Transaksi", style: AppTheme.textField),
                     InputField(
                       controller: name,
-                      hintText: "Tipe Stok",
-                      prefixIcon: const Icon(Iconsax.box),
+                      hintText: "Tipe Transaksi",
+                      prefixIcon: const Icon(Iconsax.receipt),
                       keyboardType: TextInputType.text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Nama untuk tipe stok tidak boleh kosong";
+                          return "Nama untuk tipe transaksi tidak boleh kosong";
                         }
                         return null;
                       },
-                    ),
-                    SizedBox(height: 16),
-                    Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
-                    InputField(
-                      controller: unitController,
-                      hintText: "Satuan Stok",
-                      prefixIcon: const Icon(Iconsax.ruler),
-                      keyboardType: TextInputType.text,
                     ),
                     SizedBox(height: 16),
                     Text("Icon (Optional)", style: AppTheme.textField),
@@ -122,7 +112,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         Flexible(
                           child: Icon(
                             iconController.text.isEmpty
-                                ? Icons.add_box
+                                ? Iconsax.receipt
                                 : getIconFromString(iconController.text),
                             color: AppTheme.primary,
                             size: 50,
@@ -138,7 +128,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                       height: 50,
                       child: ElevatedButton.icon(
                         label: Text(
-                          "Simpan Tipe Stok",
+                          "Simpan Tipe Transaksi",
                           style: AppTheme.buttonText.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -157,28 +147,28 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                                 onOkPress: () {},
                               ),
                             );
-              
-                            if (widget.stockType != null) {
-                              context.read<StockTypeBloc>().add(
-                                    UpdateStockType(
-                                      widget.stockType!,
+
+                            if (widget.transactionType != null) {
+                              context.read<TransactionTypeBloc>().add(
+                                    UpdateTransactionType(
+                                      widget.transactionType!,
                                       name.text,
-                                      icon: iconController.text.isEmpty ? null : iconController.text,
-                                      unit: unitController.text.isEmpty ? null : unitController.text,
+                                      icon:
+                                          iconController.text.isEmpty ? null : iconController.text,
                                     ),
                                   );
                             } else {
-                              context.read<StockTypeBloc>().add(
-                                    AddStockType(
+                              context.read<TransactionTypeBloc>().add(
+                                    AddTransactionType(
                                       name.text,
-                                      icon: iconController.text.isEmpty ? null : iconController.text,
-                                      unit: unitController.text.isEmpty ? null : unitController.text,
+                                      icon:
+                                          iconController.text.isEmpty ? null : iconController.text,
                                     ),
                                   );
                             }
-              
+
                             Navigator.pop(context);
-              
+
                             showDialog(
                               barrierDismissible: false,
                               context: context,

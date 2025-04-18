@@ -14,7 +14,7 @@ class TransactionType extends Equatable {
     return TransactionType(
       idTransactionType: map['id_transaction_type'],
       transactionTypeName: map['transaction_type_name'],
-      transactionTypeIcon: map['stock_icon'],
+      transactionTypeIcon: map['transaction_type_icon'],
     );
   }
 
@@ -24,6 +24,18 @@ class TransactionType extends Equatable {
       'transaction_type_name': transactionTypeName,
       'transaction_type_icon': transactionTypeIcon,
     };
+  }
+
+  TransactionType copyWith({
+    String? idTransactionType,
+    String? transactionTypeName,
+    String? transactionTypeIcon,
+  }) {
+    return TransactionType(
+      idTransactionType: idTransactionType ?? this.idTransactionType,
+      transactionTypeName: transactionTypeName ?? this.transactionTypeName,
+      transactionTypeIcon: transactionTypeIcon ?? this.transactionTypeIcon,
+    );
   }
 
   @override
