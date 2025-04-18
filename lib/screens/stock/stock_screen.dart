@@ -6,6 +6,7 @@ import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/icon_picker.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -122,6 +123,10 @@ class _StockScreenState extends State<StockScreen> {
                   itemBuilder: (context, index) {
                     final stockUnit = sortedStocks[index].idStockType.stockUnit;
                     return ListTile(
+                      leading: Icon(
+                        getIconFromString(sortedStocks[index].idStockType.stockTypeIcon),
+                        color: AppTheme.primary,
+                      ),
                       title: Text(
                         sortedStocks[index].stockName,
                         style: AppTheme.textField,

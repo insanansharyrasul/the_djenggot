@@ -259,10 +259,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                           ),
                                         ),
                                         onPressed: () {
-                                          Navigator.pushNamed(
-                                            context, 
-                                            '/stock-type/add'
-                                          ).then((_) {
+                                          context.push('/add-edit-stock-type').then((_) {
                                             // Reload stock types when returning from add screen
                                             context.read<StockTypeBloc>().add(LoadStockTypes());
                                           });
@@ -331,11 +328,11 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                     foregroundColor: AppTheme.primary,
                                   ),
                                   onPressed: () {
-                                    context.push(
-                                      // context, 
+                                    context
+                                        .push(
                                       '/add-edit-stock-type',
-                                    ).then((_) {
-                                      // Reload stock types when returning from add screen
+                                    )
+                                        .then((_) {
                                       context.read<StockTypeBloc>().add(LoadStockTypes());
                                     });
                                   },
@@ -409,7 +406,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       widget.stock!,
                                       stockName.text,
                                       stockQuantity.text,
-                                      selectedStockType?.idStockType ?? '',
+                                      selectedStockType!.idStockType,
                                       threshold,
                                     ),
                                   );
@@ -418,7 +415,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                     AddStock(
                                       stockName: stockName.text,
                                       stockQuantity: int.parse(stockQuantity.text),
-                                      stockType: selectedStockType!.idStockType,
+                                      stockType: selectedStockType,
                                       threshold: threshold,
                                     ),
                                   );

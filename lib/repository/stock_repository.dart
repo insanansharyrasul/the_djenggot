@@ -1,5 +1,6 @@
 import 'package:the_djenggot/database/database.dart';
 import 'package:the_djenggot/models/stock.dart';
+import 'package:the_djenggot/repository/type/stock_type_repository.dart';
 
 class StockRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
@@ -77,8 +78,24 @@ class StockRepository {
   }
 
   Future<List<Stock>> getAllStocks() async {
-    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('STOCK', '', []);
-    return maps.map((map) => Stock.fromMap(map)).toList();
+    // final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('STOCK', '', []);
+    // return maps.map((map) => Stock.fromMap(map)).toList();
+    final db = await _databaseHelper.db;
+    final stocksData = await db.query('STOCK');
+
+    return await Future.wait(stocksData.map((stockData) async {
+      final stockTypeId = stockData['id_stock_type'];
+      final stockType = await StockTypeRepository().getStockTypeById(stockTypeId);
+
+      return Stock(
+        idStock: stockData['id_stock'] as String,
+        stockName: stockData['stock_name'] as String,
+        stockQuantity: stockData['stock_quantity'] as int,
+        stockThreshold: stockData['stock_threshold'] as int?,
+        idStockType: stockType,
+      );
+
+    }));
   }
 
   Future<List<Stock>> searchStocks(String query) async {

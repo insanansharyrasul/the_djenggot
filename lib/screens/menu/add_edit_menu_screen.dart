@@ -426,7 +426,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                     foregroundColor: AppTheme.primary,
                                   ),
                                   onPressed: () {
-                                    Navigator.pushNamed(context, '/menu-type/add').then((_) {
+                                    context.push('/add-edit-menu-type').then((_) {
                                       // Reload menu types when returning from add screen
                                       context.read<MenuTypeBloc>().add(LoadMenuTypes());
                                     });

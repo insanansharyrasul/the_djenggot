@@ -7,7 +7,7 @@ class LoadStock extends StockEvent {}
 class AddStock extends StockEvent {
   final String stockName;
   final int stockQuantity;
-  final String stockType;
+  final StockType? stockType;
   final int threshold;
   AddStock({
     required this.stockName,
