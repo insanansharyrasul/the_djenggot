@@ -300,7 +300,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                           // If menu is being edited, try to find its menu type in the list
                           if (widget.menu != null && selectedMenuType == null) {
                             for (var type in menuTypes) {
-                              if (type.idMenuType == widget.menu!.idMenuType) {
+                              if (type.idMenuType == widget.menu!.idMenuType.idMenuType) {
                                 selectedMenuType = type;
                                 break;
                               }

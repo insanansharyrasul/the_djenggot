@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
+import 'package:the_djenggot/screens/setting_screen.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_screen.dart';
@@ -24,8 +24,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const HomeScreen(),
     const StockScreen(),
     const MenuScreen(),
-    // const AddEditMenuTypeScreen()
-    AddEditStockTypeScreen()
+    const Center(
+      child: Text("Laporan"),
+    ),
+    const SettingScreen()
   ];
 
   late final List<Widget> floatingButtonList;
@@ -121,26 +123,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
             pageIndex,
             "Laporan",
           ),
-          // bottomNavItem(
-          //   () {
-          //     pageController.jumpToPage(4);
-          //     setState(() => pageIndex = 4);
-          //   },
-          //   Iconsax.setting,
-          //   4,
-          //   pageIndex,
-          //   "Settings",
-          // ),
           bottomNavItem(
             () {
-              pageController.jumpToPage(3);
-              setState(() => pageIndex = 3);
+              pageController.jumpToPage(4);
+              setState(() => pageIndex = 4);
             },
-            Iconsax.bluetooth_circle,
-            3,
+            Iconsax.setting,
+            4,
             pageIndex,
-            "Test",
-          )
+            "Settings",
+          ),
+          // bottomNavItem(
+          //   () {
+          //     pageController.jumpToPage(3);
+          //     setState(() => pageIndex = 3);
+          //   },
+          //   Iconsax.bluetooth_circle,
+          //   3,
+          //   pageIndex,
+          //   "Test",
+          // )
         ],
       ),
     );
