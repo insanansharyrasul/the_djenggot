@@ -361,7 +361,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                         height: 40,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8),
-                                          color: AppTheme.primary.withOpacity(0.1),
+                                          color: AppTheme.primary.withValues(alpha: 0.1),
                                         ),
                                         child: Center(
                                           child: item.menuImage != null
@@ -411,11 +411,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                                 } else {
                                                   cartItems.add(CartItem(menu: item, quantity: 1));
                                                 }
-                                                // if (item. > 1) {
-                                                //   item.quantity--;
-                                                // } else {
-                                                //   cartItems.removeAt(index);
-                                                // }
                                                 calculateTotal();
                                               });
                                             },
@@ -437,7 +432,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                                 } else {
                                                   cartItems.add(CartItem(menu: item, quantity: 1));
                                                 }
-                                                // item.quantity++;
                                                 calculateTotal();
                                               });
                                             },
@@ -583,7 +577,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       onTap: _showImageSourceBottomSheet,
                       child: Container(
                         width: double.infinity,
-                        height: 150,
+                        height: 500,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(8),
