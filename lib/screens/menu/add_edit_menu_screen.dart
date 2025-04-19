@@ -269,7 +269,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     InputField(
                       controller: price,
                       hintText: "Harga Menu",
-                      keyboardType: TextInputType.numberWithOptions(),
+                      keyboardType: const TextInputType.numberWithOptions(),
                       prefixIcon: const Icon(Iconsax.money),
                       enableCommaSeparator: true,
                       validator: (value) {

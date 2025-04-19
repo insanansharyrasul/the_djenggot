@@ -17,7 +17,7 @@ class TileView extends StatelessWidget {
             child: Text(
               titleTxt,
               textAlign: TextAlign.left,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: AppTheme.fontName,
                 fontWeight: FontWeight.w500,
                 fontSize: 18,

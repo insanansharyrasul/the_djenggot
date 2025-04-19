@@ -21,7 +21,7 @@ Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int
         ),
         child: Column(
           children: [
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Icon(
               icon,
               color: pageIndex == currentPageIndex

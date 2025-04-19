@@ -17,7 +17,7 @@ class _SettingScreenState extends State<SettingScreen> {
       padding: const EdgeInsets.all(16.0),
       child: ListView(
         children: [
-          Text(
+          const Text(
             "Pengaturan",
             style: TextStyle(
               fontFamily: AppTheme.fontName,

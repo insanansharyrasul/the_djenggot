@@ -16,6 +16,9 @@ import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
+import 'package:the_djenggot/screens/transaction/add_transaction_screen.dart';
+import 'package:the_djenggot/screens/transaction/transaction_detail_screen.dart';
+import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/screens/type/menu_type_list_screen.dart';
 import 'package:the_djenggot/screens/type/stock_type_list_screen.dart';
 import 'package:the_djenggot/screens/type/transaction_type_list_screen.dart';
@@ -41,7 +44,7 @@ class AppRouter {
           GoRoute(
             path: '/',
             builder: (context, state) {
-              return DashboardScreen();
+              return const DashboardScreen();
             },
           ),
           GoRoute(
@@ -91,7 +94,7 @@ class AppRouter {
               if (menuTypeState is MenuTypeLoaded) {
                 final menuType = menuTypeState.menuTypes.firstWhere(
                   (type) => type.idMenuType == id,
-                  orElse: () => MenuType(idMenuType: '', menuTypeName: ''),
+                  orElse: () => const MenuType(idMenuType: '', menuTypeName: ''),
                 );
 
                 return AddEditMenuTypeScreen(menuType: menuType);
@@ -120,7 +123,7 @@ class AppRouter {
               if (stockTypeState is StockTypeLoaded) {
                 final stockType = stockTypeState.stockTypes.firstWhere(
                   (type) => type.idStockType == id,
-                  orElse: () => StockType(idStockType: '', stockTypeName: ''),
+                  orElse: () => const StockType(idStockType: '', stockTypeName: ''),
                 );
 
                 return AddEditStockTypeScreen(stockType: stockType);
@@ -150,13 +153,57 @@ class AppRouter {
               if (transactionTypeState is TransactionTypeLoaded) {
                 final transactionType = transactionTypeState.transactionTypes.firstWhere(
                   (type) => type.idTransactionType == id,
-                  orElse: () => TransactionType(idTransactionType: '', transactionTypeName: ''),
+                  orElse: () => const TransactionType(idTransactionType: '', transactionTypeName: ''),
                 );
 
                 return AddEditTransactionTypeScreen(transactionType: transactionType);
               }
 
               return const Center(child: CircularProgressIndicator());
+            },
+          ),
+
+          // Transaction Type routes
+          // GoRoute(
+          //   path: '/transaction-types',
+          //   builder: (BuildContext context, GoRouterState state) {
+          //     return const TransactionTypeListScreen();
+          //   },
+          // ),
+          // GoRoute(
+          //   path: '/add-transaction-type',
+          //   builder: (BuildContext context, GoRouterState state) {
+          //     return const AddEditTransactionTypeScreen();
+          //   },
+          // ),
+          // GoRoute(
+          //   path: '/edit-transaction-type/:id',
+          //   builder: (BuildContext context, GoRouterState state) {
+          //     final transactionType = state.extra as TransactionType;
+          //     return AddEditTransactionTypeScreen(
+          //       transactionType: transactionType,
+          //     );
+          //   },
+          // ),
+
+          // Transaction routes
+          GoRoute(
+            path: '/transactions',
+            builder: (BuildContext context, GoRouterState state) {
+              return const TransactionListScreen();
+            },
+          ),
+          GoRoute(
+            path: '/add-transaction',
+            builder: (BuildContext context, GoRouterState state) {
+              return const AddTransactionScreen();
+            },
+          ),
+          GoRoute(
+            path: '/transaction-detail/:id',
+            builder: (BuildContext context, GoRouterState state) {
+              final id = state.pathParameters['id']!;
+              return TransactionDetailScreen(id: id);
             },
           ),
         ],

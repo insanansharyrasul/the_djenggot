@@ -11,15 +11,15 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       children: [
         Padding(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               GestureDetector(
                 onTap: () {},
-                child: Icon(Iconsax.menu),
+                child: const Icon(Iconsax.menu),
               ),
-              SizedBox(width: 8),
-              Expanded(
+              const SizedBox(width: 8),
+              const Expanded(
                 child: Text(
                   "Warung Djenggot",
                   style: TextStyle(
@@ -33,12 +33,12 @@ class HomeScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {},
-                child: Icon(Iconsax.notification4),
+                child: const Icon(Iconsax.notification4),
               ),
             ],
           ),
         ),
-        Row(
+        const Row(
           children: [
             Expanded(child: SalesToday()),
           ],

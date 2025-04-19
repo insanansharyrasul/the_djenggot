@@ -21,7 +21,7 @@ class LoadingDialog extends StatelessWidget {
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 48,
                 width: 48,
                 child: CircularProgressIndicator(

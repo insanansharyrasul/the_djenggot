@@ -126,15 +126,15 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         if (selectedStockType?.stockUnit != null &&
                             selectedStockType!.stockUnit!.isNotEmpty)
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            margin: EdgeInsets.only(left: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            margin: const EdgeInsets.only(left: 8),
                             decoration: BoxDecoration(
                               color: AppTheme.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               selectedStockType!.stockUnit!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primary,
                               ),
@@ -171,15 +171,15 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         if (selectedStockType?.stockUnit != null &&
                             selectedStockType!.stockUnit!.isNotEmpty)
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            margin: EdgeInsets.only(left: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            margin: const EdgeInsets.only(left: 8),
                             decoration: BoxDecoration(
                               color: AppTheme.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               selectedStockType!.stockUnit!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primary,
                               ),

@@ -25,7 +25,7 @@ class _MenuScreenState extends State<MenuScreen> {
         },
         child: ListView(
           children: [
-            Text("Menu", style: AppTheme.appBarTitle),
+            const Text("Menu", style: AppTheme.appBarTitle),
             BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
               if (state is MenuLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -65,7 +65,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               ),
                             Text(
                               menu.menuName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: AppTheme.fontName,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,

@@ -33,7 +33,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Daftar Tipe Transaksi",
           style: AppTheme.appBarTitle,
         ),
@@ -66,7 +66,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
             final transactionTypes = state.transactionTypes;
 
             if (transactionTypes.isEmpty) {
-              return EmptyState(
+              return const EmptyState(
                 icon: Iconsax.receipt,
                 title: "Belum ada tipe transaksi",
                 subtitle:
@@ -174,7 +174,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
             ),
           );
 
-          Future.delayed(Duration(milliseconds: 500), () {
+          Future.delayed(const Duration(milliseconds: 500), () {
             Navigator.pop(context);
           });
         },

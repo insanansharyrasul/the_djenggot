@@ -33,7 +33,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Daftar Tipe Stok",
           style: AppTheme.appBarTitle,
         ),
@@ -66,7 +66,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
             final stockTypes = state.stockTypes;
             
             if (stockTypes.isEmpty) {
-              return EmptyState(
+              return const EmptyState(
                 icon: Iconsax.box,
                 title: "Belum ada tipe stok",
                 subtitle: "Tambahkan tipe stok baru dengan menekan tombol '+' di pojok kanan atas.",
@@ -176,7 +176,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
             ),
           );
 
-          Future.delayed(Duration(milliseconds: 500), () {
+          Future.delayed(const Duration(milliseconds: 500), () {
             Navigator.pop(context);
           });
         },
