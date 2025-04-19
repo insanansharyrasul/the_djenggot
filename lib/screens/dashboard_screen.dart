@@ -5,9 +5,9 @@ import 'package:the_djenggot/screens/setting_screen.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_screen.dart';
+import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
-import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/floating_button.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -25,7 +25,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const HomeScreen(),
     const StockScreen(),
     const MenuScreen(),
-    const EmptyState(title: "Fitur Belum ada", subtitle: "Mohon tunggu ya :D"),
+    // const EmptyState(title: "Fitur Belum ada", subtitle: "Mohon tunggu ya :D"),
+    const TransactionListScreen(),
     const SettingScreen()
   ];
 
@@ -35,7 +36,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     floatingButtonList = [
-      floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
+      floatingButton(icon: Icons.point_of_sale, onPressed: () {
+        context.push('/add-transaction');
+      }),
       floatingButton(
         icon: Iconsax.add,
         onPressed: () {
@@ -46,6 +49,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         icon: Iconsax.add,
         onPressed: () {
           context.push('/add-edit-menu');
+        },
+      ),
+      floatingButton(
+        icon: Iconsax.add,
+        onPressed: () {
+          context.push('/add-transaction');
         },
       ),
     ];

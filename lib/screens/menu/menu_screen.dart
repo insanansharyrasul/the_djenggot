@@ -25,7 +25,7 @@ class _MenuScreenState extends State<MenuScreen> {
         },
         child: ListView(
           children: [
-            Text("Menu", style: AppTheme.appBarTitle),
+            const Text("Menu", style: AppTheme.appBarTitle),
             BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
               if (state is MenuLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -33,7 +33,6 @@ class _MenuScreenState extends State<MenuScreen> {
                 return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 1,
                     mainAxisSpacing: 8,
                     crossAxisSpacing: 8,
                   ),
@@ -65,7 +64,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               ),
                             Text(
                               menu.menuName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: AppTheme.fontName,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,

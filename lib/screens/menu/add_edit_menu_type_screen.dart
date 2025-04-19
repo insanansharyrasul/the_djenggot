@@ -66,7 +66,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Nama Tipe Menu", style: AppTheme.textField),
+                    const Text("Nama Tipe Menu", style: AppTheme.textField),
                     InputField(
                       controller: name,
                       hintText: "Tipe Menu",
@@ -79,9 +79,9 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
-                    Text("Icon (Optional)", style: AppTheme.textField),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
+                    const Text("Icon (Optional)", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -90,7 +90,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton.icon(
-                              label: Text(
+                              label: const Text(
                                 "Pilih Icon",
                                 style: AppTheme.buttonTextBold,
                               ),
@@ -120,9 +120,9 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
-                    Divider(),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       height: 50,

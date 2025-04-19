@@ -208,7 +208,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                         color: Colors.grey.shade100,
                                         border: Border.all(
                                           color: Colors.grey.shade400,
-                                          width: 1,
                                           // style: BorderStyle.dashed,
                                         ),
                                       ),
@@ -269,7 +268,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     InputField(
                       controller: price,
                       hintText: "Harga Menu",
-                      keyboardType: TextInputType.numberWithOptions(),
+                      keyboardType: const TextInputType.numberWithOptions(),
                       prefixIcon: const Icon(Iconsax.money),
                       enableCommaSeparator: true,
                       validator: (value) {

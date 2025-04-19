@@ -10,10 +10,9 @@ class SalesToday extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.white,
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
         border: Border.all(
           color: AppTheme.grey.withValues(alpha: 0.2),
-          width: 1,
         ),
       ),
       child: Padding(
@@ -23,7 +22,7 @@ class SalesToday extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(
+                const Expanded(
                   child: Text(
                     'Pemasukan',
                     style: TextStyle(
@@ -37,11 +36,11 @@ class SalesToday extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {},
-                  child: Icon(Iconsax.more),
+                  child: const Icon(Iconsax.more),
                 ),
               ],
             ),
-            Text(
+            const Text(
               "100.000.000",
               style: TextStyle(
                 fontFamily: AppTheme.fontName,

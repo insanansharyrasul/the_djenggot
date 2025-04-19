@@ -68,7 +68,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Nama Tipe Stok", style: AppTheme.textField),
+                    const Text("Nama Tipe Stok", style: AppTheme.textField),
                     InputField(
                       controller: name,
                       hintText: "Tipe Stok",
@@ -81,17 +81,17 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
-                    Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
+                    const SizedBox(height: 16),
+                    const Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
                     InputField(
                       controller: unitController,
                       hintText: "Satuan Stok",
                       prefixIcon: const Icon(Iconsax.ruler),
                       keyboardType: TextInputType.text,
                     ),
-                    SizedBox(height: 16),
-                    Text("Icon (Optional)", style: AppTheme.textField),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
+                    const Text("Icon (Optional)", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -100,7 +100,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton.icon(
-                              label: Text(
+                              label: const Text(
                                 "Pilih Icon",
                                 style: AppTheme.buttonTextBold,
                               ),
@@ -130,9 +130,9 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
-                    Divider(),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       height: 50,

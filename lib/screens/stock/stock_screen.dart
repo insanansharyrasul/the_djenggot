@@ -36,7 +36,7 @@ class _StockScreenState extends State<StockScreen> {
         },
         child: ListView(
           children: [
-            Text(
+            const Text(
               "Stok",
               style: TextStyle(
                 fontFamily: AppTheme.fontName,
@@ -46,7 +46,7 @@ class _StockScreenState extends State<StockScreen> {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -68,14 +68,14 @@ class _StockScreenState extends State<StockScreen> {
                   },
                 )),
                 PopupMenuButton(
-                  icon: Icon(Iconsax.sort),
+                  icon: const Icon(Iconsax.sort),
                   color: AppTheme.white,
                   itemBuilder: (context) => [
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: "name",
                       child: Text("Nama Stok", style: AppTheme.textField),
                     ),
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: "quantity",
                       child: Text("Kuantitas", style: AppTheme.textField),
                     ),
@@ -94,7 +94,7 @@ class _StockScreenState extends State<StockScreen> {
                     });
                   },
                   child:
-                      descending == "asc" ? Icon(Icons.arrow_upward) : Icon(Icons.arrow_downward),
+                      descending == "asc" ? const Icon(Icons.arrow_upward) : const Icon(Icons.arrow_downward),
                 )
               ],
             ),

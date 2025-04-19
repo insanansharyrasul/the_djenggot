@@ -21,12 +21,11 @@ class EmptyState extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               icon,
               size: 80,
-              color: AppTheme.primary.withOpacity(0.5),
+              color: AppTheme.primary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
@@ -41,7 +40,7 @@ class EmptyState extends StatelessWidget {
             Text(
               subtitle,
               style: AppTheme.body1.copyWith(
-                color: AppTheme.darkText.withOpacity(0.6),
+                color: AppTheme.darkText.withValues(alpha: 0.6),
               ),
               textAlign: TextAlign.center,
             ),

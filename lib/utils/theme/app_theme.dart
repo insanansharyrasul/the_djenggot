@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
   static const Color primary = Color(0xFF00B6F0);
+  static const Color secondary = Color(0xFFFF6F00);
 
   static const Color nearlyWhite = Color(0xFFFAFAFA);
   static const Color white = Color(0xFFFFFFFF);
@@ -106,7 +107,7 @@ class AppTheme {
   );
 
   static ButtonStyle buttonStyle = ButtonStyle(
-    backgroundColor: WidgetStatePropertyAll<Color>(AppTheme.white),
+    backgroundColor: const WidgetStatePropertyAll<Color>(AppTheme.white),
     shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),

@@ -33,7 +33,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Daftar Tipe Menu",
           style: AppTheme.appBarTitle,
         ),
@@ -66,7 +66,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
             final menuTypes = state.menuTypes;
 
             if (menuTypes.isEmpty) {
-              return EmptyState(
+              return const EmptyState(
                 icon: Iconsax.category,
                 title: "Belum ada tipe menu",
                 subtitle: "Tambahkan tipe menu baru dengan menekan tombol '+' di pojok kanan atas.",
@@ -171,7 +171,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
           );
 
           Future.delayed(
-            Duration(milliseconds: 500),
+            const Duration(milliseconds: 500),
             () {
               Navigator.pop(context);
             },

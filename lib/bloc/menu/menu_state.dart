@@ -8,3 +8,9 @@ class MenuLoaded extends MenuState {
   final List<Menu> menus;
   MenuLoaded(this.menus);
 }
+
+class MenuError extends MenuState {
+  final String message;
+
+  MenuError(this.message);
+}
