@@ -4,6 +4,8 @@ abstract class TransactionState {}
 
 class TransactionLoading extends TransactionState {}
 
+class TransactionDetailLoading extends TransactionState {}
+
 class TransactionLoaded extends TransactionState {
   final List<TransactionHistory> transactions;
 

@@ -29,7 +29,6 @@ class MainApp extends StatelessWidget {
     );
 
     return MaterialApp.router(
-      // routerConfig: appRouter,
       routerConfig: appRouter.router,
       title: 'TheDjenggot',
       theme: ThemeData(

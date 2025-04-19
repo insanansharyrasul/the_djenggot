@@ -30,7 +30,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     LoadTransactionById event,
     Emitter<TransactionState> emit,
   ) async {
-    emit(TransactionLoading());
+    final currentState = state;
+    emit(TransactionDetailLoading());
     try {
       final transaction = await _transactionRepository.getTransactionById(event.id);
       if (transaction != null) {
@@ -39,7 +40,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         emit(TransactionError('Transaction not found'));
       }
     } catch (e) {
-      emit(TransactionError(e.toString()));
+      if (currentState is TransactionLoaded) {
+        emit(currentState);
+      } else {
+        emit(TransactionError(e.toString()));
+      }
     }
   }
 

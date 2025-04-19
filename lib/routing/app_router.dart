@@ -163,29 +163,6 @@ class AppRouter {
             },
           ),
 
-          // Transaction Type routes
-          // GoRoute(
-          //   path: '/transaction-types',
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return const TransactionTypeListScreen();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/add-transaction-type',
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return const AddEditTransactionTypeScreen();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/edit-transaction-type/:id',
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     final transactionType = state.extra as TransactionType;
-          //     return AddEditTransactionTypeScreen(
-          //       transactionType: transactionType,
-          //     );
-          //   },
-          // ),
-
           // Transaction routes
           GoRoute(
             path: '/transactions',

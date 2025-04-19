@@ -22,6 +22,10 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   @override
   void initState() {
     super.initState();
+    _reloadTransactions();
+  }
+
+  void _reloadTransactions() {
     context.read<TransactionBloc>().add(LoadTransactions());
   }
 
@@ -46,14 +50,14 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             if (state is TransactionLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-        
+
             if (state is TransactionError) {
               return Center(child: Text('Error: ${state.message}'));
             }
-        
+
             if (state is TransactionLoaded) {
               final transactions = state.transactions;
-        
+
               if (transactions.isEmpty) {
                 return const EmptyState(
                   icon: Iconsax.receipt,
@@ -62,7 +66,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                       "Tambahkan transaksi baru dengan menekan tombol '+' di pojok kanan bawah.",
                 );
               }
-        
+
               return ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: transactions.length,
@@ -72,7 +76,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                 },
               );
             }
-        
+
             return const Center(child: CircularProgressIndicator());
           },
         ),
@@ -136,11 +140,19 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         trailing: IconButton(
           icon: const Icon(Iconsax.eye, color: AppTheme.primary),
           onPressed: () {
-            context.push('/transaction-detail/${transaction.idTransactionHistory}');
+            context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
+              (_) {
+                _reloadTransactions();
+              },
+            );
           },
         ),
         onTap: () {
-          context.push('/transaction-detail/${transaction.idTransactionHistory}');
+          context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
+            (_) {
+              _reloadTransactions();
+            },
+          );
         },
       ),
     );
