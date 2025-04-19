@@ -208,7 +208,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: 60,

@@ -69,7 +69,6 @@ class _IconPickerState extends State<IconPicker> {
               controller: _scrollController,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                childAspectRatio: 1,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),

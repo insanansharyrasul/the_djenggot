@@ -13,7 +13,6 @@ class SalesToday extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(16.0)),
         border: Border.all(
           color: AppTheme.grey.withValues(alpha: 0.2),
-          width: 1,
         ),
       ),
       child: Padding(

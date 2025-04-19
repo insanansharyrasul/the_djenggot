@@ -302,7 +302,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(color: Colors.grey.shade300),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                       ),
                     ),
 

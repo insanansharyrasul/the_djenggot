@@ -38,28 +38,24 @@ class InputField extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: Colors.grey.shade400,
-              width: 1,
             ),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: Colors.grey.shade800,
-              width: 1,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: Colors.grey.shade400,
-              width: 1,
             ),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(
               color: Colors.red,
-              width: 1,
             ),
           ),
           errorStyle: createRedThinTextStyle(12),
