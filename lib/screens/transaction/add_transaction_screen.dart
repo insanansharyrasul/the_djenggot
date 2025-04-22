@@ -235,9 +235,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButtonFormField<String>(
+                                dropdownColor: AppTheme.white,
                                 decoration: const InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                   border: InputBorder.none,
                                 ),
                                 value: selectedMenuTypeId,
@@ -361,7 +361,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                         height: 40,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8),
-                                          color: AppTheme.primary.withValues(alpha: 0.1),
+                                          color: AppTheme.primary.withValues(alpha: 23),
                                         ),
                                         child: Center(
                                           child: item.menuImage != null
@@ -394,8 +394,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon:
-                                                const Icon(Iconsax.minus_cirlce, color: AppTheme.danger),
+                                            icon: const Icon(Iconsax.minus_cirlce,
+                                                color: AppTheme.danger),
                                             onPressed: () {
                                               setState(() {
                                                 if (cartItems.any((cartItem) =>
@@ -408,8 +408,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                                   } else {
                                                     cartItems.remove(cartItem);
                                                   }
-                                                } else {
-                                                  cartItems.add(CartItem(menu: item, quantity: 1));
                                                 }
                                                 calculateTotal();
                                               });
@@ -420,7 +418,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                             style: const TextStyle(fontWeight: FontWeight.bold),
                                           ),
                                           IconButton(
-                                            icon: const Icon(Iconsax.add_circle, color: AppTheme.primary),
+                                            icon: const Icon(Iconsax.add_circle,
+                                                color: AppTheme.primary),
                                             onPressed: () {
                                               setState(() {
                                                 if (cartItems.any((cartItem) =>
