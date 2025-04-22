@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+// TODO : Compress image before upload
 
 import 'dart:io';
 
@@ -188,16 +189,19 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                           GestureDetector(
                             onTap: _showImageSourceBottomSheet,
                             child: Center(
-                              child: image != null
+                              child: widget.menu?.menuImage != null || image != null
                                   ? Container(
                                       height: 200,
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
                                         image: DecorationImage(
-                                          image: FileImage(image!),
+                                          image: image != null
+                                              ? FileImage(image!)
+                                              : MemoryImage(widget.menu!.menuImage!),
                                           fit: BoxFit.cover,
                                         ),
+                                        // ),
                                       ),
                                     )
                                   : Container(
@@ -513,10 +517,11 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                             if (widget.menu != null) {
                               context.read<MenuBloc>().add(
                                     UpdateMenu(
-                                      widget.menu!.idMenu,
+                                      widget.menu!,
                                       name.text,
                                       numericPrice,
                                       selectedMenuType!.idMenuType,
+                                      widget.menu!.menuImage,
                                     ),
                                   );
                             } else {

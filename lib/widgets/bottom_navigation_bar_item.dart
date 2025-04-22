@@ -7,7 +7,8 @@ Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int
       onTap: onTap,
       child: Container(
         height: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        width: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -41,6 +42,7 @@ Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int
                           : Colors.grey,
                   fontSize: 12,
                   fontFamily: AppTheme.fontName),
+                textAlign: TextAlign.center,
             ),
           ],
         ),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
+import 'package:the_djenggot/bloc/menu/menu_state.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_state.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_state.dart';
 import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_state.dart';
+import 'package:the_djenggot/models/menu.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
@@ -13,6 +16,7 @@ import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/screens/dashboard_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
+import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
@@ -28,17 +32,36 @@ class AppRouter {
   final MenuTypeBloc menuTypeBloc;
   final StockTypeBloc stockTypeBloc;
   final TransactionTypeBloc transactionTypeBloc;
+  final MenuBloc menuBloc;
   // Other BLoCs
 
-  AppRouter({
-    required this.menuTypeBloc,
-    required this.stockTypeBloc,
-    required this.transactionTypeBloc,
-    // Other BLoCs
-  });
+  AppRouter(
+      {required this.menuTypeBloc,
+      required this.stockTypeBloc,
+      required this.transactionTypeBloc,
+      required this.menuBloc
+      // Other BLoCs
+      });
 
   GoRouter get router => GoRouter(
         routes: [
+          //  Menu
+          GoRoute(
+            path: '/menu-detail/:id',
+            builder: (BuildContext context, GoRouterState state) {
+              final menuState = menuBloc.state;
+              final id = state.pathParameters['id'] ?? '';
+
+              if (menuState is MenuLoaded) {
+                final menu = menuState.menus.firstWhere(
+                  (menu) => menu.idMenu == id,
+                );
+                return MenuDetailScreen(menu: menu);
+              }
+
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
           // Existing routes
 
           GoRoute(
@@ -57,9 +80,33 @@ class AppRouter {
           GoRoute(
             path: '/add-edit-menu',
             builder: (context, state) {
-              return const AddEditMenuScreen();
+              final menu = state.extra as Menu?;
+              return AddEditMenuScreen(menu: menu);
             },
           ),
+
+          GoRoute(
+              path: '/edit-menu/:id',
+              builder: (context, state) {
+                final id = state.pathParameters['id'] ?? '';
+                final menuState = menuBloc.state;
+
+                if (menuState is MenuLoaded) {
+                  final menu = menuState.menus.firstWhere(
+                    (menu) => menu.idMenu == id,
+                    orElse: () => Menu(
+                      idMenu: '',
+                      menuName: '',
+                      idMenuType: const MenuType(idMenuType: '', menuTypeName: ''),
+                    ),
+                  );
+
+                  return AddEditMenuScreen(menu: menu);
+                }
+
+                return const Center(child: CircularProgressIndicator());
+              }),
+
           GoRoute(
             path: '/add-edit-menu-type',
             builder: (context, state) {
@@ -147,13 +194,14 @@ class AppRouter {
           GoRoute(
             path: '/edit-transaction-type/:id',
             builder: (context, state) {
-              final id = state.pathParameters['id'] ?? '';
               final transactionTypeState = transactionTypeBloc.state;
+              final id = state.pathParameters['id'] ?? '';
 
               if (transactionTypeState is TransactionTypeLoaded) {
                 final transactionType = transactionTypeState.transactionTypes.firstWhere(
                   (type) => type.idTransactionType == id,
-                  orElse: () => const TransactionType(idTransactionType: '', transactionTypeName: ''),
+                  orElse: () =>
+                      const TransactionType(idTransactionType: '', transactionTypeName: ''),
                 );
 
                 return AddEditTransactionTypeScreen(transactionType: transactionType);

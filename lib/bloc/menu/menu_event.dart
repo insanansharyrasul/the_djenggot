@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:the_djenggot/models/menu.dart';
+
 abstract class MenuEvent {}
 
 class LoadMenu extends MenuEvent {}
@@ -18,14 +20,20 @@ class AddMenu extends MenuEvent {
 }
 
 class UpdateMenu extends MenuEvent {
-  final String id;
+  final Menu menu;
   final String newName;
-  final double price;
-  final String menuType;
-  UpdateMenu(this.id, this.newName, this.price, this.menuType);
+  final double newPrice;
+  final String newMenuType;
+  final Uint8List? newMenuImage;
+  UpdateMenu(this.menu, this.newName, this.newPrice, this.newMenuType, this.newMenuImage);
 }
 
 class DeleteMenu extends MenuEvent {
   final String id;
   DeleteMenu(this.id);
+}
+
+class LoadMenuById extends MenuEvent {
+  final String id;
+  LoadMenuById(this.id);
 }

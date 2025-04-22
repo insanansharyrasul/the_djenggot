@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/bloc/menu/menu_event.dart';
@@ -17,86 +18,102 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          BlocProvider.of<MenuBloc>(context).add(LoadMenu());
-        },
-        child: ListView(
-          children: [
-            const Text("Menu", style: AppTheme.appBarTitle),
-            BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
-              if (state is MenuLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is MenuLoaded) {
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                  ),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.menus.length,
-                  itemBuilder: (context, index) {
-                    final menu = state.menus[index];
-                    return GridTile(
-                      child: Card(
-                        color: AppTheme.white,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (menu.menuImage != null)
-                              Expanded(
-                                child: Image.memory(
-                                  menu.menuImage!,
-                                  height: 500,
-                                  fit: BoxFit.fitHeight,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(Icons.error);
-                                  },
-                                ),
-                              )
-                            else
-                              Expanded(
-                                child: Container(color: Colors.grey),
-                              ),
-                            Text(
-                              menu.menuName,
-                              style: const TextStyle(
-                                fontFamily: AppTheme.fontName,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                letterSpacing: 0.5,
-                                color: AppTheme.nearlyBlue,
-                              ),
-                            ),
-                            Row(
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppTheme.background,
+        centerTitle: true,
+        title: const Text(
+          "Daftar Menu",
+          style: AppTheme.appBarTitle,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            BlocProvider.of<MenuBloc>(context).add(LoadMenu());
+          },
+          child: ListView(
+            children: [
+              BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
+                if (state is MenuLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is MenuLoaded) {
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                    ),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.menus.length,
+                    itemBuilder: (context, index) {
+                      final menu = state.menus[index];
+                      return GestureDetector(
+                        onTap: () {
+                          context.push('/menu-detail/${menu.idMenu}');
+                        },
+                        child: GridTile(
+                          child: Card(
+                            color: AppTheme.white,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(getIconFromString(menu.idMenuType.menuTypeIcon)),
-                                Text(menu.idMenuType.menuTypeName),
+                                if (menu.menuImage != null)
+                                  Expanded(
+                                    child: Image.memory(
+                                      menu.menuImage!,
+                                      height: 500,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return const Icon(Icons.error);
+                                      },
+                                    ),
+                                  )
+                                else
+                                  Expanded(
+                                    child: Container(color: Colors.grey),
+                                  ),
+                                Text(
+                                  menu.menuName,
+                                  style: const TextStyle(
+                                    fontFamily: AppTheme.fontName,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    letterSpacing: 0.5,
+                                    color: AppTheme.nearlyBlue,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(getIconFromString(menu.idMenuType.menuTypeIcon)),
+                                    Text(menu.idMenuType.menuTypeName),
+                                  ],
+                                ),
+                                Text(
+                                  NumberFormat.currency(
+                                    locale: 'id_ID',
+                                    decimalDigits: 0,
+                                    symbol: 'Rp ',
+                                  ).format(menu.menuPrice),
+                                  style: AppTheme.body2,
+                                ),
                               ],
                             ),
-                            Text(
-                              NumberFormat.currency(
-                                locale: 'id_ID',
-                                decimalDigits: 0,
-                                symbol: 'Rp ',
-                              ).format(menu.menuPrice),
-                              style: AppTheme.body2,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              }
-              return const Center(child: Text("No data available"));
-            })
-          ],
+                      );
+                    },
+                  );
+                }
+                return const Center(child: Text("No data available"));
+              })
+            ],
+          ),
         ),
       ),
     );
