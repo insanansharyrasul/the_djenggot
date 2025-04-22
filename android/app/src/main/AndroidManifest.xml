@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="the_djenggot"
+        android:label="TheDjenggot"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -37,6 +38,14 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
+        <!-- Query for WhatsApp -->
+        <package android:name="com.whatsapp"/>
+
+        <!-- Query for Opening in the web -->
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
