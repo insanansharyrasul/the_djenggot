@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -119,7 +121,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   Colors.transparent,
-                                  Colors.black.withOpacity(0.7),
+                                  Colors.black.withAlpha(179), // Changed from withOpacity(0.7)
                                 ],
                               ),
                             ),
@@ -184,7 +186,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.nearlyBlue.withOpacity(0.1),
+                                  color: AppTheme.nearlyBlue.withAlpha(23),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Icon(
