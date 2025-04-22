@@ -80,7 +80,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    const Text("Icon (Optional)", style: AppTheme.textField),
+                    const Text("Icon", style: AppTheme.textField),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,7 +112,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                         Flexible(
                           child: Icon(
                             iconController.text.isEmpty
-                                ? Iconsax.category
+                                ? Icons.abc
                                 : getIconFromString(iconController.text),
                             color: AppTheme.primary,
                             size: 50,
