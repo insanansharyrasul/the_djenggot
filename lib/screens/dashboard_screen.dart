@@ -25,7 +25,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const HomeScreen(),
     const StockScreen(),
     const MenuScreen(),
-    // const EmptyState(title: "Fitur Belum ada", subtitle: "Mohon tunggu ya :D"),
     const TransactionListScreen(),
     const SettingScreen()
   ];
@@ -139,7 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Iconsax.setting,
             4,
             pageIndex,
-            "Pengaturan",
+            "Setting",
           ),
         ],
       ),
