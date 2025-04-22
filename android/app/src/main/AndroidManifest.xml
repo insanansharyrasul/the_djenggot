@@ -46,6 +46,12 @@
             <action android:name="android.support.customtabs.action.CustomTabsService" />
         </intent>
 
+        <!-- Query for sharing to other apps -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="mailto" />
+        </intent>
+
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>

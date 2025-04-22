@@ -84,11 +84,15 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void _openWhatsapp() async {
-    final url = Uri.parse('https://wa.me/***REMOVED***');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'insanansryrasul21@gmail.com',
+      query: 'subject=Report bug&body=Masalah yang ditemukan: ',
+    );
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
     } else {
-      throw 'Could not launch $url';
+      throw 'Could not launch $emailUri';
     }
   }
 
