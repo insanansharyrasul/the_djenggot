@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -69,9 +70,26 @@ class _SettingScreenState extends State<SettingScreen> {
             showArrow: false,
             onTap: () {},
           ),
+          _buildSettingItem(
+            icon: Iconsax.profile_2user,
+            title: "Laporkan Masalah",
+            subtitle: "Laporkan masalah atau bug yang ditemukan",
+            onTap: () {
+              _openWhatsapp();
+            },
+          )
         ],
       ),
     );
+  }
+
+  void _openWhatsapp() async {
+    final url = Uri.parse('https://wa.me/***REMOVED***');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _buildSectionHeader(String title) {

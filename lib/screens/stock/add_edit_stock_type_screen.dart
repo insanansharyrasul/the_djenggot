@@ -90,7 +90,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                       keyboardType: TextInputType.text,
                     ),
                     const SizedBox(height: 16),
-                    const Text("Icon (Optional)", style: AppTheme.textField),
+                    const Text("Icon", style: AppTheme.textField),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,7 +122,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         Flexible(
                           child: Icon(
                             iconController.text.isEmpty
-                                ? Icons.add_box
+                                ? Icons.abc
                                 : getIconFromString(iconController.text),
                             color: AppTheme.primary,
                             size: 50,

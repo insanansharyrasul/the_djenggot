@@ -1,4 +1,5 @@
 // TODO: Compress image before upload
+// TODO : Change the Icon that is picked color
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,7 +82,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                       },
                     ),
                     const SizedBox(height: 16),
-                    const Text("Icon (Optional)", style: AppTheme.textField),
+                    const Text("Icon", style: AppTheme.textField),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,9 +114,9 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                         Flexible(
                           child: Icon(
                             iconController.text.isEmpty
-                                ? Iconsax.receipt
+                                ? Icons.abc
                                 : getIconFromString(iconController.text),
-                            color: AppTheme.primary,
+                            color: AppTheme.darkGrey,
                             size: 50,
                           ),
                         ),
