@@ -12,10 +12,10 @@ class LoadStockTypes extends StockTypeEvent {}
 
 class AddStockType extends StockTypeEvent {
   final String name;
-  final String? icon;
-  final String? unit;
+  final String icon;
+  final String unit;
 
-  const AddStockType(this.name, {this.icon, this.unit});
+  const AddStockType(this.name, this.icon, this.unit);
 
   @override
   List<Object?> get props => [name, icon, unit];
@@ -24,10 +24,10 @@ class AddStockType extends StockTypeEvent {
 class UpdateStockType extends StockTypeEvent {
   final StockType stockType;
   final String name;
-  final String? icon;
-  final String? unit;
+  final String icon;
+  final String unit;
 
-  const UpdateStockType(this.stockType, this.name, {this.icon, this.unit});
+  const UpdateStockType(this.stockType, this.name, this.icon, this.unit);
 
   @override
   List<Object?> get props => [stockType, name, icon, unit];

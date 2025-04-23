@@ -30,7 +30,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
     super.initState();
     if (widget.transactionType != null) {
       name.text = widget.transactionType!.transactionTypeName;
-      iconController.text = widget.transactionType!.transactionTypeIcon ?? '';
+      iconController.text = widget.transactionType!.transactionTypeIcon;
     }
   }
 
@@ -139,6 +139,17 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                         style: AppTheme.buttonStyleSecond,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            if (iconController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Pilih icon untuk tipe transaksi"),
+                                  backgroundColor: AppTheme.danger,
+                                ),
+                              );
+                              
+                              return;
+                            }
+
                             showDialog(
                               barrierDismissible: false,
                               context: context,

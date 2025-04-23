@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/bloc/menu/menu_state.dart';
@@ -97,7 +98,12 @@ class AppRouter {
                     orElse: () => Menu(
                       idMenu: '',
                       menuName: '',
-                      idMenuType: const MenuType(idMenuType: '', menuTypeName: ''),
+                      idMenuType: const MenuType(
+                        idMenuType: '',
+                        menuTypeName: '',
+                        menuTypeIcon: '',
+                      ),
+                      menuImage: Uint8List(0)
                     ),
                   );
 
@@ -141,7 +147,11 @@ class AppRouter {
               if (menuTypeState is MenuTypeLoaded) {
                 final menuType = menuTypeState.menuTypes.firstWhere(
                   (type) => type.idMenuType == id,
-                  orElse: () => const MenuType(idMenuType: '', menuTypeName: ''),
+                  orElse: () => const MenuType(
+                    idMenuType: '',
+                    menuTypeName: '',
+                    menuTypeIcon: '',
+                  ),
                 );
 
                 return AddEditMenuTypeScreen(menuType: menuType);
@@ -170,7 +180,12 @@ class AppRouter {
               if (stockTypeState is StockTypeLoaded) {
                 final stockType = stockTypeState.stockTypes.firstWhere(
                   (type) => type.idStockType == id,
-                  orElse: () => const StockType(idStockType: '', stockTypeName: ''),
+                  orElse: () => const StockType(
+                    idStockType: '',
+                    stockTypeName: '',
+                    stockUnit: '',
+                    stockTypeIcon: '',
+                  ),
                 );
 
                 return AddEditStockTypeScreen(stockType: stockType);
@@ -200,8 +215,11 @@ class AppRouter {
               if (transactionTypeState is TransactionTypeLoaded) {
                 final transactionType = transactionTypeState.transactionTypes.firstWhere(
                   (type) => type.idTransactionType == id,
-                  orElse: () =>
-                      const TransactionType(idTransactionType: '', transactionTypeName: ''),
+                  orElse: () => const TransactionType(
+                    idTransactionType: '',
+                    transactionTypeName: '',
+                    transactionTypeIcon: '',
+                  ),
                 );
 
                 return AddEditTransactionTypeScreen(transactionType: transactionType);

@@ -100,9 +100,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Icon(
-          transactionType.transactionTypeIcon != null
-              ? getIconFromString(transactionType.transactionTypeIcon!)
-              : Iconsax.receipt,
+          getIconFromString(transactionType.transactionTypeIcon),
           color: AppTheme.primary,
           size: 28,
         ),

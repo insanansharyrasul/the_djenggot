@@ -57,14 +57,14 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
           if (state is StockTypeLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (state is StockTypeError) {
             return Center(child: Text('Error: ${state.message}'));
           }
-          
+
           if (state is StockTypeLoaded) {
             final stockTypes = state.stockTypes;
-            
+
             if (stockTypes.isEmpty) {
               return const EmptyState(
                 icon: Iconsax.box,
@@ -72,7 +72,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
                 subtitle: "Tambahkan tipe stok baru dengan menekan tombol '+' di pojok kanan atas.",
               );
             }
-            
+
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: stockTypes.length,
@@ -82,13 +82,13 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
               },
             );
           }
-          
+
           return const Center(child: CircularProgressIndicator());
         },
       ),
     );
   }
-  
+
   Widget _buildStockTypeCard(BuildContext context, StockType stockType) {
     return Card(
       elevation: 2,
@@ -99,9 +99,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Icon(
-          stockType.stockTypeIcon != null
-              ? getIconFromString(stockType.stockTypeIcon!)
-              : Iconsax.box,
+          getIconFromString(stockType.stockTypeIcon),
           color: AppTheme.primary,
           size: 28,
         ),
@@ -109,12 +107,10 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
           stockType.stockTypeName,
           style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        subtitle: stockType.stockUnit != null
-            ? Text(
-                "Satuan: ${stockType.stockUnit}",
-                style: AppTheme.subtitle,
-              )
-            : null,
+        subtitle: Text(
+          "Satuan: ${stockType.stockUnit}",
+          style: AppTheme.subtitle,
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -135,7 +131,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
       ),
     );
   }
-  
+
   void _showDeleteConfirmation(BuildContext context, StockType stockType) {
     showDialog(
       context: context,
@@ -145,7 +141,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
         message: "Apakah Anda yakin ingin menghapus tipe stok '${stockType.stockTypeName}'?",
         onOkPress: () async {
           Navigator.pop(dialogContext);
-          
+
           showDialog(
             barrierDismissible: false,
             context: context,
@@ -158,11 +154,11 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
               },
             ),
           );
-          
+
           context.read<StockTypeBloc>().add(DeleteStockType(stockType));
-          
+
           Navigator.pop(context);
-          
+
           showDialog(
             barrierDismissible: false,
             context: context,

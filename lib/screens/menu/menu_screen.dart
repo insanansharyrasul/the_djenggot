@@ -246,8 +246,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                         });
                                       },
                                       backgroundColor: Colors.grey.shade100,
-                                      selectedColor: AppTheme.primary
-                                          .withAlpha(26),
+                                      selectedColor: AppTheme.primary.withAlpha(26),
                                       labelStyle: TextStyle(
                                         color: _selectedType == null
                                             ? AppTheme.primary
@@ -265,9 +264,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       child: FilterChip(
                                         selected: isSelected,
                                         avatar: Icon(
-                                          type.menuTypeIcon != null
-                                              ? getIconFromString(type.menuTypeIcon!)
-                                              : Iconsax.category,
+                                          getIconFromString(type.menuTypeIcon),
                                           size: 16,
                                           color:
                                               isSelected ? AppTheme.primary : Colors.grey.shade700,
@@ -279,8 +276,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                           });
                                         },
                                         backgroundColor: Colors.grey.shade100,
-                                        selectedColor: AppTheme.primary
-                                            .withAlpha(26),
+                                        selectedColor: AppTheme.primary.withAlpha(26),
                                         labelStyle: TextStyle(
                                           color:
                                               isSelected ? AppTheme.primary : Colors.grey.shade700,
@@ -420,32 +416,20 @@ class _MenuScreenState extends State<MenuScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // Menu Image
-                                if (menu.menuImage != null)
-                                  Expanded(
-                                    child: Hero(
-                                      tag: "menu-image-${menu.idMenu}",
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: MemoryImage(menu.menuImage!),
-                                            fit: BoxFit.cover,
-                                          ),
+                                Expanded(
+                                  child: Hero(
+                                    tag: "menu-image-${menu.idMenu}",
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: MemoryImage(menu.menuImage),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                  )
-                                else
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.grey.shade200,
-                                      child: Icon(
-                                        Iconsax.coffee,
-                                        size: 48,
-                                        color: Colors.grey.shade400,
-                                      ),
-                                    ),
                                   ),
+                                ),
 
                                 // Menu Details
                                 Container(
@@ -472,7 +456,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       Row(
                                         children: [
                                           Icon(
-                                            getIconFromString(menu.idMenuType.menuTypeIcon ?? ''),
+                                            getIconFromString(menu.idMenuType.menuTypeIcon),
                                             size: 14,
                                             color: Colors.grey.shade600,
                                           ),

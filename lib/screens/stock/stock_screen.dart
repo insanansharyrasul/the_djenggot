@@ -263,9 +263,7 @@ class _StockScreenState extends State<StockScreen> {
                                       child: FilterChip(
                                         selected: isSelected,
                                         avatar: Icon(
-                                          type.stockTypeIcon != null
-                                              ? getIconFromString(type.stockTypeIcon!)
-                                              : Iconsax.category,
+                                          getIconFromString(type.stockTypeIcon),
                                           size: 16,
                                           color:
                                               isSelected ? AppTheme.primary : Colors.grey.shade700,
@@ -420,7 +418,7 @@ class _StockScreenState extends State<StockScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Icon(
-                                  getIconFromString(stock.idStockType.stockTypeIcon ?? ''),
+                                  getIconFromString(stock.idStockType.stockTypeIcon),
                                   color: AppTheme.primary,
                                 ),
                               ),
@@ -463,7 +461,7 @@ class _StockScreenState extends State<StockScreen> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        "Kuantitas: ${stock.stockQuantity}${stockUnit != null && stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                                        "Kuantitas: ${stock.stockQuantity}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: isLowStock ? Colors.red : Colors.grey,
@@ -485,7 +483,7 @@ class _StockScreenState extends State<StockScreen> {
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
-                                            "Minimum: ${stock.stockThreshold}${stockUnit != null && stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                                            "Minimum: ${stock.stockThreshold}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: isLowStock ? Colors.red : Colors.grey,

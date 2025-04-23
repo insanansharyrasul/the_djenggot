@@ -258,12 +258,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                       value: type.idMenuType,
                                       child: Row(
                                         children: [
-                                          Icon(
-                                              type.menuTypeIcon != null
-                                                  ? getIconFromString(type.menuTypeIcon!)
-                                                  : Iconsax.category,
-                                              size: 18,
-                                              color: AppTheme.primary),
+                                          Icon(getIconFromString(type.menuTypeIcon),
+                                              size: 18, color: AppTheme.primary),
                                           const SizedBox(width: 8),
                                           Text(type.menuTypeName),
                                         ],
@@ -364,16 +360,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                           color: AppTheme.primary.withValues(alpha: 23),
                                         ),
                                         child: Center(
-                                          child: item.menuImage != null
-                                              ? Image.memory(
-                                                  item.menuImage!,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : const Icon(
-                                                  Iconsax.coffee,
-                                                  color: AppTheme.primary,
-                                                ),
-                                        ),
+                                            child: Image.memory(
+                                          item.menuImage,
+                                          fit: BoxFit.cover,
+                                        )),
                                       ),
                                       const SizedBox(width: 8),
                                       Expanded(
@@ -518,9 +508,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      type.transactionTypeIcon != null
-                                          ? getIconFromString(type.transactionTypeIcon!)
-                                          : Iconsax.receipt,
+                                      getIconFromString(type.transactionTypeIcon),
                                       color: AppTheme.primary,
                                       size: 20,
                                     ),

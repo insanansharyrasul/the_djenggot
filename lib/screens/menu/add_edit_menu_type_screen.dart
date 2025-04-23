@@ -28,7 +28,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
     super.initState();
     if (widget.menuType != null) {
       name.text = widget.menuType!.menuTypeName;
-      iconController.text = widget.menuType!.menuTypeIcon ?? '';
+      iconController.text = widget.menuType!.menuTypeIcon;
     }
   }
 
@@ -137,6 +137,16 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                         style: AppTheme.buttonStyleSecond,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            if (iconController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Icon tidak boleh kosong"),
+                                  backgroundColor: AppTheme.danger,
+                                ),
+                              );
+                              return;
+                            }
+
                             showDialog(
                               barrierDismissible: false,
                               context: context,

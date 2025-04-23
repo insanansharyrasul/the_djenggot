@@ -99,9 +99,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Icon(
-          menuType.menuTypeIcon != null
-              ? getIconFromString(menuType.menuTypeIcon!)
-              : Iconsax.category,
+          getIconFromString(menuType.menuTypeIcon),
           color: AppTheme.primary,
           size: 28,
         ),

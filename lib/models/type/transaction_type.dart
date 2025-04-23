@@ -3,12 +3,13 @@ import 'package:equatable/equatable.dart';
 class TransactionType extends Equatable {
   final String idTransactionType;
   final String transactionTypeName;
-  final String? transactionTypeIcon;
+  final String transactionTypeIcon;
 
-  const TransactionType(
-      {required this.idTransactionType,
-      required this.transactionTypeName,
-      this.transactionTypeIcon});
+  const TransactionType({
+    required this.idTransactionType,
+    required this.transactionTypeName,
+    required this.transactionTypeIcon,
+  });
 
   factory TransactionType.fromMap(Map<String, dynamic> map) {
     return TransactionType(

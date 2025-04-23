@@ -124,7 +124,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                         ),
                         if (selectedStockType?.stockUnit != null &&
-                            selectedStockType!.stockUnit!.isNotEmpty)
+                            selectedStockType!.stockUnit.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(left: 8),
@@ -133,7 +133,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              selectedStockType!.stockUnit!,
+                              selectedStockType!.stockUnit,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primary,
@@ -169,7 +169,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                         ),
                         if (selectedStockType?.stockUnit != null &&
-                            selectedStockType!.stockUnit!.isNotEmpty)
+                            selectedStockType!.stockUnit.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(left: 8),
@@ -178,7 +178,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              selectedStockType!.stockUnit!,
+                              selectedStockType!.stockUnit,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primary,
@@ -293,15 +293,13 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       value: type,
                                       child: Row(
                                         children: [
-                                          if (type.stockTypeIcon != null &&
-                                              type.stockTypeIcon!.isNotEmpty)
+                                          if (type.stockTypeIcon.isNotEmpty)
                                             Icon(
-                                              getIconFromString(type.stockTypeIcon!),
+                                              getIconFromString(type.stockTypeIcon),
                                               color: AppTheme.primary,
                                               size: 18,
                                             ),
-                                          if (type.stockTypeIcon != null &&
-                                              type.stockTypeIcon!.isNotEmpty)
+                                          if (type.stockTypeIcon.isNotEmpty)
                                             const SizedBox(width: 12),
                                           Text(type.stockTypeName),
                                         ],

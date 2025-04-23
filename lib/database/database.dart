@@ -34,25 +34,25 @@ class DatabaseHelper {
       // TYPE TABLE
       await txn.execute('''
         CREATE TABLE TRANSACTION_TYPE (
-          id_transaction_type TEXT PRIMARY KEY,
+          id_transaction_type TEXT PRIMARY KEY NOT NULL,
           transaction_type_name TEXT NOT NULL,
-          transaction_type_icon TEXT
+          transaction_type_icon TEXT NOT NULL
         )
       ''');
 
       await txn.execute('''
         CREATE TABLE MENU_TYPE (
-          id_menu_type TEXT PRIMARY KEY,
+          id_menu_type TEXT PRIMARY KEY NOT NULL,
           menu_type_name TEXT NOT NULL,
-          menu_type_icon TEXT
+          menu_type_icon TEXT NOT NULL
         )
       ''');
 
       await txn.execute('''
         CREATE TABLE STOCK_TYPE (
-          id_stock_type TEXT PRIMARY KEY,
+          id_stock_type TEXT PRIMARY KEY NOT NULL,
           stock_type_name TEXT NOT NULL,
-          stock_type_icon TEXT,
+          stock_type_icon TEXT NOT NULL,
           stock_unit TEXT NOT NULL
         )
       ''');
@@ -60,7 +60,7 @@ class DatabaseHelper {
       // TRANSACTION TABLE
       await txn.execute('''
         CREATE TABLE TRANSACTION_HISTORY (
-          id_transaction_history TEXT PRIMARY KEY,
+          id_transaction_history TEXT PRIMARY KEY NOT NULL,
           id_transaction_type TEXT NOT NULL,
           transaction_amount REAL NOT NULL,
           image_evident BLOB NOT NULL,
@@ -71,7 +71,7 @@ class DatabaseHelper {
 
       await txn.execute('''
         CREATE TABLE TRANSACTION_ITEM (
-          id_transaction_item TEXT PRIMARY KEY,
+          id_transaction_item TEXT PRIMARY KEY NOT NULL,
           id_transaction_history TEXT NOT NULL,
           id_menu TEXT NOT NULL,
           transaction_quantity INTEGER NOT NULL,
@@ -83,7 +83,7 @@ class DatabaseHelper {
       // STOCK TABLE
       await txn.execute('''
         CREATE TABLE STOCK (
-          id_stock TEXT PRIMARY KEY,
+          id_stock TEXT PRIMARY KEY NOT NULL,
           id_stock_type TEXT NOT NULL,
           stock_name TEXT NOT NULL,
           stock_quantity INTEGER NOT NULL,
@@ -95,7 +95,7 @@ class DatabaseHelper {
       // MENU TABLE
       await txn.execute('''
         CREATE TABLE MENU (
-          id_menu TEXT PRIMARY KEY,
+          id_menu TEXT PRIMARY KEY NOT NULL,
           menu_name TEXT NOT NULL,
           menu_price REAL NOT NULL,
           menu_image BLOB NOT NULL,
@@ -139,5 +139,4 @@ class DatabaseHelper {
     Database db = await instance.db;
     return await db.delete(tableName);
   }
-
 }

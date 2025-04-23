@@ -198,7 +198,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                         image: DecorationImage(
                                           image: image != null
                                               ? FileImage(image!)
-                                              : MemoryImage(widget.menu!.menuImage!),
+                                              : MemoryImage(widget.menu!.menuImage),
                                           fit: BoxFit.cover,
                                         ),
                                         // ),
@@ -394,15 +394,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                       value: type,
                                       child: Row(
                                         children: [
-                                          if (type.menuTypeIcon != null &&
-                                              type.menuTypeIcon!.isNotEmpty)
+                                          if (type.menuTypeIcon.isNotEmpty)
                                             Icon(
-                                              getIconFromString(type.menuTypeIcon!),
+                                              getIconFromString(type.menuTypeIcon),
                                               color: AppTheme.primary,
                                               size: 18,
                                             ),
-                                          if (type.menuTypeIcon != null &&
-                                              type.menuTypeIcon!.isNotEmpty)
+                                          if (type.menuTypeIcon.isNotEmpty)
                                             const SizedBox(width: 12),
                                           Text(type.menuTypeName),
                                         ],

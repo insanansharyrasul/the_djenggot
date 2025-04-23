@@ -82,9 +82,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                   // Hero image with gradient overlay
                   GestureDetector(
                     onTap: () {
-                      if (menu.menuImage != null) {
-                        _showFullScreenImage(context, menu.menuImage!);
-                      }
+                      _showFullScreenImage(context, menu.menuImage);
                     },
                     child: Stack(
                       children: [
@@ -100,7 +98,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: MemoryImage(menu.menuImage!),
+                                  image: MemoryImage(menu.menuImage),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -160,9 +158,8 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                           Row(
                             children: [
                               Icon(
-                                menu.idMenuType.menuTypeIcon != null &&
-                                        menu.idMenuType.menuTypeIcon!.isNotEmpty
-                                    ? getIconFromString(menu.idMenuType.menuTypeIcon!)
+                                menu.idMenuType.menuTypeIcon.isNotEmpty
+                                    ? getIconFromString(menu.idMenuType.menuTypeIcon)
                                     : Iconsax.category,
                                 color: AppTheme.nearlyBlue,
                                 size: 18,
