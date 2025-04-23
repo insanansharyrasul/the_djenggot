@@ -192,6 +192,7 @@ class _StockScreenState extends State<StockScreen> {
             if (_isFilterVisible) ...[
               const SizedBox(height: 16),
               Card(
+                color: AppTheme.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -313,6 +314,7 @@ class _StockScreenState extends State<StockScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<SortOption>(
+                            dropdownColor: Colors.white,
                             value: _currentSort,
                             isExpanded: true,
                             icon: const Icon(Iconsax.arrow_down_1),
@@ -384,6 +386,7 @@ class _StockScreenState extends State<StockScreen> {
                             stock.stockQuantity <= stock.stockThreshold!;
 
                         return Card(
+                          color: AppTheme.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

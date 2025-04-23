@@ -194,6 +194,7 @@ class _MenuScreenState extends State<MenuScreen> {
             if (_isFilterVisible) ...[
               const SizedBox(height: 16),
               Card(
+                color: AppTheme.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -314,6 +315,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<SortOption>(
+                            dropdownColor: AppTheme.white,
                             value: _currentSort,
                             isExpanded: true,
                             icon: const Icon(Iconsax.arrow_down_1),
@@ -367,7 +369,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         children: [
                           SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                           const EmptyState(
-                            icon: Icons.egg,
+                            icon: Icons.egg_alt,
                             title: "Tidak ada menu yang ditemukan.",
                             subtitle:
                                 "Coba ubah filter atau kata kunci pencarian",
