@@ -12,6 +12,7 @@ import 'package:the_djenggot/bloc/type/menu_type/menu_type_state.dart';
 import 'package:the_djenggot/models/menu.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 
 enum SortOption {
@@ -361,34 +362,17 @@ class _MenuScreenState extends State<MenuScreen> {
                     final filteredMenus = _getFilteredMenus(state.menus);
 
                     if (filteredMenus.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Iconsax.search_status,
-                              size: 64,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Tidak ada menu yang ditemukan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey.shade600,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Coba ubah filter atau kata kunci pencarian',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                          ],
-                        ),
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                          const EmptyState(
+                            icon: Icons.egg,
+                            title: "Tidak ada menu yang ditemukan.",
+                            subtitle:
+                                "Coba ubah filter atau kata kunci pencarian",
+                          )
+                        ],
                       );
                     }
 
