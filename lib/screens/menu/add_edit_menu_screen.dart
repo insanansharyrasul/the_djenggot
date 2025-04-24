@@ -37,102 +37,14 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   File? image;
   MenuType? selectedMenuType;
 
-  void getImage(ImageSource imageSource) async {
-    final pickedFile = await ImagePicker().pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        image = File(pickedFile.path);
-      });
-    }
-  }
-
-  void _showImageSourceBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Pilih Sumber Gambar",
-                style: AppTheme.appBarTitle.copyWith(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _imageSourceOption(
-                    icon: Iconsax.camera,
-                    label: "Kamera",
-                    onTap: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.camera);
-                    },
-                  ),
-                  _imageSourceOption(
-                    icon: Iconsax.gallery,
-                    label: "Galeri",
-                    onTap: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.gallery);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _imageSourceOption({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withAlpha(10),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: AppTheme.primary,
-              size: 30,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(label, style: AppTheme.textField),
-        ],
-      ),
-    );
-  }
-
-  Future<void> saveMenu() async {}
-
   @override
   void initState() {
     super.initState();
     if (widget.menu != null) {
       name.text = widget.menu!.menuName;
       price.text = widget.menu!.menuPrice.toString();
-      // Load menu types to find the current one
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     } else {
-      // Load menu types for dropdown
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     }
   }
@@ -562,6 +474,90 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  void getImage(ImageSource imageSource) async {
+    final pickedFile = await ImagePicker().pickImage(source: imageSource);
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _showImageSourceBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Pilih Sumber Gambar",
+                style: AppTheme.appBarTitle.copyWith(fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _imageSourceOption(
+                    icon: Iconsax.camera,
+                    label: "Kamera",
+                    onTap: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.camera);
+                    },
+                  ),
+                  _imageSourceOption(
+                    icon: Iconsax.gallery,
+                    label: "Galeri",
+                    onTap: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.gallery);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _imageSourceOption({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withAlpha(10),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: AppTheme.primary,
+              size: 30,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: AppTheme.textField),
         ],
       ),
     );

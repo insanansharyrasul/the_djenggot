@@ -37,12 +37,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
       stockName.text = widget.stock!.stockName;
       stockQuantity.text = widget.stock!.stockQuantity.toString();
       stockThreshold.text = widget.stock!.stockThreshold?.toString() ?? '0';
-      // Load stock types to find the current one
       context.read<StockTypeBloc>().add(LoadStockTypes());
     } else {
-      // Set default threshold to 0
-      stockThreshold.text = '0';
-      // Load stock types for dropdown
       context.read<StockTypeBloc>().add(LoadStockTypes());
     }
   }

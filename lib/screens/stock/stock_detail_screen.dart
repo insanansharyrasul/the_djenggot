@@ -18,12 +18,9 @@ class StockDetailScreen extends StatefulWidget {
 }
 
 class _StockDetailScreenState extends State<StockDetailScreen> {
-  Stock? _stock;
-
   @override
   void initState() {
     super.initState();
-    _stock = widget.stock;
     refresh();
   }
 
@@ -51,7 +48,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
               color: AppTheme.nearlyBlue,
             ),
             onPressed: () {
-              context.push('/add-edit-stock', extra: _stock);
+              context.push('/add-edit-stock', extra: widget.stock);
             },
           ),
           IconButton(
@@ -72,7 +69,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     onOkPress: () {
                       Navigator.pop(context);
                       BlocProvider.of<StockBloc>(context).add(
-                        DeleteStock(_stock!.idStock),
+                        DeleteStock(widget.stock.idStock),
                       );
                       context.pop(); // Return to stock list
                     },
@@ -92,127 +89,128 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           builder: (context, state) {
             if (state is StockLoaded) {
               // Get the latest stock data
-              _stock = state.stocks.firstWhere(
+              final stock = state.stocks.firstWhere(
                 (stock) => stock.idStock == widget.stock.idStock,
                 orElse: () => widget.stock,
               );
-            }
 
-            return ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Stock header
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppTheme.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withAlpha(23),
-                            spreadRadius: 1,
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: AppTheme.primary.withAlpha(23),
-                              borderRadius: BorderRadius.circular(16),
+              return ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Stock header
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppTheme.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withAlpha(23),
+                              spreadRadius: 1,
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
                             ),
-                            child: Icon(
-                              getIconFromString(_stock!.idStockType.stockTypeIcon),
-                              color: AppTheme.primary,
-                              size: 40,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            _stock!.stockName,
-                            style: const TextStyle(
-                              fontFamily: AppTheme.fontName,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primary.withAlpha(26),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              _stock!.idStockType.stockTypeName,
-                              style: const TextStyle(
-                                fontSize: 14,
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: AppTheme.primary.withAlpha(23),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Icon(
+                                getIconFromString(stock.idStockType.stockTypeIcon),
                                 color: AppTheme.primary,
-                                fontWeight: FontWeight.w500,
+                                size: 40,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Stock details
-                    const Text(
-                      "Informasi Detail",
-                      style: TextStyle(
-                        fontFamily: AppTheme.fontName,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppTheme.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withAlpha(23),
-                            spreadRadius: 1,
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          _buildInfoRow("Kuantitas",
-                              "${_stock!.stockQuantity}${_stock!.idStockType.stockUnit.isNotEmpty ? ' ${_stock!.idStockType.stockUnit}' : ''}",
-                              icon: Iconsax.chart_1,
-                              isLowStock: _stock!.stockThreshold != null &&
-                                  _stock!.stockQuantity <= _stock!.stockThreshold!),
-                          if (_stock!.stockThreshold != null)
-                            _buildInfoRow(
-                              "Batas Minimum",
-                              "${_stock!.stockThreshold}${_stock!.idStockType.stockUnit.isNotEmpty ? ' ${_stock!.idStockType.stockUnit}' : ''}",
-                              icon: Iconsax.warning_2,
+                            const SizedBox(height: 16),
+                            Text(
+                              stock.stockName,
+                              style: const TextStyle(
+                                fontFamily: AppTheme.fontName,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                        ],
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primary.withAlpha(26),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                stock.idStockType.stockTypeName,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppTheme.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            );
+
+                      const SizedBox(height: 24),
+
+                      // Stock details
+                      const Text(
+                        "Informasi Detail",
+                        style: TextStyle(
+                          fontFamily: AppTheme.fontName,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppTheme.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withAlpha(23),
+                              spreadRadius: 1,
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            _buildInfoRow("Kuantitas",
+                                "${stock.stockQuantity}${stock.idStockType.stockUnit.isNotEmpty ? ' ${stock.idStockType.stockUnit}' : ''}",
+                                icon: Iconsax.chart_1,
+                                isLowStock: stock.stockThreshold != null &&
+                                    stock.stockQuantity <= stock.stockThreshold!),
+                            if (stock.stockThreshold != null)
+                              _buildInfoRow(
+                                "Batas Minimum",
+                                "${stock.stockThreshold}${stock.idStockType.stockUnit.isNotEmpty ? ' ${widget.stock.idStockType.stockUnit}' : ''}",
+                                icon: Iconsax.warning_2,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),
