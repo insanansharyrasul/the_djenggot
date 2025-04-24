@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -35,9 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     floatingButtonList = [
-      floatingButton(icon: Icons.point_of_sale, onPressed: () {
-        context.push('/add-transaction');
-      }),
+      floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
       floatingButton(
         icon: Iconsax.add,
         onPressed: () {

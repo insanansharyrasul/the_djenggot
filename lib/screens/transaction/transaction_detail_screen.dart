@@ -303,6 +303,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
           Future.delayed(const Duration(milliseconds: 500), () {
             Navigator.pop(context); // Back to transactions list
+            Navigator.pop(context); 
           });
         },
       ),

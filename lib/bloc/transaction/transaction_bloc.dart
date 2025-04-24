@@ -17,12 +17,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     LoadTransactions event,
     Emitter<TransactionState> emit,
   ) async {
+    final currentState = state;
     emit(TransactionLoading());
     try {
       final transactions = await _transactionRepository.getAllTransactions();
       emit(TransactionLoaded(transactions));
     } catch (e) {
-      emit(TransactionError(e.toString()));
+      if (currentState is TransactionLoaded) {
+        emit(currentState);
+      } else {
+        emit(TransactionError(e.toString()));
+      }
     }
   }
 
@@ -54,13 +59,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     emit(TransactionLoading());
     try {
-      final transactionId = await _transactionRepository.addTransaction(
+      await _transactionRepository.addTransaction(
         event.transactionTypeId,
         event.amount,
         event.evident,
         event.items,
       );
-      emit(TransactionAdded(transactionId));
+      final transactions = await _transactionRepository.getAllTransactions();
+      emit(TransactionLoaded(transactions));
     } catch (e) {
       emit(TransactionError(e.toString()));
     }

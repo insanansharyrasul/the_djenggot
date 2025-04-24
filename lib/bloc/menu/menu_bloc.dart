@@ -24,6 +24,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
           'id_menu_type': event.menuType
         },
       );
+      final menus = await _menuRepository.getMenusWithTypeObjects();
+      emit(MenuLoaded(menus));
     });
 
     on<UpdateMenu>((event, emit) async {

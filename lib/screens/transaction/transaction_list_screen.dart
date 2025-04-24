@@ -139,7 +139,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           icon: const Icon(Iconsax.eye, color: AppTheme.primary),
           onPressed: () {
             context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
-              (_) {
+              (_) async {
                 _reloadTransactions();
               },
             );
@@ -147,7 +147,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         ),
         onTap: () {
           context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
-            (_) {
+            (_) async {
               _reloadTransactions();
             },
           );
