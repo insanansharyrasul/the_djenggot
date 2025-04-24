@@ -9,7 +9,6 @@ import 'package:the_djenggot/bloc/type/stock_type/stock_type_state.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
-import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 
@@ -480,61 +479,10 @@ class _StockScreenState extends State<StockScreen> {
                                     ),
                                 ],
                               ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(
-                                        Iconsax.edit,
-                                        color: AppTheme.nearlyBlue,
-                                        size: 20,
-                                      ),
-                                      onPressed: () {
-                                        context.push('/add-edit-stock', extra: stock);
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade50,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(
-                                        Iconsax.trash,
-                                        color: Colors.red,
-                                        size: 20,
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AppDialog(
-                                              type: "confirm",
-                                              title: "Anda akan menghapus stok ini!",
-                                              message: "Apakah anda yakin?",
-                                              okTitle: "Hapus",
-                                              cancelTitle: "Batal",
-                                              onOkPress: () {
-                                                Navigator.pop(context);
-                                                BlocProvider.of<StockBloc>(context).add(
-                                                  DeleteStock(stock.idStock),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              trailing: Icon(Iconsax.arrow_right_3, color: Colors.grey.shade400),
+                              onTap: () {
+                                context.push('/stock-detail', extra: stock);
+                              },
                             ),
                           ),
                         );

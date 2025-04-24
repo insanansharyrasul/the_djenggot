@@ -141,6 +141,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
@@ -209,7 +210,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        color: Colors.grey.shade100,
+                                        color: Colors.grey.shade50,
                                         border: Border.all(
                                           color: Colors.grey.shade400,
                                           // style: BorderStyle.dashed,
@@ -377,12 +378,12 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                 child: DropdownButtonFormField<MenuType>(
                                   value: selectedMenuType,
                                   decoration: InputDecoration(
-                                    prefixIcon: const Icon(Iconsax.category),
-                                    border: InputBorder.none,
-                                    // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                    hintText: "Pilih Kategori Menu",
-                                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                                  ),
+                                      prefixIcon: const Icon(Iconsax.category),
+                                      border: InputBorder.none,
+                                      // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                      hintText: "Pilih Kategori Menu",
+                                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 16)),
                                   validator: (value) {
                                     if (value == null) {
                                       return "Kategori menu harus dipilih";

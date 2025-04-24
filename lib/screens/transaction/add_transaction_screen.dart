@@ -181,6 +181,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
@@ -489,46 +490,54 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         if (state is TransactionTypeLoaded) {
                           final types = state.transactionTypes;
 
-                          return DropdownButtonFormField<TransactionType>(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade300),
                             ),
-                            dropdownColor: Colors.white,
-                            hint: const Text("Pilih tipe transaksi"),
-                            value: selectedType,
-                            items: types.map((type) {
-                              return DropdownMenuItem<TransactionType>(
-                                value: type,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      getIconFromString(type.transactionTypeIcon),
-                                      color: AppTheme.primary,
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(type.transactionTypeName),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedType = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return "Pilih tipe transaksi";
-                              }
-                              return null;
-                            },
+                            child: DropdownButtonFormField<TransactionType>(
+                              value: selectedType,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Iconsax.category),
+                                border: InputBorder.none,
+                                hintText: "Pilih Tipe Transaksi",
+                                hintStyle: TextStyle(color: Colors.grey.shade500),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 16)
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return "Tipe transaksi harus dipilih";
+                                }
+                                return null;
+                              },
+                              items: types.map((type) {
+                                return DropdownMenuItem<TransactionType>(
+                                  value: type,
+                                  child: Row(
+                                    children: [
+                                      if (type.transactionTypeIcon.isNotEmpty)
+                                        Icon(
+                                          getIconFromString(type.transactionTypeIcon),
+                                          color: AppTheme.primary,
+                                          size: 18,
+                                        ),
+                                      if (type.transactionTypeIcon.isNotEmpty)
+                                        const SizedBox(width: 12),
+                                      Text(type.transactionTypeName),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedType = newValue;
+                                });
+                              },
+                              dropdownColor: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              icon: const Icon(Iconsax.arrow_down_1),
+                            ),
                           );
                         }
 

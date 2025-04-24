@@ -393,6 +393,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             context.push('/menu-detail/${menu.idMenu}');
                           },
                           child: Card(
+                            color: AppTheme.white,
                             clipBehavior: Clip.antiAlias,
                             elevation: 3,
                             shape: RoundedRectangleBorder(

@@ -51,6 +51,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
@@ -287,6 +288,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                     border: InputBorder.none,
                                     hintText: "Pilih Kategori Stok",
                                     hintStyle: TextStyle(color: Colors.grey.shade500),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 16)
                                   ),
                                   items: stockTypes.map((type) {
                                     return DropdownMenuItem<StockType>(
