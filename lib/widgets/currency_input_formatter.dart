@@ -8,9 +8,9 @@ class CurrencyInputFormatter extends TextInputFormatter {
     decimalDigits: 0,
   );
 
-  static double getNumericalValue(String text) {
+  static int getNumericalValue(String text) {
     String numericString = text.replaceAll('Rp.', '').replaceAll('.', '').trim();
-    return double.tryParse(numericString) ?? 0.0;
+    return int.parse(numericString);
   }
 
   @override

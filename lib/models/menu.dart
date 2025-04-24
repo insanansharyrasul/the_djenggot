@@ -5,7 +5,7 @@ import 'package:the_djenggot/models/type/menu_type.dart';
 class Menu {
   final String idMenu;
   final String menuName;
-  final double menuPrice;
+  final int menuPrice;
   final Uint8List menuImage;
   final MenuType idMenuType;
   Menu({
@@ -31,7 +31,9 @@ class Menu {
     return Menu(
       idMenu: map['id_menu']?.toString() ?? '',
       menuName: map['menu_name']?.toString() ?? '',
-      menuPrice: map['menu_price'] != null ? (map['menu_price']).toDouble() : 0.0,
+      menuPrice: map['menu_price'] != null
+          ? (map['menu_price'] is String ? int.parse(map['menu_price']) : map['menu_price'] as int)
+          : 0,
       menuImage: map['menu_image'] != null ? Uint8List.fromList(map['menu_image']) : Uint8List(0),
       idMenuType: menuType,
     );

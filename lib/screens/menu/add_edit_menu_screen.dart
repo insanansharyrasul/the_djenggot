@@ -412,7 +412,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                               return;
                             }
 
-                            final double numericPrice =
+                            final int numericPrice =
                                 CurrencyInputFormatter.getNumericalValue(price.text);
                             showDialog(
                               barrierDismissible: false,

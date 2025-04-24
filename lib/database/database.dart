@@ -97,7 +97,7 @@ class DatabaseHelper {
         CREATE TABLE MENU (
           id_menu TEXT PRIMARY KEY NOT NULL,
           menu_name TEXT NOT NULL,
-          menu_price REAL NOT NULL,
+          menu_price INTEGER NOT NULL,
           menu_image BLOB NOT NULL,
           id_menu_type TEXT NOT NULL,
           FOREIGN KEY (id_menu_type) REFERENCES MENU_TYPE(id_menu_type) ON DELETE CASCADE ON UPDATE CASCADE
