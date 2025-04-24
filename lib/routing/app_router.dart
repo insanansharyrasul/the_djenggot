@@ -19,6 +19,7 @@ import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
+import 'package:the_djenggot/screens/stock/stock_detail_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_transaction_screen.dart';
 import 'package:the_djenggot/screens/transaction/transaction_detail_screen.dart';
@@ -45,7 +46,19 @@ class AppRouter {
 
   GoRouter get router => GoRouter(
         routes: [
-          //  Menu
+          // ==========================================
+          // DASHBOARD
+          // ==========================================
+          GoRoute(
+            path: '/',
+            builder: (context, state) {
+              return const DashboardScreen();
+            },
+          ),
+
+          // ==========================================
+          // MENU ROUTES
+          // ==========================================
           GoRoute(
             path: '/menu-detail/:id',
             builder: (BuildContext context, GoRouterState state) {
@@ -62,21 +75,6 @@ class AppRouter {
               return const Center(child: CircularProgressIndicator());
             },
           ),
-          // Existing routes
-
-          GoRoute(
-            path: '/',
-            builder: (context, state) {
-              return const DashboardScreen();
-            },
-          ),
-          GoRoute(
-            path: '/add-edit-stock',
-            builder: (context, state) {
-              final stock = state.extra as Stock?;
-              return AddEditStockScreen(stock: stock);
-            },
-          ),
           GoRoute(
             path: '/add-edit-menu',
             builder: (context, state) {
@@ -84,28 +82,24 @@ class AppRouter {
               return AddEditMenuScreen(menu: menu);
             },
           ),
-
           GoRoute(
-              path: '/edit-menu/:id',
-              builder: (context, state) {
-                final id = state.pathParameters['id'] ?? '';
-                final menuState = menuBloc.state;
+            path: '/edit-menu',
+            builder: (context, state) {
+              final menu = state.extra as Menu;
+              return AddEditMenuScreen(menu: menu);
+            },
+          ),
 
-                if (menuState is MenuLoaded) {
-                  final menu = menuState.menus.firstWhere(
-                    (menu) => menu.idMenu == id,
-                    orElse: () => Menu(
-                      idMenu: '',
-                      menuName: '',
-                      idMenuType: const MenuType(idMenuType: '', menuTypeName: ''),
-                    ),
-                  );
-
-                  return AddEditMenuScreen(menu: menu);
-                }
-
-                return const Center(child: CircularProgressIndicator());
-              }),
+          // ==========================================
+          // STOCK ROUTES
+          // ==========================================
+          GoRoute(
+            path: '/add-edit-stock',
+            builder: (context, state) {
+              final stock = state.extra as Stock?;
+              return AddEditStockScreen(stock: stock);
+            },
+          ),
 
           GoRoute(
             path: '/add-edit-menu-type',
@@ -114,6 +108,8 @@ class AppRouter {
               return AddEditMenuTypeScreen(menuType: menuType);
             },
           ),
+
+          // STOCK
           GoRoute(
             path: '/add-edit-stock-type',
             builder: (context, state) {
@@ -121,13 +117,20 @@ class AppRouter {
               return AddEditStockTypeScreen(stockType: stockType);
             },
           ),
+          GoRoute(
+            path: '/stock-detail',
+            builder: (context, state) => StockDetailScreen(
+              stock: state.extra as Stock,
+            ),
+          ),
 
-          // Menu Type routes
+          // ==========================================
+          // MENU TYPE ROUTES
+          // ==========================================
           GoRoute(
             path: '/menu-types',
             builder: (context, state) => const MenuTypeListScreen(),
           ),
-
           GoRoute(
             path: '/add-menu-type',
             builder: (context, state) => const AddEditMenuTypeScreen(),
@@ -141,7 +144,11 @@ class AppRouter {
               if (menuTypeState is MenuTypeLoaded) {
                 final menuType = menuTypeState.menuTypes.firstWhere(
                   (type) => type.idMenuType == id,
-                  orElse: () => const MenuType(idMenuType: '', menuTypeName: ''),
+                  orElse: () => const MenuType(
+                    idMenuType: '',
+                    menuTypeName: '',
+                    menuTypeIcon: '',
+                  ),
                 );
 
                 return AddEditMenuTypeScreen(menuType: menuType);
@@ -151,12 +158,13 @@ class AppRouter {
             },
           ),
 
-          // Stock Type routes
+          // ==========================================
+          // STOCK TYPE ROUTES
+          // ==========================================
           GoRoute(
             path: '/stock-types',
             builder: (context, state) => const StockTypeListScreen(),
           ),
-
           GoRoute(
             path: '/add-stock-type',
             builder: (context, state) => const AddEditStockTypeScreen(),
@@ -170,7 +178,12 @@ class AppRouter {
               if (stockTypeState is StockTypeLoaded) {
                 final stockType = stockTypeState.stockTypes.firstWhere(
                   (type) => type.idStockType == id,
-                  orElse: () => const StockType(idStockType: '', stockTypeName: ''),
+                  orElse: () => const StockType(
+                    idStockType: '',
+                    stockTypeName: '',
+                    stockUnit: '',
+                    stockTypeIcon: '',
+                  ),
                 );
 
                 return AddEditStockTypeScreen(stockType: stockType);
@@ -180,17 +193,17 @@ class AppRouter {
             },
           ),
 
-          // Transaction Type routes
+          // ==========================================
+          // TRANSACTION TYPE ROUTES
+          // ==========================================
           GoRoute(
             path: '/transaction-types',
             builder: (context, state) => const TransactionTypeListScreen(),
           ),
-
           GoRoute(
             path: '/add-transaction-type',
             builder: (context, state) => const AddEditTransactionTypeScreen(),
           ),
-
           GoRoute(
             path: '/edit-transaction-type/:id',
             builder: (context, state) {
@@ -200,8 +213,11 @@ class AppRouter {
               if (transactionTypeState is TransactionTypeLoaded) {
                 final transactionType = transactionTypeState.transactionTypes.firstWhere(
                   (type) => type.idTransactionType == id,
-                  orElse: () =>
-                      const TransactionType(idTransactionType: '', transactionTypeName: ''),
+                  orElse: () => const TransactionType(
+                    idTransactionType: '',
+                    transactionTypeName: '',
+                    transactionTypeIcon: '',
+                  ),
                 );
 
                 return AddEditTransactionTypeScreen(transactionType: transactionType);
@@ -211,7 +227,9 @@ class AppRouter {
             },
           ),
 
-          // Transaction routes
+          // ==========================================
+          // TRANSACTION ROUTES
+          // ==========================================
           GoRoute(
             path: '/transactions',
             builder: (BuildContext context, GoRouterState state) {

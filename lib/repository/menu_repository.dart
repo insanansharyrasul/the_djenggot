@@ -4,10 +4,6 @@ import 'package:the_djenggot/models/menu.dart';
 class MenuRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
-  // Future<List<Menu>> getAllMenus() async {
-  //   final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('MENU', '', []);
-  //   return maps.map((map) => Menu.fromMap(map)).toList();
-  // }
   Future<List<Menu>> getMenusWithTypeObjects() async {
     final List<Map<String, dynamic>> results = await getMenusWithTypes();
 

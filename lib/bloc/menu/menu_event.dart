@@ -8,7 +8,7 @@ class LoadMenu extends MenuEvent {}
 
 class AddMenu extends MenuEvent {
   final String menuName;
-  final double menuPrice;
+  final int menuPrice;
   final String menuType;
   final Uint8List menuImage;
   AddMenu({
@@ -22,7 +22,7 @@ class AddMenu extends MenuEvent {
 class UpdateMenu extends MenuEvent {
   final Menu menu;
   final String newName;
-  final double newPrice;
+  final int newPrice;
   final String newMenuType;
   final Uint8List? newMenuImage;
   UpdateMenu(this.menu, this.newName, this.newPrice, this.newMenuType, this.newMenuImage);

@@ -37,12 +37,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
       stockName.text = widget.stock!.stockName;
       stockQuantity.text = widget.stock!.stockQuantity.toString();
       stockThreshold.text = widget.stock!.stockThreshold?.toString() ?? '0';
-      // Load stock types to find the current one
       context.read<StockTypeBloc>().add(LoadStockTypes());
     } else {
-      // Set default threshold to 0
-      stockThreshold.text = '0';
-      // Load stock types for dropdown
       context.read<StockTypeBloc>().add(LoadStockTypes());
     }
   }
@@ -51,6 +47,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
@@ -87,7 +84,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: stockName,
-                      hintText: "Nama Stok",
+                      hintText: "contoh: Minyak Goreng", // Change from "Nama Stok"
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Iconsax.box),
                       validator: (value) {
@@ -109,7 +106,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockQuantity,
-                            hintText: "Jumlah Stok",
+                            hintText: "contoh: 100", // Change from "Jumlah Stok"
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.calculator),
                             validator: (value) {
@@ -124,7 +121,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                         ),
                         if (selectedStockType?.stockUnit != null &&
-                            selectedStockType!.stockUnit!.isNotEmpty)
+                            selectedStockType!.stockUnit.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(left: 8),
@@ -133,7 +130,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              selectedStockType!.stockUnit!,
+                              selectedStockType!.stockUnit,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primary,
@@ -154,7 +151,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockThreshold,
-                            hintText: "Batas Minimum Stok",
+                            hintText: "contoh: 15", // Change from "Batas Minimum Stok"
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.warning_2),
                             validator: (value) {
@@ -169,7 +166,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                         ),
                         if (selectedStockType?.stockUnit != null &&
-                            selectedStockType!.stockUnit!.isNotEmpty)
+                            selectedStockType!.stockUnit.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(left: 8),
@@ -178,7 +175,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              selectedStockType!.stockUnit!,
+                              selectedStockType!.stockUnit,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primary,
@@ -283,25 +280,23 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                 child: DropdownButtonFormField<StockType>(
                                   value: selectedStockType,
                                   decoration: InputDecoration(
-                                    prefixIcon: const Icon(Iconsax.category),
-                                    border: InputBorder.none,
-                                    hintText: "Pilih Kategori Stok",
-                                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                                  ),
+                                      prefixIcon: const Icon(Iconsax.category),
+                                      border: InputBorder.none,
+                                      hintText: "Pilih Kategori Stok",
+                                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 16)),
                                   items: stockTypes.map((type) {
                                     return DropdownMenuItem<StockType>(
                                       value: type,
                                       child: Row(
                                         children: [
-                                          if (type.stockTypeIcon != null &&
-                                              type.stockTypeIcon!.isNotEmpty)
+                                          if (type.stockTypeIcon.isNotEmpty)
                                             Icon(
-                                              getIconFromString(type.stockTypeIcon!),
+                                              getIconFromString(type.stockTypeIcon),
                                               color: AppTheme.primary,
                                               size: 18,
                                             ),
-                                          if (type.stockTypeIcon != null &&
-                                              type.stockTypeIcon!.isNotEmpty)
+                                          if (type.stockTypeIcon.isNotEmpty)
                                             const SizedBox(width: 12),
                                           Text(type.stockTypeName),
                                         ],

@@ -91,6 +91,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
 
   Widget _buildMenuTypeCard(BuildContext context, MenuType menuType) {
     return Card(
+      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -99,9 +100,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Icon(
-          menuType.menuTypeIcon != null
-              ? getIconFromString(menuType.menuTypeIcon!)
-              : Iconsax.category,
+          getIconFromString(menuType.menuTypeIcon),
           color: AppTheme.primary,
           size: 28,
         ),

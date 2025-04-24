@@ -12,6 +12,7 @@ import 'package:the_djenggot/bloc/type/menu_type/menu_type_state.dart';
 import 'package:the_djenggot/models/menu.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 
 enum SortOption {
@@ -193,6 +194,7 @@ class _MenuScreenState extends State<MenuScreen> {
             if (_isFilterVisible) ...[
               const SizedBox(height: 16),
               Card(
+                color: AppTheme.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -246,8 +248,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                         });
                                       },
                                       backgroundColor: Colors.grey.shade100,
-                                      selectedColor: AppTheme.primary
-                                          .withAlpha(26),
+                                      selectedColor: AppTheme.primary.withAlpha(26),
                                       labelStyle: TextStyle(
                                         color: _selectedType == null
                                             ? AppTheme.primary
@@ -265,9 +266,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       child: FilterChip(
                                         selected: isSelected,
                                         avatar: Icon(
-                                          type.menuTypeIcon != null
-                                              ? getIconFromString(type.menuTypeIcon!)
-                                              : Iconsax.category,
+                                          getIconFromString(type.menuTypeIcon),
                                           size: 16,
                                           color:
                                               isSelected ? AppTheme.primary : Colors.grey.shade700,
@@ -279,8 +278,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                           });
                                         },
                                         backgroundColor: Colors.grey.shade100,
-                                        selectedColor: AppTheme.primary
-                                            .withAlpha(26),
+                                        selectedColor: AppTheme.primary.withAlpha(26),
                                         labelStyle: TextStyle(
                                           color:
                                               isSelected ? AppTheme.primary : Colors.grey.shade700,
@@ -317,6 +315,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<SortOption>(
+                            dropdownColor: AppTheme.white,
                             value: _currentSort,
                             isExpanded: true,
                             icon: const Icon(Iconsax.arrow_down_1),
@@ -365,34 +364,17 @@ class _MenuScreenState extends State<MenuScreen> {
                     final filteredMenus = _getFilteredMenus(state.menus);
 
                     if (filteredMenus.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Iconsax.search_status,
-                              size: 64,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Tidak ada menu yang ditemukan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey.shade600,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Coba ubah filter atau kata kunci pencarian',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                          ],
-                        ),
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                          const EmptyState(
+                            icon: Icons.egg_alt,
+                            title: "Tidak ada menu yang ditemukan.",
+                            subtitle:
+                                "Coba ubah filter atau kata kunci pencarian",
+                          )
+                        ],
                       );
                     }
 
@@ -411,6 +393,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             context.push('/menu-detail/${menu.idMenu}');
                           },
                           child: Card(
+                            color: AppTheme.white,
                             clipBehavior: Clip.antiAlias,
                             elevation: 3,
                             shape: RoundedRectangleBorder(
@@ -420,32 +403,20 @@ class _MenuScreenState extends State<MenuScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // Menu Image
-                                if (menu.menuImage != null)
-                                  Expanded(
-                                    child: Hero(
-                                      tag: "menu-image-${menu.idMenu}",
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: MemoryImage(menu.menuImage!),
-                                            fit: BoxFit.cover,
-                                          ),
+                                Expanded(
+                                  child: Hero(
+                                    tag: "menu-image-${menu.idMenu}",
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: MemoryImage(menu.menuImage),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                  )
-                                else
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.grey.shade200,
-                                      child: Icon(
-                                        Iconsax.coffee,
-                                        size: 48,
-                                        color: Colors.grey.shade400,
-                                      ),
-                                    ),
                                   ),
+                                ),
 
                                 // Menu Details
                                 Container(
@@ -472,7 +443,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       Row(
                                         children: [
                                           Icon(
-                                            getIconFromString(menu.idMenuType.menuTypeIcon ?? ''),
+                                            getIconFromString(menu.idMenuType.menuTypeIcon),
                                             size: 14,
                                             color: Colors.grey.shade600,
                                           ),

@@ -28,7 +28,8 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
   Future<void> _onAddStockType(AddStockType event, Emitter<StockTypeState> emit) async {
     final currentState = state;
     try {
-      final stockTypeId = const Uuid().v4();
+      // final stockTypeId = const Uuid().v4();
+      final stockTypeId = "stockType-${const Uuid().v4()}";
       final stockType = StockType(
         idStockType: stockTypeId,
         stockTypeName: event.name,

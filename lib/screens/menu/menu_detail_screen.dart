@@ -35,6 +35,12 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    refresh();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppTheme.background,
@@ -54,9 +60,9 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Iconsax.edit),
+              icon: const Icon(Iconsax.edit, color: AppTheme.primary),
               onPressed: () {
-                context.push('/edit-menu/${widget.menu.idMenu}');
+                context.push('/edit-menu', extra: widget.menu);
               },
             ),
             IconButton(
@@ -71,169 +77,151 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           onRefresh: () async {
             refresh();
           },
-          child: BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
-            if (state is MenuLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is MenuLoaded) {
-              final menu = state.menus.firstWhere((menu) => menu.idMenu == widget.menu.idMenu);
-              return ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                children: [
-                  // Hero image with gradient overlay
-                  GestureDetector(
-                    onTap: () {
-                      if (menu.menuImage != null) {
-                        _showFullScreenImage(context, menu.menuImage!);
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Container(
-                              height: 250,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: MemoryImage(menu.menuImage!),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            height: 80,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.vertical(bottom: Radius.circular(16)),
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withAlpha(179), // Changed from withOpacity(0.7)
-                                ],
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Menu details card
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          child: BlocBuilder<MenuBloc, MenuState>(
+            builder: (context, state) {
+              if (state is MenuLoaded) {
+                final menu = state.menus.firstWhere(
+                  (menu) => menu.idMenu == widget.menu.idMenu,
+                  orElse: () => widget.menu,
+                );
+                return ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  children: [
+                    // Hero image with gradient overlay
+                    GestureDetector(
+                      onTap: () {
+                        _showFullScreenImage(context, menu.menuImage);
+                      },
+                      child: Stack(
                         children: [
-                          // Menu Name
-                          Text(
-                            menu.menuName,
-                            style: AppTheme.headline.copyWith(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                          Card(
+                            color: AppTheme.white,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                height: 250,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: MemoryImage(menu.menuImage),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-
-                          const SizedBox(height: 8),
-
-                          // Menu Type with Icon
-                          Row(
-                            children: [
-                              Icon(
-                                menu.idMenuType.menuTypeIcon != null &&
-                                        menu.idMenuType.menuTypeIcon!.isNotEmpty
-                                    ? getIconFromString(menu.idMenuType.menuTypeIcon!)
-                                    : Iconsax.category,
-                                color: AppTheme.nearlyBlue,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                menu.idMenuType.menuTypeName,
-                                style: AppTheme.subtitle.copyWith(
-                                  color: AppTheme.nearlyBlue,
-                                  fontWeight: FontWeight.w500,
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: 80,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.vertical(bottom: Radius.circular(16)),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withAlpha(179), // Changed from withOpacity(0.7)
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-
-                          const Divider(height: 24),
-
-                          // Price Display
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.nearlyBlue.withAlpha(23),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(
-                                  Iconsax.money,
-                                  color: AppTheme.nearlyBlue,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                formatter.format(menu.menuPrice),
-                                style: AppTheme.subtitle.copyWith(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.nearlyBlue,
-                                ),
-                              ),
-                            ],
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              );
-            } else {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Iconsax.warning_2, color: Colors.amber, size: 48),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Error loading menu',
-                      style: AppTheme.subtitle.copyWith(color: Colors.grey.shade700),
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<MenuBloc>().add(LoadMenu());
-                      },
-                      child: const Text("Retry"),
+
+                    const SizedBox(height: 20),
+
+                    // Menu details card
+                    Card(
+                      color: AppTheme.white,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Menu Name
+                            Text(
+                              menu.menuName,
+                              style: AppTheme.headline.copyWith(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            // Menu Type with Icon
+                            Row(
+                              children: [
+                                Icon(
+                                  menu.idMenuType.menuTypeIcon.isNotEmpty
+                                      ? getIconFromString(menu.idMenuType.menuTypeIcon)
+                                      : Iconsax.category,
+                                  color: AppTheme.nearlyBlue,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  menu.idMenuType.menuTypeName,
+                                  style: AppTheme.subtitle.copyWith(
+                                    color: AppTheme.nearlyBlue,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const Divider(height: 24),
+
+                            // Price Display
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.nearlyBlue.withAlpha(23),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Iconsax.money,
+                                    color: AppTheme.nearlyBlue,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  formatter.format(menu.menuPrice),
+                                  style: AppTheme.subtitle.copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.nearlyBlue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
-                ),
-              );
-            }
-          }),
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
         ));
   }
 

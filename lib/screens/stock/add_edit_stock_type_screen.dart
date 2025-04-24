@@ -29,8 +29,8 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
     super.initState();
     if (widget.stockType != null) {
       name.text = widget.stockType!.stockTypeName;
-      iconController.text = widget.stockType!.stockTypeIcon ?? '';
-      unitController.text = widget.stockType!.stockUnit ?? '';
+      iconController.text = widget.stockType!.stockTypeIcon;
+      unitController.text = widget.stockType!.stockUnit;
     }
   }
 
@@ -71,7 +71,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     const Text("Nama Tipe Stok", style: AppTheme.textField),
                     InputField(
                       controller: name,
-                      hintText: "Tipe Stok",
+                      hintText: "contoh: Daging-dagingan", // Change from "Tipe Stok"
                       prefixIcon: const Icon(Iconsax.box),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -85,9 +85,15 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     const Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
                     InputField(
                       controller: unitController,
-                      hintText: "Satuan Stok",
+                      hintText: "contoh: kg, liter, pcs", // Changed from "Satuan Stok"
                       prefixIcon: const Icon(Iconsax.ruler),
                       keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Satuan untuk tipe stok tidak boleh kosong";
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 16),
                     const Text("Icon", style: AppTheme.textField),
@@ -146,6 +152,14 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         ),
                         style: AppTheme.buttonStyleSecond,
                         onPressed: () async {
+                          if (iconController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text("Icon tidak boleh kosong"),
+                              backgroundColor: AppTheme.danger,
+                            ));
+                            return;
+                          }
+
                           if (_formKey.currentState!.validate()) {
                             showDialog(
                               barrierDismissible: false,
@@ -157,28 +171,28 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                                 onOkPress: () {},
                               ),
                             );
-              
+
                             if (widget.stockType != null) {
                               context.read<StockTypeBloc>().add(
                                     UpdateStockType(
                                       widget.stockType!,
                                       name.text,
-                                      icon: iconController.text.isEmpty ? null : iconController.text,
-                                      unit: unitController.text.isEmpty ? null : unitController.text,
+                                      iconController.text,
+                                      unitController.text,
                                     ),
                                   );
                             } else {
                               context.read<StockTypeBloc>().add(
                                     AddStockType(
                                       name.text,
-                                      icon: iconController.text.isEmpty ? null : iconController.text,
-                                      unit: unitController.text.isEmpty ? null : unitController.text,
+                                      iconController.text,
+                                      unitController.text,
                                     ),
                                   );
                             }
-              
+
                             Navigator.pop(context);
-              
+
                             showDialog(
                               barrierDismissible: false,
                               context: context,

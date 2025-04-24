@@ -94,17 +94,28 @@ class StockRepository {
         stockThreshold: stockData['stock_threshold'] as int?,
         idStockType: stockType,
       );
-
     }));
   }
 
   Future<List<Stock>> searchStocks(String query) async {
-    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery(
+    final List<Map<String, dynamic>> stocksData = await _databaseHelper.getAllQuery(
       'STOCK',
       'stock_name LIKE ?',
       ['%$query%'],
     );
-    return maps.map((map) => Stock.fromMap(map)).toList();
+
+    return await Future.wait(stocksData.map((stockData) async {
+      final stockTypeId = stockData['id_stock_type'];
+      final stockType = await StockTypeRepository().getStockTypeById(stockTypeId);
+
+      return Stock(
+        idStock: stockData['id_stock'] as String,
+        stockName: stockData['stock_name'] as String,
+        stockQuantity: stockData['stock_quantity'] as int,
+        stockThreshold: stockData['stock_threshold'] as int?,
+        idStockType: stockType,
+      );
+    }));
   }
 
   Future<List<Stock>> getAllStok() async {

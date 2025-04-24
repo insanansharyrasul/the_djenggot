@@ -37,102 +37,14 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   File? image;
   MenuType? selectedMenuType;
 
-  void getImage(ImageSource imageSource) async {
-    final pickedFile = await ImagePicker().pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        image = File(pickedFile.path);
-      });
-    }
-  }
-
-  void _showImageSourceBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Pilih Sumber Gambar",
-                style: AppTheme.appBarTitle.copyWith(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _imageSourceOption(
-                    icon: Iconsax.camera,
-                    label: "Kamera",
-                    onTap: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.camera);
-                    },
-                  ),
-                  _imageSourceOption(
-                    icon: Iconsax.gallery,
-                    label: "Galeri",
-                    onTap: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.gallery);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _imageSourceOption({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withAlpha(10),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: AppTheme.primary,
-              size: 30,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(label, style: AppTheme.textField),
-        ],
-      ),
-    );
-  }
-
-  Future<void> saveMenu() async {}
-
   @override
   void initState() {
     super.initState();
     if (widget.menu != null) {
       name.text = widget.menu!.menuName;
       price.text = widget.menu!.menuPrice.toString();
-      // Load menu types to find the current one
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     } else {
-      // Load menu types for dropdown
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     }
   }
@@ -141,6 +53,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: AppTheme.background,
         centerTitle: true,
@@ -198,7 +111,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                         image: DecorationImage(
                                           image: image != null
                                               ? FileImage(image!)
-                                              : MemoryImage(widget.menu!.menuImage!),
+                                              : MemoryImage(widget.menu!.menuImage),
                                           fit: BoxFit.cover,
                                         ),
                                         // ),
@@ -209,7 +122,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        color: Colors.grey.shade100,
+                                        color: Colors.grey.shade50,
                                         border: Border.all(
                                           color: Colors.grey.shade400,
                                           // style: BorderStyle.dashed,
@@ -252,7 +165,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: name,
-                      hintText: "Nama Menu",
+                      hintText: "contoh: Nasi Goreng",
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Iconsax.coffee),
                       validator: (value) {
@@ -271,7 +184,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: price,
-                      hintText: "Harga Menu",
+                      hintText: "contoh: 15.000",
                       keyboardType: const TextInputType.numberWithOptions(),
                       prefixIcon: const Icon(Iconsax.money),
                       enableCommaSeparator: true,
@@ -377,12 +290,12 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                 child: DropdownButtonFormField<MenuType>(
                                   value: selectedMenuType,
                                   decoration: InputDecoration(
-                                    prefixIcon: const Icon(Iconsax.category),
-                                    border: InputBorder.none,
-                                    // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                    hintText: "Pilih Kategori Menu",
-                                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                                  ),
+                                      prefixIcon: const Icon(Iconsax.category),
+                                      border: InputBorder.none,
+                                      // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                      hintText: "Pilih Kategori Menu",
+                                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 16)),
                                   validator: (value) {
                                     if (value == null) {
                                       return "Kategori menu harus dipilih";
@@ -394,15 +307,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                       value: type,
                                       child: Row(
                                         children: [
-                                          if (type.menuTypeIcon != null &&
-                                              type.menuTypeIcon!.isNotEmpty)
+                                          if (type.menuTypeIcon.isNotEmpty)
                                             Icon(
-                                              getIconFromString(type.menuTypeIcon!),
+                                              getIconFromString(type.menuTypeIcon),
                                               color: AppTheme.primary,
                                               size: 18,
                                             ),
-                                          if (type.menuTypeIcon != null &&
-                                              type.menuTypeIcon!.isNotEmpty)
+                                          if (type.menuTypeIcon.isNotEmpty)
                                             const SizedBox(width: 12),
                                           Text(type.menuTypeName),
                                         ],
@@ -501,7 +412,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                               return;
                             }
 
-                            final double numericPrice =
+                            final int numericPrice =
                                 CurrencyInputFormatter.getNumericalValue(price.text);
                             showDialog(
                               barrierDismissible: false,
@@ -563,6 +474,90 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  void getImage(ImageSource imageSource) async {
+    final pickedFile = await ImagePicker().pickImage(source: imageSource);
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _showImageSourceBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Pilih Sumber Gambar",
+                style: AppTheme.appBarTitle.copyWith(fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _imageSourceOption(
+                    icon: Iconsax.camera,
+                    label: "Kamera",
+                    onTap: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.camera);
+                    },
+                  ),
+                  _imageSourceOption(
+                    icon: Iconsax.gallery,
+                    label: "Galeri",
+                    onTap: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.gallery);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _imageSourceOption({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withAlpha(10),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: AppTheme.primary,
+              size: 30,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: AppTheme.textField),
         ],
       ),
     );

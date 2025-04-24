@@ -27,13 +27,18 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     });
 
     on<UpdateMenu>((event, emit) async {
-      await _menuRepository.updateMenu({
-        'id_menu': event.menu.idMenu,
-        'menu_name': event.newName,
-        'menu_price': event.newPrice,
-        'menu_image': event.newMenuImage,
-        'id_menu_type': event.newMenuType
-      }, event.menu.idMenu);
+      await _menuRepository.updateMenu(
+        {
+          'id_menu': event.menu.idMenu,
+          'menu_name': event.newName,
+          'menu_price': event.newPrice,
+          'menu_image': event.newMenuImage,
+          'id_menu_type': event.newMenuType
+        },
+        event.menu.idMenu,
+      );
+      final menus = await _menuRepository.getMenusWithTypeObjects();
+      emit(MenuLoaded(menus));
     });
 
     on<DeleteMenu>((event, emit) async {

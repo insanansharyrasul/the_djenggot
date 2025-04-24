@@ -28,7 +28,14 @@ class TransactionRepository {
       for (var transaction in transactions) {
         // Get items for this transaction
         final List<Map<String, dynamic>> items = await db.rawQuery('''
-          SELECT ti.*, m.menu_name, m.menu_price, m.menu_image, mt.menu_type_name
+          SELECT 
+            ti.*,
+            m.menu_name, 
+            m.menu_price, 
+            m.menu_image,
+            mt.id_menu_type AS menu_type_id, 
+            mt.menu_type_name, 
+            mt.menu_type_icon
           FROM TRANSACTION_ITEM ti
           LEFT JOIN MENU m ON ti.id_menu = m.id_menu
           LEFT JOIN MENU_TYPE mt ON m.id_menu_type = mt.id_menu_type
@@ -87,7 +94,14 @@ class TransactionRepository {
 
       // Get items for this transaction
       final List<Map<String, dynamic>> items = await db.rawQuery('''
-        SELECT ti.*, m.menu_name, m.menu_price, m.menu_image, mt.menu_type_name
+        SELECT 
+          ti.*,
+          m.menu_name, 
+          m.menu_price, 
+          m.menu_image,
+          mt.id_menu_type AS menu_type_id, 
+          mt.menu_type_name, 
+          mt.menu_type_icon
         FROM TRANSACTION_ITEM ti
         LEFT JOIN MENU m ON ti.id_menu = m.id_menu
         LEFT JOIN MENU_TYPE mt ON m.id_menu_type = mt.id_menu_type

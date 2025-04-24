@@ -106,9 +106,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 Row(
                   children: [
                     Icon(
-                      transaction.transactionType.transactionTypeIcon != null
-                          ? getIconFromString(transaction.transactionType.transactionTypeIcon!)
-                          : Iconsax.receipt,
+                      getIconFromString(transaction.transactionType.transactionTypeIcon),
                       color: AppTheme.primary,
                       size: 28,
                     ),
@@ -224,15 +222,12 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 color: AppTheme.primary.withValues(alpha: 0.1),
               ),
               child: Center(
-                child: item.menu.menuImage != null
-                    ? Image.memory(
-                        item.menu.menuImage!,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      )
-                    : const Icon(Iconsax.coffee, size: 30, color: AppTheme.primary),
-              ),
+                  child: Image.memory(
+                item.menu.menuImage,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              )),
             ),
             const SizedBox(width: 12),
             Expanded(

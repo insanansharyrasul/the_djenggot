@@ -1,5 +1,4 @@
 // TODO: Compress image before upload
-// TODO : Change the Icon that is picked color
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +29,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
     super.initState();
     if (widget.transactionType != null) {
       name.text = widget.transactionType!.transactionTypeName;
-      iconController.text = widget.transactionType!.transactionTypeIcon ?? '';
+      iconController.text = widget.transactionType!.transactionTypeIcon;
     }
   }
 
@@ -71,7 +70,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                     const Text("Nama Tipe Transaksi", style: AppTheme.textField),
                     InputField(
                       controller: name,
-                      hintText: "Tipe Transaksi",
+                      hintText: "Pembayaran",
                       prefixIcon: const Icon(Iconsax.receipt),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -116,7 +115,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                             iconController.text.isEmpty
                                 ? Icons.abc
                                 : getIconFromString(iconController.text),
-                            color: AppTheme.darkGrey,
+                            color: AppTheme.primary,
                             size: 50,
                           ),
                         ),
@@ -139,6 +138,17 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                         style: AppTheme.buttonStyleSecond,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            if (iconController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Pilih icon untuk tipe transaksi"),
+                                  backgroundColor: AppTheme.danger,
+                                ),
+                              );
+
+                              return;
+                            }
+
                             showDialog(
                               barrierDismissible: false,
                               context: context,

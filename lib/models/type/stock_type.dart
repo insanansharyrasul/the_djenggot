@@ -3,14 +3,14 @@ import 'package:equatable/equatable.dart';
 class StockType extends Equatable {
   final String idStockType;
   final String stockTypeName;
-  final String? stockTypeIcon;
-  final String? stockUnit;
+  final String stockTypeIcon;
+  final String stockUnit;
 
   const StockType({
     required this.idStockType,
     required this.stockTypeName,
-    this.stockTypeIcon,
-    this.stockUnit,
+    required this.stockTypeIcon,
+    required this.stockUnit,
   });
 
   factory StockType.fromMap(Map<String, dynamic> map) {
