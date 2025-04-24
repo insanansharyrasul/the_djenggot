@@ -70,7 +70,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                     const Text("Nama Tipe Transaksi", style: AppTheme.textField),
                     InputField(
                       controller: name,
-                      hintText: "Tipe Transaksi",
+                      hintText: "Pembayaran",
                       prefixIcon: const Icon(Iconsax.receipt),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -145,7 +145,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                                   backgroundColor: AppTheme.danger,
                                 ),
                               );
-                              
+
                               return;
                             }
 

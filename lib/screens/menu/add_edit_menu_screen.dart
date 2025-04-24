@@ -165,7 +165,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: name,
-                      hintText: "Nama Menu",
+                      hintText: "contoh: Nasi Goreng",
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Iconsax.coffee),
                       validator: (value) {
@@ -184,7 +184,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: price,
-                      hintText: "Harga Menu",
+                      hintText: "contoh: 15.000",
                       keyboardType: const TextInputType.numberWithOptions(),
                       prefixIcon: const Icon(Iconsax.money),
                       enableCommaSeparator: true,

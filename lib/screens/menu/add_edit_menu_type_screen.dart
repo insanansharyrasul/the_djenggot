@@ -69,7 +69,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                     const Text("Nama Tipe Menu", style: AppTheme.textField),
                     InputField(
                       controller: name,
-                      hintText: "Tipe Menu",
+                      hintText: "contoh: Minuman", // Change from "Tipe Menu"
                       prefixIcon: const Icon(Iconsax.category),
                       keyboardType: TextInputType.text,
                       validator: (value) {

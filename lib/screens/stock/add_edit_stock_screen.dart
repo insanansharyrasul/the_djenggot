@@ -84,7 +84,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: stockName,
-                      hintText: "Nama Stok",
+                      hintText: "contoh: Minyak Goreng", // Change from "Nama Stok"
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Iconsax.box),
                       validator: (value) {
@@ -106,7 +106,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockQuantity,
-                            hintText: "Jumlah Stok",
+                            hintText: "contoh: 100", // Change from "Jumlah Stok"
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.calculator),
                             validator: (value) {
@@ -151,7 +151,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockThreshold,
-                            hintText: "Batas Minimum Stok",
+                            hintText: "contoh: 15", // Change from "Batas Minimum Stok"
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.warning_2),
                             validator: (value) {
@@ -280,12 +280,11 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                 child: DropdownButtonFormField<StockType>(
                                   value: selectedStockType,
                                   decoration: InputDecoration(
-                                    prefixIcon: const Icon(Iconsax.category),
-                                    border: InputBorder.none,
-                                    hintText: "Pilih Kategori Stok",
-                                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                                    contentPadding: const EdgeInsets.symmetric(vertical: 16)
-                                  ),
+                                      prefixIcon: const Icon(Iconsax.category),
+                                      border: InputBorder.none,
+                                      hintText: "Pilih Kategori Stok",
+                                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 16)),
                                   items: stockTypes.map((type) {
                                     return DropdownMenuItem<StockType>(
                                       value: type,

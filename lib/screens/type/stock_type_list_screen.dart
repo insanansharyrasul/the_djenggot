@@ -91,6 +91,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
 
   Widget _buildStockTypeCard(BuildContext context, StockType stockType) {
     return Card(
+      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(

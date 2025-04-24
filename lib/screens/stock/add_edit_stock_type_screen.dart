@@ -71,7 +71,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     const Text("Nama Tipe Stok", style: AppTheme.textField),
                     InputField(
                       controller: name,
-                      hintText: "Tipe Stok",
+                      hintText: "contoh: Daging-dagingan", // Change from "Tipe Stok"
                       prefixIcon: const Icon(Iconsax.box),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -85,7 +85,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     const Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
                     InputField(
                       controller: unitController,
-                      hintText: "Satuan Stok",
+                      hintText: "contoh: kg, liter, pcs", // Changed from "Satuan Stok"
                       prefixIcon: const Icon(Iconsax.ruler),
                       keyboardType: TextInputType.text,
                       validator: (value) {

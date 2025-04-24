@@ -91,6 +91,7 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
 
   Widget _buildMenuTypeCard(BuildContext context, MenuType menuType) {
     return Card(
+      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(

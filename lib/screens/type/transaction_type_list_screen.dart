@@ -92,6 +92,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
 
   Widget _buildTransactionTypeCard(BuildContext context, TransactionType transactionType) {
     return Card(
+      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
