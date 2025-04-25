@@ -23,6 +23,7 @@ import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
+import 'package:the_djenggot/widgets/input_field.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -38,9 +39,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   List<Menu> filteredMenus = [];
   List<CartItem> cartItems = [];
   File? evidenceImage;
-  double totalAmount = 0;
+  int totalAmount = 0;
   String? selectedMenuTypeId;
   TextEditingController searchController = TextEditingController();
+  final TextEditingController moneyReceivedController = TextEditingController();
+  bool isExactChange = true;
 
   @override
   void initState() {
@@ -56,6 +59,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   @override
   void dispose() {
     searchController.dispose();
+    moneyReceivedController.dispose();
     super.dispose();
   }
 
@@ -79,7 +83,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   void calculateTotal() {
-    double sum = 0;
+    int sum = 0;
     for (var item in cartItems) {
       sum += item.menu.menuPrice * item.quantity;
     }
@@ -170,6 +174,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ],
       ),
     );
+  }
+
+  int _calculateChange() {
+    if (isExactChange || moneyReceivedController.text.isEmpty) return 0;
+    final received = int.tryParse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    return received - totalAmount;
   }
 
   @override
@@ -289,19 +299,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     // Search Bar
                     Text("Cari Menu", style: AppTheme.textField.copyWith(fontSize: 14)),
                     const SizedBox(height: 8),
-                    TextField(
+                    InputField(
                       controller: searchController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Cari nama menu...",
-                        prefixIcon: const Icon(Iconsax.search_normal, color: Colors.grey),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Colors.white),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                      ),
+                      keyboardType: TextInputType.text,
+                      prefixIcon: const Icon(Iconsax.search_normal),
+                      hintText: "Cari nama menu...",
                     ),
 
                     const SizedBox(height: 16),
@@ -464,6 +466,77 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isExactChange,
+                          onChanged: (value) {
+                            setState(() {
+                              isExactChange = value ?? true;
+                              if (isExactChange) {
+                                moneyReceivedController.text = totalAmount.toString();
+                              }
+                            });
+                          },
+                        ),
+                        Text("Uang pas", style: AppTheme.textField.copyWith(fontSize: 14)),
+                      ],
+                    ),
+                    if (!isExactChange) ...[
+                      const SizedBox(height: 8),
+                      Text("Uang Diterima", style: AppTheme.textField.copyWith(fontSize: 14)),
+                      const SizedBox(height: 8),
+                      InputField(
+                        controller: moneyReceivedController,
+                        keyboardType: const TextInputType.numberWithOptions(),
+                        prefixIcon: const Icon(Iconsax.money),
+                        enableCommaSeparator: true,
+                        hintText: "contoh: Rp. 12.000",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Harga tidak boleh kosong";
+                          }
+                          final amount = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+                          if (amount < totalAmount) {
+                            return "Uang yang diterima kurang dari total";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            isExactChange = false;
+                            moneyReceivedController.text = value;
+                          }); // Trigger rebuild to update change amount
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primary.withAlpha(24),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Kembalian:", 
+                              style: AppTheme.textField.copyWith(
+                                fontWeight: FontWeight.bold
+                              )
+                            ),
+                            Text(
+                              formatter.format(_calculateChange()),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primary,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -683,6 +756,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           AddNewTransaction(
                             selectedType!.idTransactionType,
                             totalAmount,
+                            isExactChange
+                                ? totalAmount
+                                : int.parse(
+                                    moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')),
                             imageBytes,
                             transactionItems,
                           ),

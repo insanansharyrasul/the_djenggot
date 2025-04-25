@@ -13,11 +13,18 @@ class LoadTransactionById extends TransactionEvent {
 
 class AddNewTransaction extends TransactionEvent {
   final String transactionTypeId;
-  final double amount;
+  final int amount;
+  final int moneyReceived;
   final Uint8List evident;
   final List<TransactionItem> items;
 
-  AddNewTransaction(this.transactionTypeId, this.amount, this.evident, this.items);
+  AddNewTransaction(
+    this.transactionTypeId,
+    this.amount,
+    this.moneyReceived,
+    this.evident,
+    this.items,
+  );
 }
 
 class DeleteTransactionEvent extends TransactionEvent {

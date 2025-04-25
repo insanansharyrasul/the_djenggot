@@ -12,6 +12,7 @@ class InputField extends StatelessWidget {
     required this.prefixIcon,
     this.enableCommaSeparator = false,
     this.validator,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -20,6 +21,7 @@ class InputField extends StatelessWidget {
   final Icon prefixIcon;
   final bool? enableCommaSeparator;
   final FormFieldValidator<String?>? validator;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,7 @@ class InputField extends StatelessWidget {
         style: createBlackTextStyle(14),
         keyboardType: keyboardType,
         validator: validator,
+        onChanged: onChanged,
       ),
     );
   }

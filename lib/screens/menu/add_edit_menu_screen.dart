@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 // TODO : Compress image before upload
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';

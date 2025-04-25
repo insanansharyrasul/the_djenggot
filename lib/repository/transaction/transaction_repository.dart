@@ -64,6 +64,7 @@ class TransactionRepository {
             transactionAmount: transaction['transaction_amount'],
             imageEvident: transaction['image_evident'],
             timestamp: transaction['timestamp'],
+            moneyReceived: transaction['money_received'],
             items: transactionItems,
           ),
         );
@@ -127,6 +128,7 @@ class TransactionRepository {
           transactionTypeIcon: transactions[0]['transaction_type_icon'],
         ),
         transactionAmount: transactions[0]['transaction_amount'],
+        moneyReceived: transactions[0]['money_received'],
         imageEvident: transactions[0]['image_evident'],
         timestamp: transactions[0]['timestamp'],
         items: transactionItems,
@@ -137,47 +139,39 @@ class TransactionRepository {
   }
 
   // Add a new transaction
-  Future<String> addTransaction(
+  Future<void> addTransaction(
     String transactionTypeId,
-    double amount,
+    int amount,
+    int moneyReceived,
     Uint8List evident,
     List<TransactionItem> items,
   ) async {
-    try {
-      final db = await _databaseHelper.db;
-      final String transactionId = "transaction-${const Uuid().v4()}";
+    final id = "transaction-${const Uuid().v4()}";
+    final timestamp = DateTime.now().toIso8601String();
 
-      // Start a transaction
-      await db.transaction((txn) async {
-        // Insert transaction history
-        await txn.insert(
-          'TRANSACTION_HISTORY',
-          {
-            'id_transaction_history': transactionId,
-            'id_transaction_type': transactionTypeId,
-            'transaction_amount': amount,
-            'image_evident': evident,
-            'timestamp': DateTime.now().toIso8601String(),
-          },
-        );
+    await _databaseHelper.insertQuery(
+      'TRANSACTION_HISTORY',
+      {
+        'id_transaction_history': id,
+        'id_transaction_type': transactionTypeId,
+        'transaction_amount': amount,
+        'money_received': moneyReceived,
+        'image_evident': evident,
+        'timestamp': timestamp,
+      },
+    );
 
-        // Insert transaction items
-        for (var item in items) {
-          await txn.insert(
-            'TRANSACTION_ITEM',
-            {
-              'id_transaction_item': "transaction-item-${const Uuid().v4()}",
-              'id_transaction_history': transactionId,
-              'id_menu': item.menu.idMenu,
-              'transaction_quantity': item.transactionQuantity,
-            },
-          );
-        }
-      });
-
-      return transactionId;
-    } catch (e) {
-      throw Exception('Failed to add transaction: $e');
+    // Insert transaction items
+    for (var item in items) {
+      await _databaseHelper.insertQuery(
+        'TRANSACTION_ITEM',
+        {
+          'id_transaction_item': "transaction-item-${const Uuid().v4()}",
+          'id_transaction_history': id,
+          'id_menu': item.menu.idMenu,
+          'transaction_quantity': item.transactionQuantity,
+        },
+      );
     }
   }
 

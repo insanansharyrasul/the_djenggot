@@ -130,16 +130,43 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 const SizedBox(height: 16),
                 const Divider(),
                 const SizedBox(height: 16),
+                // Updated label "Total Pembayaran" using AppTheme.title
                 const Text(
                   "Total Pembayaran",
-                  style: TextStyle(fontSize: 16),
+                  style: AppTheme.title,
                 ),
                 Text(
                   formatter.format(transaction.transactionAmount),
-                  style: const TextStyle(
+                  style: AppTheme.body1.copyWith(
                     color: AppTheme.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Updated label "Uang Diterima" using AppTheme.title
+                const Text(
+                  "Uang Diterima",
+                  style: AppTheme.title,
+                ),
+                Text(
+                  formatter.format(transaction.moneyReceived),
+                  style: AppTheme.body1.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Updated label "Kembalian" using AppTheme.title
+                const Text(
+                  "Kembalian",
+                  style: AppTheme.title,
+                ),
+                Text(
+                  formatter.format(transaction.moneyReceived - transaction.transactionAmount),
+                  style: AppTheme.body1.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -303,7 +330,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
           Future.delayed(const Duration(milliseconds: 500), () {
             Navigator.pop(context); // Back to transactions list
-            Navigator.pop(context); 
+            Navigator.pop(context);
           });
         },
       ),

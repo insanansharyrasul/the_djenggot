@@ -30,6 +30,12 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   bool ascending = false;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<TransactionBloc>().add(LoadTransactions());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

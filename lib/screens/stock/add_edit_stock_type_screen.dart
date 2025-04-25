@@ -82,7 +82,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    const Text("Satuan (contoh: kg, liter, pcs)", style: AppTheme.textField),
+                    const Text("Satuan", style: AppTheme.textField),
                     InputField(
                       controller: unitController,
                       hintText: "contoh: kg, liter, pcs", // Changed from "Satuan Stok"

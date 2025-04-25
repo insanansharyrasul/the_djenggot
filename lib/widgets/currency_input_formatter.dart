@@ -23,7 +23,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    double value = double.parse(newValue.text.replaceAll(RegExp(r'[^0-9]'), ''));
+    int value = int.parse(newValue.text.replaceAll(RegExp(r'[^0-9]'), ''));
     String newText = _formatter.format(value);
 
     return newValue.copyWith(

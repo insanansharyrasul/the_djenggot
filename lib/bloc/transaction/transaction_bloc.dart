@@ -62,6 +62,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       await _transactionRepository.addTransaction(
         event.transactionTypeId,
         event.amount,
+        event.moneyReceived,
         event.evident,
         event.items,
       );
