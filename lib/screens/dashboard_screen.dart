@@ -50,12 +50,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           context.push('/add-edit-menu');
         },
       ),
-      floatingButton(
-        icon: Iconsax.add,
-        onPressed: () {
-          context.push('/add-transaction');
-        },
-      ),
     ];
   }
 
