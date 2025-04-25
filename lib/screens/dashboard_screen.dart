@@ -43,17 +43,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: PageView(
-          controller: pageController,
-          onPageChanged: (index) {
-            setState(() {
-              pageIndex = index;
-            });
-          },
-          children: pages,
-        ),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            pageIndex = index;
+          });
+        },
+        children: pages,
       ),
       bottomNavigationBar: buildMyNavBar(context),
       floatingActionButton: (pageIndex >= 0 && pageIndex < floatingButtonList.length)
@@ -67,6 +64,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       height: 80,
       decoration: const BoxDecoration(
         color: AppTheme.background,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 25,
+            offset: Offset(0, 2),
+          ),
+        ]
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

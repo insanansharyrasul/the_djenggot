@@ -14,72 +14,74 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListView(
-        children: [
-          const Text(
-            "Pengaturan",
-            style: TextStyle(
-              fontFamily: AppTheme.fontName,
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-              letterSpacing: 0.5,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Categories section
-          _buildSectionHeader("Kategori"),
-
-          // Menu Types
-          _buildSettingItem(
-            icon: Iconsax.menu_board,
-            title: "Kelola Tipe Menu",
-            subtitle: "Tambah, ubah, atau hapus kategori menu",
-            onTap: () => _navigateToTypeScreen(context, 'menu'),
-          ),
-
-          // Stock Types
-          _buildSettingItem(
-            icon: Iconsax.box,
-            title: "Kelola Tipe Stok",
-            subtitle: "Tambah, ubah, atau hapus kategori stok",
-            onTap: () => _navigateToTypeScreen(context, 'stock'),
-          ),
-
-          // Transaction Types (currently there's no specific screen for this)
-          _buildSettingItem(
-            icon: Iconsax.receipt,
-            title: "Kelola Tipe Transaksi",
-            subtitle: "Tambah, ubah, atau hapus kategori transaksi",
-            onTap: () => _navigateToTypeScreen(context, 'transaction'),
-          ),
-
-          const SizedBox(height: 24),
-
-          // App section
-          _buildSectionHeader("Aplikasi"),
-
-          // App Version
-          _buildSettingItem(
-            icon: Iconsax.information,
-            title: "Versi Aplikasi",
-            subtitle: "1.0.0",
-            showArrow: false,
-            onTap: () {},
-          ),
-          _buildSettingItem(
-            icon: Iconsax.profile_2user,
-            title: "Laporkan Masalah",
-            subtitle: "Laporkan masalah atau bug yang ditemukan",
-            onTap: () {
-              _openWhatsapp();
-            },
-          )
-        ],
+    return ListView(
+      padding: const EdgeInsets.only(
+        top: 32,
+        left: 32,
+        right: 32,
       ),
+      children: [
+        const Text(
+          "Pengaturan",
+          style: TextStyle(
+            fontFamily: AppTheme.fontName,
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
+            letterSpacing: 0.5,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Categories section
+        _buildSectionHeader("Kategori"),
+
+        // Menu Types
+        _buildSettingItem(
+          icon: Iconsax.menu_board,
+          title: "Kelola Tipe Menu",
+          subtitle: "Tambah, ubah, atau hapus kategori menu",
+          onTap: () => _navigateToTypeScreen(context, 'menu'),
+        ),
+
+        // Stock Types
+        _buildSettingItem(
+          icon: Iconsax.box,
+          title: "Kelola Tipe Stok",
+          subtitle: "Tambah, ubah, atau hapus kategori stok",
+          onTap: () => _navigateToTypeScreen(context, 'stock'),
+        ),
+
+        // Transaction Types (currently there's no specific screen for this)
+        _buildSettingItem(
+          icon: Iconsax.receipt,
+          title: "Kelola Tipe Transaksi",
+          subtitle: "Tambah, ubah, atau hapus kategori transaksi",
+          onTap: () => _navigateToTypeScreen(context, 'transaction'),
+        ),
+
+        const SizedBox(height: 24),
+
+        // App section
+        _buildSectionHeader("Aplikasi"),
+
+        // App Version
+        _buildSettingItem(
+          icon: Iconsax.information,
+          title: "Versi Aplikasi",
+          subtitle: "1.0.0",
+          showArrow: false,
+          onTap: () {},
+        ),
+        _buildSettingItem(
+          icon: Iconsax.profile_2user,
+          title: "Laporkan Masalah",
+          subtitle: "Laporkan masalah atau bug yang ditemukan",
+          onTap: () {
+            _openWhatsapp();
+          },
+        )
+      ],
     );
   }
 

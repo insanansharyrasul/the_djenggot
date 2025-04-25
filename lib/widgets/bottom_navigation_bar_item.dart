@@ -8,7 +8,7 @@ Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int
       child: Container(
         height: double.infinity,
         width: 80,
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

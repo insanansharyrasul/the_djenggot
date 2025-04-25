@@ -590,7 +590,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                       ),
                                     if (type.transactionTypeIcon.isNotEmpty)
                                       const SizedBox(width: 12),
-                                    Text(type.transactionTypeName, style: createBlackThinTextStyle(14)),
+                                    Text(type.transactionTypeName,
+                                        style: createBlackThinTextStyle(14)),
                                   ],
                                 ),
                               );
@@ -687,7 +688,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton.icon(
-                icon: const Icon(Iconsax.save_2),
+                icon: const Icon(Iconsax.save_2, color: Colors.white),
                 label: Text(
                   "Simpan Transaksi",
                   style: AppTheme.buttonText.copyWith(

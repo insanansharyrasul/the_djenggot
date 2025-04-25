@@ -98,13 +98,18 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               );
             }
       
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: transactions.length,
-              itemBuilder: (context, index) {
-                final transaction = transactions[index];
-                return _buildTransactionCard(context, transaction);
+            return RefreshIndicator(
+              onRefresh: () async {
+                _reloadTransactions();
               },
+              child: ListView.builder(
+                padding: const EdgeInsets.all(32),
+                itemCount: transactions.length,
+                itemBuilder: (context, index) {
+                  final transaction = transactions[index];
+                  return _buildTransactionCard(context, transaction);
+                },
+              ),
             );
           }
           return const Center(child: CircularProgressIndicator());
