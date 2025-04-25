@@ -23,6 +23,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
+  bool needEvidence = true; // Add this line
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
     if (widget.transactionType != null) {
       name.text = widget.transactionType!.transactionTypeName;
       iconController.text = widget.transactionType!.transactionTypeIcon;
+      needEvidence = widget.transactionType!.needEvidence; // Add this line
     }
   }
 
@@ -124,6 +126,26 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                     const SizedBox(height: 16),
                     const Divider(),
                     const SizedBox(height: 16),
+                    
+                    // Add this section
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: needEvidence,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              needEvidence = value ?? true;
+                            });
+                          },
+                        ),
+                        const Text(
+                          "Membutuhkan bukti pembayaran",
+                          style: AppTheme.textField,
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -165,16 +187,16 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                                     UpdateTransactionType(
                                       widget.transactionType!,
                                       name.text,
-                                      icon:
-                                          iconController.text.isEmpty ? null : iconController.text,
+                                      iconController.text,
+                                      needEvidence, // Add this parameter
                                     ),
                                   );
                             } else {
                               context.read<TransactionTypeBloc>().add(
                                     AddTransactionType(
                                       name.text,
-                                      icon:
-                                          iconController.text.isEmpty ? null : iconController.text,
+                                      iconController.text,
+                                      needEvidence, // Add this parameter
                                     ),
                                   );
                             }

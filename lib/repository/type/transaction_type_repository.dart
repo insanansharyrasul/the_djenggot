@@ -31,7 +31,7 @@ class TransactionTypeRepository {
   }
 
   // Add a new transaction type
-  Future<int> addTransactionType(String name, {String? icon}) async {
+  Future<int> addTransactionType(String name, {String? icon, bool needEvidence = true}) async {
     try {
       final String uniqueId = "transaction-type-${const Uuid().v4()}";
       return await _databaseHelper.insertQuery(
@@ -40,6 +40,7 @@ class TransactionTypeRepository {
           'id_transaction_type': uniqueId,
           'transaction_type_name': name,
           'transaction_type_icon': icon,
+          'need_evidence': needEvidence ? 1 : 0,
         },
       );
     } catch (e) {
@@ -48,8 +49,12 @@ class TransactionTypeRepository {
   }
 
   // Update an existing transaction type
-  Future<int> updateTransactionType(TransactionType transactionType, String newName,
-      {String? icon}) async {
+  Future<int> updateTransactionType(
+    TransactionType transactionType,
+    String newName, {
+    String? icon,
+    bool? needEvidence,
+  }) async {
     try {
       final db = await _databaseHelper.db;
       return await db.update(
@@ -57,6 +62,7 @@ class TransactionTypeRepository {
         {
           'transaction_type_name': newName,
           'transaction_type_icon': icon ?? transactionType.transactionTypeIcon,
+          'need_evidence': needEvidence != null ? (needEvidence ? 1 : 0) : transactionType.needEvidence ? 1 : 0,
         },
         where: 'id_transaction_type = ?',
         whereArgs: [transactionType.idTransactionType],

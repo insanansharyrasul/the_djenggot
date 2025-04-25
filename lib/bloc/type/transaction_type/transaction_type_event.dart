@@ -6,17 +6,19 @@ class LoadTransactionTypes extends TransactionTypeEvent {}
 
 class AddTransactionType extends TransactionTypeEvent {
   final String name;
-  final String? icon;
+  final String icon;
+  final bool? needEvidence;
 
-  AddTransactionType(this.name, {this.icon});
+  AddTransactionType(this.name, this.icon, this.needEvidence);
 }
 
 class UpdateTransactionType extends TransactionTypeEvent {
   final TransactionType transactionType;
   final String newName;
-  final String? icon;
+  final String icon;
+  final bool needEvidence;
 
-  UpdateTransactionType(this.transactionType, this.newName, {this.icon});
+  UpdateTransactionType(this.transactionType, this.newName, this.icon, this.needEvidence);
 }
 
 class DeleteTransactionType extends TransactionTypeEvent {

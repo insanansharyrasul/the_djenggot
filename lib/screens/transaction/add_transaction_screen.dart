@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -499,12 +500,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             child: DropdownButtonFormField<TransactionType>(
                               value: selectedType,
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Iconsax.category),
-                                border: InputBorder.none,
-                                hintText: "Pilih Tipe Transaksi",
-                                hintStyle: TextStyle(color: Colors.grey.shade500),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 16)
-                              ),
+                                  prefixIcon: const Icon(Iconsax.category),
+                                  border: InputBorder.none,
+                                  hintText: "Pilih Tipe Transaksi",
+                                  hintStyle: TextStyle(color: Colors.grey.shade500),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16)),
                               validator: (value) {
                                 if (value == null) {
                                   return "Tipe transaksi harus dipilih";
@@ -555,65 +555,66 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
             const SizedBox(height: 16),
             // Payment Evidence
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              color: AppTheme.background,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Bukti Pembayaran", style: AppTheme.textField),
-                    const SizedBox(height: 8),
-                    GestureDetector(
-                      // onTap: pickImage,
-                      onTap: _showImageSourceBottomSheet,
-                      child: Container(
-                        width: double.infinity,
-                        height: 500,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.grey[100],
-                        ),
-                        child: evidenceImage != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  evidenceImage!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Iconsax.image, size: 40, color: Colors.grey),
-                                  SizedBox(height: 8),
-                                  Text("Ketuk untuk memilih gambar"),
-                                ],
-                              ),
-                      ),
-                    ),
-                    if (evidenceImage != null) ...[
+            if (selectedType?.needEvidence ?? true)
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                color: AppTheme.background,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Bukti Pembayaran", style: AppTheme.textField),
                       const SizedBox(height: 8),
-                      ElevatedButton.icon(
-                        icon: const Icon(Iconsax.refresh),
-                        label: const Text("Ganti Gambar"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.secondary,
-                          foregroundColor: Colors.white,
+                      GestureDetector(
+                        // onTap: pickImage,
+                        onTap: _showImageSourceBottomSheet,
+                        child: Container(
+                          width: double.infinity,
+                          height: 500,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey[100],
+                          ),
+                          child: evidenceImage != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    evidenceImage!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Iconsax.image, size: 40, color: Colors.grey),
+                                    SizedBox(height: 8),
+                                    Text("Ketuk untuk memilih gambar"),
+                                  ],
+                                ),
                         ),
-                        // onPressed: pickImage,
-                        onPressed: _showImageSourceBottomSheet,
                       ),
+                      if (evidenceImage != null) ...[
+                        const SizedBox(height: 8),
+                        ElevatedButton.icon(
+                          icon: const Icon(Iconsax.refresh),
+                          label: const Text("Ganti Gambar"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.secondary,
+                            foregroundColor: Colors.white,
+                          ),
+                          // onPressed: pickImage,
+                          onPressed: _showImageSourceBottomSheet,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
 
             const SizedBox(height: 24),
 
@@ -642,7 +643,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       return;
                     }
 
-                    if (evidenceImage == null) {
+                    if ((selectedType?.needEvidence ?? true) && evidenceImage == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Tambahkan bukti pembayaran!"),
@@ -674,7 +675,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     }).toList();
 
                     // Convert image to bytes
-                    final imageBytes = await evidenceImage!.readAsBytes();
+                    final imageBytes = selectedType?.needEvidence ?? true
+                        ? await evidenceImage!.readAsBytes()
+                        : Uint8List(0);
 
                     context.read<TransactionBloc>().add(
                           AddNewTransaction(

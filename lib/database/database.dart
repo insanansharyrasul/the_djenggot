@@ -36,7 +36,8 @@ class DatabaseHelper {
         CREATE TABLE TRANSACTION_TYPE (
           id_transaction_type TEXT PRIMARY KEY NOT NULL,
           transaction_type_name TEXT NOT NULL,
-          transaction_type_icon TEXT NOT NULL
+          transaction_type_icon TEXT NOT NULL,
+          need_evidence INTEGER NOT NULL DEFAULT 1
         )
       ''');
 
