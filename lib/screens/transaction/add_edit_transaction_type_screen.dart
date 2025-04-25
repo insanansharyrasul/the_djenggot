@@ -138,9 +138,12 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                             });
                           },
                         ),
-                        const Text(
+                        Text(
                           "Membutuhkan bukti pembayaran",
-                          style: AppTheme.textField,
+                          style: AppTheme.textField.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),

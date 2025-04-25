@@ -14,15 +14,7 @@ import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
-
-enum SortOption {
-  nameAsc,
-  nameDesc,
-  priceAsc,
-  priceDesc,
-  typeAsc,
-  typeDesc,
-}
+import 'package:the_djenggot/widgets/menu/menu_filter_fab.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -34,9 +26,8 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  SortOption _currentSort = SortOption.nameAsc;
+  String _currentSort = 'nameAsc'; 
   MenuType? _selectedType;
-  bool _isFilterVisible = false;
 
   @override
   void initState() {
@@ -72,54 +63,27 @@ class _MenuScreenState extends State<MenuScreen> {
 
     // Apply sorting
     switch (_currentSort) {
-      case SortOption.nameAsc:
+      case 'nameAsc':
         filtered.sort((a, b) => a.menuName.compareTo(b.menuName));
         break;
-      case SortOption.nameDesc:
+      case 'nameDesc':
         filtered.sort((a, b) => b.menuName.compareTo(a.menuName));
         break;
-      case SortOption.priceAsc:
+      case 'priceAsc':
         filtered.sort((a, b) => a.menuPrice.compareTo(b.menuPrice));
         break;
-      case SortOption.priceDesc:
+      case 'priceDesc':
         filtered.sort((a, b) => b.menuPrice.compareTo(a.menuPrice));
         break;
-      case SortOption.typeAsc:
+      case 'typeAsc':
         filtered.sort((a, b) => a.idMenuType.menuTypeName.compareTo(b.idMenuType.menuTypeName));
         break;
-      case SortOption.typeDesc:
+      case 'typeDesc':
         filtered.sort((a, b) => b.idMenuType.menuTypeName.compareTo(a.idMenuType.menuTypeName));
         break;
     }
 
     return filtered;
-  }
-
-  String _getOptionText(SortOption option) {
-    switch (option) {
-      case SortOption.nameAsc:
-        return "Nama (A-Z)";
-      case SortOption.nameDesc:
-        return "Nama (Z-A)";
-      case SortOption.priceAsc:
-        return "Harga (Rendah-Tinggi)";
-      case SortOption.priceDesc:
-        return "Harga (Tinggi-Rendah)";
-      case SortOption.typeAsc:
-        return "Kategori (A-Z)";
-      case SortOption.typeDesc:
-        return "Kategori (Z-A)";
-    }
-  }
-
-  IconData _getOptionIcon(SortOption option) {
-    if (option == SortOption.nameAsc || option == SortOption.nameDesc) {
-      return Iconsax.text;
-    } else if (option == SortOption.priceAsc || option == SortOption.priceDesc) {
-      return Iconsax.money;
-    } else {
-      return Iconsax.category;
-    }
   }
 
   @override
@@ -141,213 +105,37 @@ class _MenuScreenState extends State<MenuScreen> {
         child: Column(
           children: [
             // Search Bar
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withAlpha(26),
-                          spreadRadius: 1,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Cari menu...',
-                        prefixIcon: const Icon(Iconsax.search_normal),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Iconsax.close_circle),
-                                onPressed: () {
-                                  _searchController.clear();
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withAlpha(26),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _isFilterVisible ? Iconsax.filter_square : Iconsax.filter_search,
-                    color: _isFilterVisible ? AppTheme.primary : null,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isFilterVisible = !_isFilterVisible;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            // Filter and Sort Controls
-            if (_isFilterVisible) ...[
-              const SizedBox(height: 16),
-              Card(
-                color: AppTheme.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Iconsax.setting_4, color: AppTheme.primary),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Filter dan Pengurutan',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.grey.shade800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Divider(),
-
-                      // Menu Type Filter
-                      Text(
-                        'Filter berdasarkan kategori',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      BlocBuilder<MenuTypeBloc, MenuTypeState>(
-                        builder: (context, state) {
-                          if (state is MenuTypeLoaded) {
-                            return SizedBox(
-                              height: 40,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: FilterChip(
-                                      selected: _selectedType == null,
-                                      label: const Text('Semua'),
-                                      onSelected: (_) {
-                                        setState(() {
-                                          _selectedType = null;
-                                        });
-                                      },
-                                      backgroundColor: Colors.grey.shade100,
-                                      selectedColor: AppTheme.primary.withAlpha(26),
-                                      labelStyle: TextStyle(
-                                        color: _selectedType == null
-                                            ? AppTheme.primary
-                                            : Colors.grey.shade700,
-                                        fontWeight: _selectedType == null
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                      ),
-                                    ),
-                                  ),
-                                  ...state.menuTypes.map((type) {
-                                    bool isSelected = _selectedType?.idMenuType == type.idMenuType;
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: FilterChip(
-                                        selected: isSelected,
-                                        avatar: Icon(
-                                          getIconFromString(type.menuTypeIcon),
-                                          size: 16,
-                                          color:
-                                              isSelected ? AppTheme.primary : Colors.grey.shade700,
-                                        ),
-                                        label: Text(type.menuTypeName),
-                                        onSelected: (_) {
-                                          setState(() {
-                                            _selectedType = isSelected ? null : type;
-                                          });
-                                        },
-                                        backgroundColor: Colors.grey.shade100,
-                                        selectedColor: AppTheme.primary.withAlpha(26),
-                                        labelStyle: TextStyle(
-                                          color:
-                                              isSelected ? AppTheme.primary : Colors.grey.shade700,
-                                          fontWeight:
-                                              isSelected ? FontWeight.bold : FontWeight.normal,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ],
-                              ),
-                            );
-                          }
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Sort Options
-                      Text(
-                        'Urutkan berdasarkan',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<SortOption>(
-                            dropdownColor: AppTheme.white,
-                            value: _currentSort,
-                            isExpanded: true,
-                            icon: const Icon(Iconsax.arrow_down_1),
-                            items: SortOption.values.map((SortOption option) {
-                              return DropdownMenuItem<SortOption>(
-                                value: option,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      _getOptionIcon(option),
-                                      size: 16,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(_getOptionText(option)),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (SortOption? newValue) {
-                              setState(() {
-                                _currentSort = newValue!;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Cari menu...',
+                  prefixIcon: const Icon(Iconsax.search_normal),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Iconsax.close_circle),
+                          onPressed: () {
+                            _searchController.clear();
+                          },
+                        )
+                      : null,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
-            ],
+            ),
 
             const SizedBox(height: 16),
 
@@ -371,8 +159,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           const EmptyState(
                             icon: Icons.egg_alt,
                             title: "Tidak ada menu yang ditemukan.",
-                            subtitle:
-                                "Coba ubah filter atau kata kunci pencarian",
+                            subtitle: "Coba ubah filter atau kata kunci pencarian",
                           )
                         ],
                       );
@@ -513,6 +300,39 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: BlocBuilder<MenuTypeBloc, MenuTypeState>(
+        builder: (context, state) {
+          if (state is MenuTypeLoaded) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                MenuFilterFab(
+                  selectedType: _selectedType,
+                  sortBy: _currentSort,
+                  menuTypes: state.menuTypes,
+                  onTypeChanged: (type) {
+                    setState(() {
+                      _selectedType = type;
+                    });
+                  },
+                  onSortChanged: (sort) {
+                    setState(() {
+                      _currentSort = sort;
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                FloatingActionButton(
+                  onPressed: () => context.push('/add-edit-menu'),
+                  backgroundColor: AppTheme.primary,
+                  child: const Icon(Iconsax.add),
+                ),
+              ],
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

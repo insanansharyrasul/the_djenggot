@@ -298,7 +298,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         prefixIcon: const Icon(Iconsax.search_normal, color: Colors.grey),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderSide: const BorderSide(color: Colors.white),
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                       ),

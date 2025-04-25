@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/screens/setting_screen.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
@@ -38,18 +37,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     floatingButtonList = [
       floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
-      floatingButton(
-        icon: Iconsax.add,
-        onPressed: () {
-          context.push('/add-edit-stock');
-        },
-      ),
-      floatingButton(
-        icon: Iconsax.add,
-        onPressed: () {
-          context.push('/add-edit-menu');
-        },
-      ),
     ];
   }
 

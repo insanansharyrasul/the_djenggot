@@ -11,15 +11,7 @@ import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
-
-enum SortOption {
-  nameAsc,
-  nameDesc,
-  quantityAsc,
-  quantityDesc,
-  typeAsc,
-  typeDesc,
-}
+import 'package:the_djenggot/widgets/stock/stock_filter_fab.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -31,9 +23,8 @@ class StockScreen extends StatefulWidget {
 class _StockScreenState extends State<StockScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  SortOption _currentSort = SortOption.nameAsc;
+  String _currentSort = 'nameAsc'; 
   StockType? _selectedType;
-  bool _isFilterVisible = false;
 
   @override
   void initState() {
@@ -69,54 +60,27 @@ class _StockScreenState extends State<StockScreen> {
 
     // Apply sorting
     switch (_currentSort) {
-      case SortOption.nameAsc:
+      case 'nameAsc':
         filtered.sort((a, b) => a.stockName.compareTo(b.stockName));
         break;
-      case SortOption.nameDesc:
+      case 'nameDesc':
         filtered.sort((a, b) => b.stockName.compareTo(a.stockName));
         break;
-      case SortOption.quantityAsc:
+      case 'quantityAsc':
         filtered.sort((a, b) => a.stockQuantity.compareTo(b.stockQuantity));
         break;
-      case SortOption.quantityDesc:
+      case 'quantityDesc':
         filtered.sort((a, b) => b.stockQuantity.compareTo(a.stockQuantity));
         break;
-      case SortOption.typeAsc:
+      case 'typeAsc':
         filtered.sort((a, b) => a.idStockType.stockTypeName.compareTo(b.idStockType.stockTypeName));
         break;
-      case SortOption.typeDesc:
+      case 'typeDesc':
         filtered.sort((a, b) => b.idStockType.stockTypeName.compareTo(a.idStockType.stockTypeName));
         break;
     }
 
     return filtered;
-  }
-
-  String _getOptionText(SortOption option) {
-    switch (option) {
-      case SortOption.nameAsc:
-        return "Nama (A-Z)";
-      case SortOption.nameDesc:
-        return "Nama (Z-A)";
-      case SortOption.quantityAsc:
-        return "Kuantitas (Rendah-Tinggi)";
-      case SortOption.quantityDesc:
-        return "Kuantitas (Tinggi-Rendah)";
-      case SortOption.typeAsc:
-        return "Kategori (A-Z)";
-      case SortOption.typeDesc:
-        return "Kategori (Z-A)";
-    }
-  }
-
-  IconData _getOptionIcon(SortOption option) {
-    if (option == SortOption.nameAsc || option == SortOption.nameDesc) {
-      return Iconsax.text;
-    } else if (option == SortOption.quantityAsc || option == SortOption.quantityDesc) {
-      return Iconsax.chart_1;
-    } else {
-      return Iconsax.category;
-    }
   }
 
   @override
@@ -138,214 +102,37 @@ class _StockScreenState extends State<StockScreen> {
         child: Column(
           children: [
             // Search Bar
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withAlpha(26),
-                          spreadRadius: 1,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Cari stok...',
-                        prefixIcon: const Icon(Iconsax.search_normal),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Iconsax.close_circle),
-                                onPressed: () {
-                                  _searchController.clear();
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withAlpha(26),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _isFilterVisible ? Iconsax.filter_square : Iconsax.filter_search,
-                    color: _isFilterVisible ? AppTheme.primary : null,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isFilterVisible = !_isFilterVisible;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            // Filter and Sort Controls
-            if (_isFilterVisible) ...[
-              const SizedBox(height: 16),
-              Card(
-                color: AppTheme.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Iconsax.setting_4, color: AppTheme.primary),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Filter dan Pengurutan',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.grey.shade800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Divider(),
-
-                      // Stock Type Filter
-                      Text(
-                        'Filter berdasarkan kategori',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      BlocBuilder<StockTypeBloc, StockTypeState>(
-                        builder: (context, state) {
-                          if (state is StockTypeLoaded) {
-                            return SizedBox(
-                              height: 40,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: FilterChip(
-                                      selected: _selectedType == null,
-                                      label: const Text('Semua'),
-                                      onSelected: (_) {
-                                        setState(() {
-                                          _selectedType = null;
-                                        });
-                                      },
-                                      backgroundColor: Colors.grey.shade100,
-                                      selectedColor: AppTheme.primary.withAlpha(26),
-                                      labelStyle: TextStyle(
-                                        color: _selectedType == null
-                                            ? AppTheme.primary
-                                            : Colors.grey.shade700,
-                                        fontWeight: _selectedType == null
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                      ),
-                                    ),
-                                  ),
-                                  ...state.stockTypes.map((type) {
-                                    bool isSelected =
-                                        _selectedType?.idStockType == type.idStockType;
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: FilterChip(
-                                        selected: isSelected,
-                                        avatar: Icon(
-                                          getIconFromString(type.stockTypeIcon),
-                                          size: 16,
-                                          color:
-                                              isSelected ? AppTheme.primary : Colors.grey.shade700,
-                                        ),
-                                        label: Text(type.stockTypeName),
-                                        onSelected: (_) {
-                                          setState(() {
-                                            _selectedType = isSelected ? null : type;
-                                          });
-                                        },
-                                        backgroundColor: Colors.grey.shade100,
-                                        selectedColor: AppTheme.primary.withAlpha(26),
-                                        labelStyle: TextStyle(
-                                          color:
-                                              isSelected ? AppTheme.primary : Colors.grey.shade700,
-                                          fontWeight:
-                                              isSelected ? FontWeight.bold : FontWeight.normal,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ],
-                              ),
-                            );
-                          }
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Sort Options
-                      Text(
-                        'Urutkan berdasarkan',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<SortOption>(
-                            dropdownColor: Colors.white,
-                            value: _currentSort,
-                            isExpanded: true,
-                            icon: const Icon(Iconsax.arrow_down_1),
-                            items: SortOption.values.map((SortOption option) {
-                              return DropdownMenuItem<SortOption>(
-                                value: option,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      _getOptionIcon(option),
-                                      size: 16,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(_getOptionText(option)),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (SortOption? newValue) {
-                              setState(() {
-                                _currentSort = newValue!;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Cari stok...',
+                  prefixIcon: const Icon(Iconsax.search_normal),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Iconsax.close_circle),
+                          onPressed: () {
+                            _searchController.clear();
+                          },
+                        )
+                      : null,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
-            ],
+            ),
 
             const SizedBox(height: 16),
 
@@ -515,6 +302,39 @@ class _StockScreenState extends State<StockScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: BlocBuilder<StockTypeBloc, StockTypeState>(
+        builder: (context, state) {
+          if (state is StockTypeLoaded) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                StockFilterFab(
+                  selectedType: _selectedType,
+                  sortBy: _currentSort,
+                  stockTypes: state.stockTypes,
+                  onTypeChanged: (type) {
+                    setState(() {
+                      _selectedType = type;
+                    });
+                  },
+                  onSortChanged: (sort) {
+                    setState(() {
+                      _currentSort = sort;
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                FloatingActionButton(
+                  onPressed: () => context.push('/add-edit-stock'),
+                  backgroundColor: AppTheme.primary,
+                  child: const Icon(Iconsax.add),
+                ),
+              ],
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
