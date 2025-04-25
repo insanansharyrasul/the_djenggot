@@ -25,51 +25,48 @@ class InputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        controller: controller,
-        inputFormatters: [
-          if (enableCommaSeparator!) ...[
-            FilteringTextInputFormatter.digitsOnly,
-            CurrencyInputFormatter(),
-          ]
-        ],
-        decoration: InputDecoration(
-          disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.grey.shade400,
-            ),
+    return TextFormField(
+      controller: controller,
+      inputFormatters: [
+        if (enableCommaSeparator!) ...[
+          FilteringTextInputFormatter.digitsOnly,
+          CurrencyInputFormatter(),
+        ]
+      ],
+      decoration: InputDecoration(
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Colors.grey.shade400,
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.grey.shade800,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.grey.shade400,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: Colors.red,
-            ),
-          ),
-          errorStyle: createRedThinTextStyle(12),
-          contentPadding: const EdgeInsets.all(16.0),
-          hintText: hintText,
-          hintStyle: createGreyThinTextStyle(14),
         ),
-        style: createBlackTextStyle(14),
-        keyboardType: keyboardType,
-        validator: validator,
-        onChanged: onChanged,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Colors.grey.shade800,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Colors.grey.shade400,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
+        ),
+        errorStyle: createRedThinTextStyle(12),
+        contentPadding: const EdgeInsets.all(16.0),
+        hintText: hintText,
+        hintStyle: createGreyThinTextStyle(14),
       ),
+      style: createBlackTextStyle(14),
+      keyboardType: keyboardType,
+      validator: validator,
+      onChanged: onChanged,
     );
   }
 }

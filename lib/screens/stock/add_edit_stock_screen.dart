@@ -10,7 +10,9 @@ import 'package:the_djenggot/bloc/type/stock_type/stock_type_state.dart';
 import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/utils/theme/text_style.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/dropdown_category.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 import 'package:go_router/go_router.dart';
@@ -271,47 +273,41 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
 
                           return Column(
                             children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.grey.shade300),
+                              DropdownButtonFormField<StockType>(
+                                value: selectedStockType,
+                                decoration: dropdownCategoryDecoration(
+                                  prefixIcon: Iconsax.category,
                                 ),
-                                child: DropdownButtonFormField<StockType>(
-                                  value: selectedStockType,
-                                  decoration: InputDecoration(
-                                      prefixIcon: const Icon(Iconsax.category),
-                                      border: InputBorder.none,
-                                      hintText: "Pilih Kategori Stok",
-                                      hintStyle: TextStyle(color: Colors.grey.shade500),
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 16)),
-                                  items: stockTypes.map((type) {
-                                    return DropdownMenuItem<StockType>(
-                                      value: type,
-                                      child: Row(
-                                        children: [
-                                          if (type.stockTypeIcon.isNotEmpty)
-                                            Icon(
-                                              getIconFromString(type.stockTypeIcon),
-                                              color: AppTheme.primary,
-                                              size: 18,
-                                            ),
-                                          if (type.stockTypeIcon.isNotEmpty)
-                                            const SizedBox(width: 12),
-                                          Text(type.stockTypeName),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedStockType = newValue;
-                                    });
-                                  },
-                                  dropdownColor: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  icon: const Icon(Iconsax.arrow_down_1),
+                                hint: Text(
+                                  "Pilih Kategori Stok",
+                                  style: createBlackThinTextStyle(14),
                                 ),
+                                items: stockTypes.map((type) {
+                                  return DropdownMenuItem<StockType>(
+                                    value: type,
+                                    child: Row(
+                                      children: [
+                                        if (type.stockTypeIcon.isNotEmpty)
+                                          Icon(
+                                            getIconFromString(type.stockTypeIcon),
+                                            color: AppTheme.primary,
+                                            size: 18,
+                                          ),
+                                        if (type.stockTypeIcon.isNotEmpty)
+                                          const SizedBox(width: 12),
+                                        Text(type.stockTypeName),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedStockType = newValue;
+                                  });
+                                },
+                                dropdownColor: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                icon: const Icon(Iconsax.arrow_down_1),
                               ),
                               const SizedBox(height: 8),
                               Align(

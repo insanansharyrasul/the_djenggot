@@ -21,7 +21,9 @@ import 'package:the_djenggot/models/menu.dart';
 import 'package:the_djenggot/models/transaction/transaction_item.dart';
 import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/utils/theme/text_style.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/dropdown_category.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 
@@ -178,7 +180,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   int _calculateChange() {
     if (isExactChange || moneyReceivedController.text.isEmpty) return 0;
-    final received = int.tryParse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    final received =
+        int.tryParse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
     return received - totalAmount;
   }
 
@@ -239,54 +242,55 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         if (state is MenuTypeLoaded) {
                           final menuTypes = state.menuTypes;
 
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey.shade300),
+                          return DropdownButtonFormField<String>(
+                            dropdownColor: AppTheme.white,
+                            decoration: dropdownCategoryDecoration(
+                              prefixIcon: Iconsax.category,
                             ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField<String>(
-                                dropdownColor: AppTheme.white,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  border: InputBorder.none,
+                            hint: Text(
+                              "Pilih Kategori Menu",
+                              style: createBlackThinTextStyle(14),
+                            ),
+                            icon: const Icon(Iconsax.arrow_down_1),
+                            borderRadius: BorderRadius.circular(12),
+                            value: selectedMenuTypeId,
+                            items: [
+                              DropdownMenuItem<String>(
+                                value: 'all',
+                                child: Row(
+                                  children: [
+                                    const Icon(Iconsax.category, size: 18, color: AppTheme.primary),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Semua Kategori",
+                                      style: createBlackThinTextStyle(14),
+                                    )
+                                  ],
                                 ),
-                                value: selectedMenuTypeId,
-                                hint: const Text("Semua Kategori"),
-                                items: [
-                                  const DropdownMenuItem<String>(
-                                    value: 'all',
-                                    child: Row(
-                                      children: [
-                                        Icon(Iconsax.category, size: 18, color: AppTheme.primary),
-                                        SizedBox(width: 8),
-                                        Text("Semua Kategori"),
-                                      ],
-                                    ),
-                                  ),
-                                  ...menuTypes.map((type) {
-                                    return DropdownMenuItem<String>(
-                                      value: type.idMenuType,
-                                      child: Row(
-                                        children: [
-                                          Icon(getIconFromString(type.menuTypeIcon),
-                                              size: 18, color: AppTheme.primary),
-                                          const SizedBox(width: 8),
-                                          Text(type.menuTypeName),
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedMenuTypeId = value;
-                                  });
-                                  filterMenus();
-                                },
                               ),
-                            ),
+                              ...menuTypes.map((type) {
+                                return DropdownMenuItem<String>(
+                                  value: type.idMenuType,
+                                  child: Row(
+                                    children: [
+                                      Icon(getIconFromString(type.menuTypeIcon),
+                                          size: 18, color: AppTheme.primary),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        type.menuTypeName,
+                                        style: createBlackThinTextStyle(14),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMenuTypeId = value;
+                              });
+                              filterMenus();
+                            },
                           );
                         }
 
@@ -446,9 +450,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         return const Center(child: CircularProgressIndicator());
                       },
                     ),
-
-                    const SizedBox(height: 8),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -466,7 +467,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Checkbox(
@@ -520,11 +521,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Kembalian:", 
-                              style: AppTheme.textField.copyWith(
-                                fontWeight: FontWeight.bold
-                              )
-                            ),
+                            Text("Kembalian:",
+                                style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold)),
                             Text(
                               formatter.format(_calculateChange()),
                               style: const TextStyle(
@@ -564,53 +562,47 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         if (state is TransactionTypeLoaded) {
                           final types = state.transactionTypes;
 
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
+                          return DropdownButtonFormField<TransactionType>(
+                            value: selectedType,
+                            decoration: dropdownCategoryDecoration(
+                              prefixIcon: Iconsax.card,
                             ),
-                            child: DropdownButtonFormField<TransactionType>(
-                              value: selectedType,
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(Iconsax.category),
-                                  border: InputBorder.none,
-                                  hintText: "Pilih Tipe Transaksi",
-                                  hintStyle: TextStyle(color: Colors.grey.shade500),
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 16)),
-                              validator: (value) {
-                                if (value == null) {
-                                  return "Tipe transaksi harus dipilih";
-                                }
-                                return null;
-                              },
-                              items: types.map((type) {
-                                return DropdownMenuItem<TransactionType>(
-                                  value: type,
-                                  child: Row(
-                                    children: [
-                                      if (type.transactionTypeIcon.isNotEmpty)
-                                        Icon(
-                                          getIconFromString(type.transactionTypeIcon),
-                                          color: AppTheme.primary,
-                                          size: 18,
-                                        ),
-                                      if (type.transactionTypeIcon.isNotEmpty)
-                                        const SizedBox(width: 12),
-                                      Text(type.transactionTypeName),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedType = newValue;
-                                });
-                              },
-                              dropdownColor: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              icon: const Icon(Iconsax.arrow_down_1),
+                            hint: Text(
+                              "Pilih Kategori Menu",
+                              style: createBlackThinTextStyle(14),
                             ),
+                            validator: (value) {
+                              if (value == null) {
+                                return "Tipe transaksi harus dipilih";
+                              }
+                              return null;
+                            },
+                            items: types.map((type) {
+                              return DropdownMenuItem<TransactionType>(
+                                value: type,
+                                child: Row(
+                                  children: [
+                                    if (type.transactionTypeIcon.isNotEmpty)
+                                      Icon(
+                                        getIconFromString(type.transactionTypeIcon),
+                                        color: AppTheme.primary,
+                                        size: 18,
+                                      ),
+                                    if (type.transactionTypeIcon.isNotEmpty)
+                                      const SizedBox(width: 12),
+                                    Text(type.transactionTypeName, style: createBlackThinTextStyle(14)),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedType = newValue;
+                              });
+                            },
+                            dropdownColor: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            icon: const Icon(Iconsax.arrow_down_1),
                           );
                         }
 
