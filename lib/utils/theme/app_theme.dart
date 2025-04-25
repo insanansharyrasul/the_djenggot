@@ -24,6 +24,8 @@ class AppTheme {
   static const String fontName = 'Lexend';
 
   static const Color danger = Color(0xFFEB5757);
+  static const Color success = Color(0xFF27AE60); 
+  static const Color lightSuccess = Color(0xFF6FCF97); 
 
   static const TextStyle display1 = TextStyle(
     fontFamily: fontName,
