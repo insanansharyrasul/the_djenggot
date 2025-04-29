@@ -63,13 +63,14 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.background,
+              color: AppTheme.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Nama Tipe Transaksi", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     InputField(
                       controller: name,
                       hintText: "Pembayaran",

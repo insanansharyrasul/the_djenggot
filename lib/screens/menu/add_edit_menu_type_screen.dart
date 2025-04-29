@@ -60,13 +60,14 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.background,
+              color: AppTheme.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Nama Tipe Menu", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     InputField(
                       controller: name,
                       hintText: "contoh: Minuman", // Change from "Tipe Menu"

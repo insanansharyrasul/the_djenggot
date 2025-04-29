@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +11,7 @@ import 'package:the_djenggot/models/transaction/transaction_history.dart';
 import 'package:the_djenggot/models/transaction/transaction_item.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/full_screen_image_viewer.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 
 class TransactionDetailScreen extends StatefulWidget {
@@ -92,13 +91,12 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Transaction Info Card
         Card(
+          color: AppTheme.white,
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          color: AppTheme.background,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -131,7 +129,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 const SizedBox(height: 16),
                 const Divider(),
                 const SizedBox(height: 16),
-                // Updated label "Total Pembayaran" using AppTheme.title
                 const Text(
                   "Total Pembayaran",
                   style: AppTheme.title,
@@ -145,30 +142,35 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Updated label "Uang Diterima" using AppTheme.title
-                const Text(
-                  "Uang Diterima",
-                  style: AppTheme.title,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Uang Diterima",
+                      style: AppTheme.body1,
+                    ),
+                    Text(
+                      formatter.format(transaction.moneyReceived),
+                      style: AppTheme.body1.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  formatter.format(transaction.moneyReceived),
-                  style: AppTheme.body1.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Updated label "Kembalian" using AppTheme.title
-                const Text(
-                  "Kembalian",
-                  style: AppTheme.title,
-                ),
-                Text(
-                  formatter.format(transaction.moneyReceived - transaction.transactionAmount),
-                  style: AppTheme.body1.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Kembalian",
+                      style: AppTheme.body1,
+                    ),
+                    Text(
+                      formatter.format(transaction.moneyReceived - transaction.transactionAmount),
+                      style: AppTheme.body1.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 if (transaction.imageEvident.isNotEmpty) ...[
@@ -179,7 +181,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      _showFullScreenImage(context, transaction.imageEvident);
+                      showFullScreenImage(context, imageProvider: transaction.imageEvident);
                     },
                     child: Container(
                       height: 200,
@@ -216,6 +218,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           ...transaction.items!.map((item) => _buildItemCard(context, item, formatter))
         else
           Card(
+            color: AppTheme.white,
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -233,6 +236,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
   Widget _buildItemCard(BuildContext context, TransactionItem item, NumberFormat formatter) {
     return Card(
+      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(
@@ -335,58 +339,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           });
         },
       ),
-    );
-  }
-
-  void _showFullScreenImage(BuildContext context, Uint8List imageBytes) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.all(10),
-          backgroundColor: Colors.transparent,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withAlpha(5),
-                    ),
-                    child: const Icon(
-                      Iconsax.close_circle,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.7,
-                  maxWidth: MediaQuery.of(context).size.width,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: InteractiveViewer(
-                  minScale: 0.5,
-                  maxScale: 4.0,
-                  child: Image.memory(
-                    imageBytes,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

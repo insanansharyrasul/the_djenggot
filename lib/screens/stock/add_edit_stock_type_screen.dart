@@ -62,13 +62,14 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.background,
+              color: AppTheme.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Nama Tipe Stok", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     InputField(
                       controller: name,
                       hintText: "contoh: Daging-dagingan", // Change from "Tipe Stok"
@@ -83,6 +84,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     ),
                     const SizedBox(height: 16),
                     const Text("Satuan", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     InputField(
                       controller: unitController,
                       hintText: "contoh: kg, liter, pcs", // Changed from "Satuan Stok"
