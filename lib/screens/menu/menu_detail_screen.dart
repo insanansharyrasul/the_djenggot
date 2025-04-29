@@ -1,7 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +11,7 @@ import 'package:the_djenggot/models/menu.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
+import 'package:the_djenggot/widgets/full_screen_image_viewer.dart';
 
 class MenuDetailScreen extends StatefulWidget {
   final Menu menu;
@@ -87,10 +85,9 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                 return ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   children: [
-                    // Hero image with gradient overlay
                     GestureDetector(
                       onTap: () {
-                        _showFullScreenImage(context, menu.menuImage);
+                        showFullScreenImage(context, imageProvider: menu.menuImage);
                       },
                       child: Stack(
                         children: [
@@ -223,61 +220,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
             },
           ),
         ));
-  }
-
-  void _showFullScreenImage(BuildContext context, Uint8List imageBytes) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.all(10),
-          backgroundColor: Colors.transparent,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withAlpha(67),
-                    ),
-                    child: const Icon(
-                      Iconsax.close_circle,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.7,
-                  maxWidth: MediaQuery.of(context).size.width,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: InteractiveViewer(
-                  minScale: 0.5,
-                  maxScale: 4.0,
-                  child: Hero(
-                    tag: "menu-image-${widget.menu.idMenu}",
-                    child: Image.memory(
-                      imageBytes,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   void _showDeleteConfirmation(BuildContext context) {

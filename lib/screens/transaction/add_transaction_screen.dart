@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/bloc/menu/menu_event.dart';
@@ -26,7 +25,9 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/utils/theme/text_style.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/dropdown_category.dart';
+import 'package:the_djenggot/widgets/full_screen_image_viewer.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
+import 'package:the_djenggot/widgets/image_source_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 
 class AddTransactionScreen extends StatefulWidget {
@@ -83,12 +84,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     setState(() {
       filteredMenus = menus.where((menu) {
-        // Filter by type if a type is selected (not "All")
         bool matchesType = selectedMenuTypeId == null ||
             selectedMenuTypeId == 'all' ||
             menu.idMenuType.idMenuType == selectedMenuTypeId;
 
-        // Filter by search text
         bool matchesSearch = searchController.text.isEmpty ||
             menu.menuName.toLowerCase().contains(searchController.text.toLowerCase());
 
@@ -107,88 +106,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     });
   }
 
-  void getImage(ImageSource imageSource) async {
-    final pickedFile = await ImagePicker().pickImage(source: imageSource);
+  void pickImage() async {
+    final pickedFile = await showImageSourcePicker(context);
     if (pickedFile != null) {
       setState(() {
-        evidenceImage = File(pickedFile.path);
+        evidenceImage = pickedFile;
       });
     }
-  }
-
-  void _showImageSourceBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Pilih Sumber Gambar",
-                style: AppTheme.appBarTitle.copyWith(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _imageSourceOption(
-                    icon: Iconsax.camera,
-                    label: "Kamera",
-                    onTap: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.camera);
-                    },
-                  ),
-                  _imageSourceOption(
-                    icon: Iconsax.gallery,
-                    label: "Galeri",
-                    onTap: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.gallery);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _imageSourceOption({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withAlpha(10),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: AppTheme.primary,
-              size: 30,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(label, style: AppTheme.textField),
-        ],
-      ),
-    );
   }
 
   int _calculateChange() {
@@ -249,7 +173,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void _previousStep() {
     if (currentStep > 1) {
       setState(() {
-        currentStep--;
+        if (currentStep == 4 && !(selectedType?.needEvidence ?? true)) {
+          currentStep = 2;
+        } else {
+          currentStep--;
+        }
       });
     }
   }
@@ -456,6 +384,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       return ListView.builder(
         shrinkWrap: true,
         itemCount: filteredMenus.length,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final item = filteredMenus[index];
           return Card(
@@ -559,7 +488,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      color: AppTheme.background,
+      color: AppTheme.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -679,7 +608,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 return _buildMenuListView(state, formatter);
               },
             ),
-            const SizedBox(height: 16),
             Row(
               children: [
                 Checkbox(
@@ -762,7 +690,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      color: AppTheme.background,
+      color: AppTheme.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -896,7 +824,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      color: AppTheme.background,
+      color: AppTheme.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -905,7 +833,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             const Text("Bukti Pembayaran", style: AppTheme.textField),
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: _showImageSourceBottomSheet,
+              onTap: pickImage,
               child: Container(
                 width: double.infinity,
                 height: 400,
@@ -941,7 +869,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   backgroundColor: AppTheme.secondary,
                   foregroundColor: Colors.white,
                 ),
-                onPressed: _showImageSourceBottomSheet,
+                onPressed: pickImage,
               ),
             ],
           ],
@@ -967,7 +895,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      color: AppTheme.background,
+      color: AppTheme.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -1145,13 +1073,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  evidenceImage!,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () async {
+                  showFullScreenImage(context, imageProvider: await evidenceImage!.readAsBytes());
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    evidenceImage!,
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ],
