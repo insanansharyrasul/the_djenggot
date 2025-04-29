@@ -113,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Iconsax.receipt,
             3,
             pageIndex,
-            "Laporan",
+            "Transaksi",
           ),
           bottomNavItem(
             () {

@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -53,6 +54,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   int totalSteps = 3;
   // Step titles
   List<String> stepTitles = ["Pilih Menu", "Pilih Tipe Transaksi", "Bukti Pembayaran"];
+
+  // Add state for search bar visibility
+  bool isSearchVisible = false;
 
   @override
   void initState() {
@@ -423,6 +427,136 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
+  // Menu list view builder
+  Widget _buildMenuListView(MenuState state, NumberFormat formatter) {
+    if (state is MenuLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state is MenuLoaded) {
+      menus = state.menus;
+
+      // Initial filtering if not yet done
+      if (filteredMenus.isEmpty) {
+        filteredMenus = menus;
+      }
+
+      if (filteredMenus.isEmpty) {
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Center(
+            child: Text(
+              "Tidak ada menu yang tersedia dengan filter ini",
+              style: TextStyle(color: Colors.grey.shade600),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(), // Disable scrolling within this list
+        itemCount: filteredMenus.length,
+        itemBuilder: (context, index) {
+          final item = filteredMenus[index];
+          return Card(
+            color: AppTheme.white,
+            elevation: 1,
+            margin: const EdgeInsets.only(bottom: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppTheme.primary.withValues(alpha: 23),
+                    ),
+                    child: Center(
+                        child: Image.memory(
+                      item.menuImage,
+                      fit: BoxFit.cover,
+                    )),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.menuName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          formatter.format(item.menuPrice),
+                          style: const TextStyle(color: AppTheme.primary),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Iconsax.minus_cirlce, color: AppTheme.danger),
+                        onPressed: () {
+                          setState(() {
+                            if (cartItems.any((cartItem) => cartItem.menu.idMenu == item.idMenu)) {
+                              final cartItem = cartItems
+                                  .firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu);
+                              if (cartItem.quantity > 1) {
+                                cartItem.quantity--;
+                              } else {
+                                cartItems.remove(cartItem);
+                              }
+                            }
+                            calculateTotal();
+                          });
+                        },
+                      ),
+                      Text(
+                        "${cartItems.firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu, orElse: () => CartItem(menu: item, quantity: 0)).quantity}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: const Icon(Iconsax.add_circle, color: AppTheme.primary),
+                        onPressed: () {
+                          setState(() {
+                            if (cartItems.any((cartItem) => cartItem.menu.idMenu == item.idMenu)) {
+                              final cartItem = cartItems
+                                  .firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu);
+                              cartItem.quantity++;
+                            } else {
+                              cartItems.add(CartItem(menu: item, quantity: 1));
+                            }
+                            calculateTotal();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    if (state is MenuError) {
+      return Text('Error: ${state.message}');
+    }
+
+    return const Center(child: CircularProgressIndicator());
+  }
+
   // Step 1: Menu Selection UI
   Widget _buildMenuSelectionStep(NumberFormat formatter) {
     return Card(
@@ -436,249 +570,138 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Pilih Menu", style: AppTheme.textField),
-            const SizedBox(height: 16),
-
-            // Menu Type Selection
-            Text("Filter Kategori Menu", style: AppTheme.textField.copyWith(fontSize: 14)),
-            const SizedBox(height: 8),
-            BlocBuilder<MenuTypeBloc, MenuTypeState>(
-              builder: (context, state) {
-                if (state is MenuTypeLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is MenuTypeLoaded) {
-                  final menuTypes = state.menuTypes;
-
-                  return DropdownButtonFormField<String>(
-                    dropdownColor: AppTheme.white,
-                    decoration: dropdownCategoryDecoration(
-                      prefixIcon: Iconsax.category,
-                    ),
-                    hint: Text(
-                      "Pilih Kategori Menu",
-                      style: createBlackThinTextStyle(14),
-                    ),
-                    icon: const Icon(Iconsax.arrow_down_1),
-                    borderRadius: BorderRadius.circular(12),
-                    value: selectedMenuTypeId,
-                    items: [
-                      DropdownMenuItem<String>(
-                        value: 'all',
-                        child: Row(
-                          children: [
-                            const Icon(Iconsax.category, size: 18, color: AppTheme.primary),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Semua Kategori",
-                              style: createBlackThinTextStyle(14),
-                            )
-                          ],
-                        ),
-                      ),
-                      ...menuTypes.map((type) {
-                        return DropdownMenuItem<String>(
-                          value: type.idMenuType,
-                          child: Row(
-                            children: [
-                              Icon(getIconFromString(type.menuTypeIcon),
-                                  size: 18, color: AppTheme.primary),
-                              const SizedBox(width: 8),
-                              Text(
-                                type.menuTypeName,
-                                style: createBlackThinTextStyle(14),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedMenuTypeId = value;
-                      });
-                      filterMenus();
-                    },
-                  );
-                }
-
-                return const SizedBox.shrink();
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            // Search Bar
-            Text("Cari Menu", style: AppTheme.textField.copyWith(fontSize: 14)),
-            const SizedBox(height: 8),
-            InputField(
-              controller: searchController,
-              keyboardType: TextInputType.text,
-              prefixIcon: const Icon(Iconsax.search_normal),
-              hintText: "Cari nama menu...",
-            ),
-
-            const SizedBox(height: 16),
-
-            // Menu Selection
-            Text("Pilih Menu", style: AppTheme.textField.copyWith(fontSize: 14)),
-            const SizedBox(height: 8),
-            BlocBuilder<MenuBloc, MenuState>(
-              builder: (context, state) {
-                if (state is MenuLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is MenuLoaded) {
-                  menus = state.menus;
-
-                  // Initial filtering if not yet done
-                  if (filteredMenus.isEmpty) {
-                    filteredMenus = menus;
-                  }
-
-                  if (filteredMenus.isEmpty) {
-                    return Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Tidak ada menu yang tersedia dengan filter ini",
-                          style: TextStyle(color: Colors.grey.shade600),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return SizedBox(
-                    height: 300, // Fixed height for menu list
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: filteredMenus.length,
-                      itemBuilder: (context, index) {
-                        final item = filteredMenus[index];
-                        return Card(
-                          color: AppTheme.white,
-                          elevation: 1,
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: AppTheme.primary.withValues(alpha: 23),
-                                  ),
-                                  child: Center(
-                                      child: Image.memory(
-                                    item.menuImage,
-                                    fit: BoxFit.cover,
-                                  )),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.menuName,
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        formatter.format(item.menuPrice),
-                                        style: const TextStyle(color: AppTheme.primary),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon:
-                                          const Icon(Iconsax.minus_cirlce, color: AppTheme.danger),
-                                      onPressed: () {
-                                        setState(() {
-                                          if (cartItems.any(
-                                              (cartItem) => cartItem.menu.idMenu == item.idMenu)) {
-                                            final cartItem = cartItems.firstWhere(
-                                                (cartItem) => cartItem.menu.idMenu == item.idMenu);
-                                            if (cartItem.quantity > 1) {
-                                              cartItem.quantity--;
-                                            } else {
-                                              cartItems.remove(cartItem);
-                                            }
-                                          }
-                                          calculateTotal();
-                                        });
-                                      },
-                                    ),
-                                    Text(
-                                      "${cartItems.firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu, orElse: () => CartItem(menu: item, quantity: 0)).quantity}",
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Iconsax.add_circle, color: AppTheme.primary),
-                                      onPressed: () {
-                                        setState(() {
-                                          if (cartItems.any(
-                                              (cartItem) => cartItem.menu.idMenu == item.idMenu)) {
-                                            final cartItem = cartItems.firstWhere(
-                                                (cartItem) => cartItem.menu.idMenu == item.idMenu);
-                                            cartItem.quantity++;
-                                          } else {
-                                            cartItems.add(CartItem(menu: item, quantity: 1));
-                                          }
-                                          calculateTotal();
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
-
-                if (state is MenuError) {
-                  return Text('Error: ${state.message}');
-                }
-
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
-
-            const SizedBox(height: 16),
+            // Header with category/search toggle
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Total:",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                Text(
-                  formatter.format(totalAmount),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                const Text("Pilih Menu", style: AppTheme.textField),
+                const Spacer(),
+                // Search toggle button
+                IconButton(
+                  icon: Icon(
+                    isSearchVisible ? Iconsax.category : Iconsax.search_normal,
                     color: AppTheme.primary,
                   ),
+                  onPressed: () {
+                    setState(() {
+                      isSearchVisible = !isSearchVisible;
+                      if (!isSearchVisible) {
+                        searchController.clear();
+                        filterMenus();
+                      }
+                    });
+                  },
+                ),
+                // Add new menu category button
+                IconButton(
+                  icon: const Icon(Iconsax.add, color: AppTheme.primary),
+                  onPressed: () {
+                    // Navigate to add menu category screen
+                    Navigator.of(context)
+                        .push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddEditMenuTypeScreen(),
+                      ),
+                    )
+                        .then((_) {
+                      // Refresh menu types after returning
+                      context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                    });
+                  },
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+
+            // Search bar or Category dropdown
+            if (isSearchVisible)
+              // Search Bar - visible when search is active
+              InputField(
+                controller: searchController,
+                keyboardType: TextInputType.text,
+                prefixIcon: const Icon(Iconsax.search_normal),
+                hintText: "Cari nama menu...",
+                onChanged: (_) => filterMenus(),
+              )
+            else
+              // Menu Type Selection - visible when search is not active
+              BlocBuilder<MenuTypeBloc, MenuTypeState>(
+                builder: (context, state) {
+                  if (state is MenuTypeLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state is MenuTypeLoaded) {
+                    final menuTypes = state.menuTypes;
+
+                    return DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      dropdownColor: AppTheme.white,
+                      decoration: dropdownCategoryDecoration(
+                        prefixIcon: Iconsax.category
+                      ),
+                      hint: Text(
+                        "Pilih Kategori Menu",
+                        style: createBlackThinTextStyle(14),
+                      ),
+                      icon: const Icon(Iconsax.arrow_down_1),
+                      borderRadius: BorderRadius.circular(12),
+                      value: selectedMenuTypeId,
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: 'all',
+                          child: Row(
+                            children: [
+                              const Icon(Iconsax.category, size: 18, color: AppTheme.primary),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Semua Kategori",
+                                style: createBlackThinTextStyle(14),
+                              )
+                            ],
+                          ),
+                        ),
+                        ...menuTypes.map((type) {
+                          return DropdownMenuItem<String>(
+                            value: type.idMenuType,
+                            child: Row(
+                              children: [
+                                Icon(getIconFromString(type.menuTypeIcon),
+                                    size: 18, color: AppTheme.primary),
+                                const SizedBox(width: 8),
+                                Text(
+                                  type.menuTypeName,
+                                  style: createBlackThinTextStyle(14),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          selectedMenuTypeId = value;
+                        });
+                        filterMenus();
+                      },
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              ),
+
+            const SizedBox(height: 16),
+
+            // Menu list
+            BlocBuilder<MenuBloc, MenuState>(
+              builder: (context, state) {
+                return _buildMenuListView(state, formatter);
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Payment details moved to bottom bar
             Row(
               children: [
                 Checkbox(
@@ -765,6 +788,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // TODO : ADD the ADD TRANSACTION TYPE BUTTON 
             const Text("Pilih Tipe Transaksi", style: AppTheme.textField),
             const SizedBox(height: 16),
             BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
@@ -926,57 +950,103 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Bottom navigation buttons
+  // Bottom navigation buttons with total
   Widget _buildBottomNavigationButtons() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          if (currentStep > 1)
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[200],
-                  foregroundColor: Colors.black87,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+    final formatter = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Total amount display
+        if (currentStep == 1 && cartItems.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            color: AppTheme.primary.withOpacity(0.1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "${cartItems.length} Barang",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+                Text(
+                  formatter.format(totalAmount),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: AppTheme.primary,
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                onPressed: _previousStep,
-                child: const Text('Kembali'),
-              ),
-            ),
-          if (currentStep > 1) const SizedBox(width: 16),
-          Expanded(
-            flex: 2,
-            child: ElevatedButton.icon(
-              style: AppTheme.buttonStyleSecond,
-              onPressed: _nextStep,
-              icon: currentStep == totalSteps
-                  ? const Icon(Iconsax.save_2, color: Colors.white)
-                  : const Icon(Iconsax.arrow_right_3, color: Colors.white),
-              label: Text(
-                currentStep == totalSteps ? 'Simpan Transaksi' : 'Lanjutkan',
-                style: AppTheme.buttonText.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
           ),
-        ],
-      ),
+
+        // Navigation buttons
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, -2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              if (currentStep > 1)
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200],
+                      foregroundColor: Colors.black87,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: _previousStep,
+                    child: const Text('Kembali'),
+                  ),
+                ),
+              if (currentStep > 1) const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton.icon(
+                  style: AppTheme.buttonStyleSecond,
+                  onPressed: _nextStep,
+                  icon: currentStep == totalSteps
+                      ? const Icon(Iconsax.save_2, color: Colors.white)
+                      : const Icon(Iconsax.arrow_right_3, color: Colors.white),
+                  label: Text(
+                    currentStep == 1
+                        ? 'Lanjut'
+                        : (currentStep == totalSteps ? 'Simpan Transaksi' : 'Lanjutkan'),
+                    style: AppTheme.buttonText.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -987,3 +1057,5 @@ class CartItem {
 
   CartItem({required this.menu, required this.quantity});
 }
+
+// Make sure to import this if not already imported
