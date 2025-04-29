@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
+import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -636,9 +637,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     return DropdownButtonFormField<String>(
                       isExpanded: true,
                       dropdownColor: AppTheme.white,
-                      decoration: dropdownCategoryDecoration(
-                        prefixIcon: Iconsax.category
-                      ),
+                      decoration: dropdownCategoryDecoration(prefixIcon: Iconsax.category),
                       hint: Text(
                         "Pilih Kategori Menu",
                         style: createBlackThinTextStyle(14),
@@ -788,8 +787,30 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // TODO : ADD the ADD TRANSACTION TYPE BUTTON 
-            const Text("Pilih Tipe Transaksi", style: AppTheme.textField),
+            // Header with add transaction type button
+            Row(
+              children: [
+                const Text("Pilih Tipe Transaksi", style: AppTheme.textField),
+                const Spacer(),
+                // Add transaction type button
+                IconButton(
+                  icon: const Icon(Iconsax.add, color: AppTheme.primary),
+                  onPressed: () {
+                    // Navigate to add transaction type screen
+                    Navigator.of(context)
+                        .push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddEditTransactionTypeScreen(),
+                      ),
+                    )
+                        .then((_) {
+                      // Refresh transaction types after returning
+                      context.read<TransactionTypeBloc>().add(LoadTransactionTypes());
+                    });
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
               builder: (context, state) {
@@ -1057,5 +1078,3 @@ class CartItem {
 
   CartItem({required this.menu, required this.quantity});
 }
-
-// Make sure to import this if not already imported
