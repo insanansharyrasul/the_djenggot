@@ -39,8 +39,7 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
   // Calculate total amount for the selected date
   int get _totalAmount {
-    return _filteredTransactions.fold(
-        0, (sum, transaction) => sum + transaction.transactionAmount);
+    return _filteredTransactions.fold(0, (sum, transaction) => sum + transaction.transactionAmount);
   }
 
   // Calculate percentage change from previous day
@@ -56,8 +55,8 @@ class _DailySalesCardState extends State<DailySalesCard> {
           date.day == previousDate.day;
     }).toList();
 
-    final previousTotal = previousTransactions.fold(
-        0, (sum, transaction) => sum + transaction.transactionAmount);
+    final previousTotal =
+        previousTransactions.fold(0, (sum, transaction) => sum + transaction.transactionAmount);
 
     if (previousTotal == 0) return 0;
     return ((_totalAmount - previousTotal) / previousTotal) * 100;
@@ -71,8 +70,7 @@ class _DailySalesCardState extends State<DailySalesCard> {
     for (var transaction in _filteredTransactions) {
       final date = DateTime.parse(transaction.timestamp);
       final hour = date.hour;
-      hourlyTotals[hour] =
-          (hourlyTotals[hour] ?? 0) + transaction.transactionAmount;
+      hourlyTotals[hour] = (hourlyTotals[hour] ?? 0) + transaction.transactionAmount;
     }
 
     // Create chart data
@@ -87,14 +85,12 @@ class _DailySalesCardState extends State<DailySalesCard> {
   @override
   Widget build(BuildContext context) {
     final spots = _generateChartData();
-    final String formattedDate =
-        DateFormat('d MMM yyyy').format(widget.selectedDate);
+    final String formattedDate = DateFormat('d MMM yyyy').format(widget.selectedDate);
     final bool isToday = widget.selectedDate.day == DateTime.now().day &&
         widget.selectedDate.month == DateTime.now().month &&
         widget.selectedDate.year == DateTime.now().year;
 
     return Card(
-      margin: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -140,11 +136,9 @@ class _DailySalesCardState extends State<DailySalesCard> {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back_ios,
-                          color: AppTheme.white, size: 18),
+                      icon: const Icon(Icons.arrow_back_ios, color: AppTheme.white, size: 18),
                       onPressed: () {
-                        widget.onDateChanged(widget.selectedDate
-                            .subtract(const Duration(days: 1)));
+                        widget.onDateChanged(widget.selectedDate.subtract(const Duration(days: 1)));
                       },
                     ),
                     Text(
@@ -155,11 +149,9 @@ class _DailySalesCardState extends State<DailySalesCard> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios,
-                          color: AppTheme.white, size: 18),
+                      icon: const Icon(Icons.arrow_forward_ios, color: AppTheme.white, size: 18),
                       onPressed: () {
-                        final tomorrow =
-                            widget.selectedDate.add(const Duration(days: 1));
+                        final tomorrow = widget.selectedDate.add(const Duration(days: 1));
                         if (!tomorrow.isAfter(DateTime.now())) {
                           widget.onDateChanged(tomorrow);
                         }
@@ -173,9 +165,7 @@ class _DailySalesCardState extends State<DailySalesCard> {
               children: [
                 if (_percentageChange != 0)
                   Icon(
-                    _percentageChange > 0
-                        ? Icons.trending_up
-                        : Icons.trending_down,
+                    _percentageChange > 0 ? Icons.trending_up : Icons.trending_down,
                     color: AppTheme.white,
                     size: 16,
                   ),
@@ -203,12 +193,12 @@ class _DailySalesCardState extends State<DailySalesCard> {
                       LineChartBarData(
                         spots: spots,
                         isCurved: true,
-                        color: AppTheme.white.withOpacity(0.8),
+                        color: AppTheme.white.withAlpha(204), // Changed from withOpacity(0.8)
                         isStrokeCapRound: true,
                         dotData: const FlDotData(show: false),
                         belowBarData: BarAreaData(
                           show: true,
-                          color: AppTheme.white.withOpacity(0.2),
+                          color: AppTheme.white.withAlpha(51), // Changed from withOpacity(0.2)
                         ),
                       ),
                     ],
