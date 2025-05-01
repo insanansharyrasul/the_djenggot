@@ -264,10 +264,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
           stepTitles[currentStep - 1],
           style: AppTheme.appBarTitle,

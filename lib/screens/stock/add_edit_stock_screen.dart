@@ -49,10 +49,6 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title:
             Text(widget.stock == null ? "Tambah Stok" : "Update Stok", style: AppTheme.appBarTitle),
         leading: IconButton(

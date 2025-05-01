@@ -16,10 +16,6 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: const Text(
           "Setting",
           style: AppTheme.appBarTitle,

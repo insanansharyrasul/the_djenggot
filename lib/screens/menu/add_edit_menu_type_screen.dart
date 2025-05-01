@@ -36,9 +36,6 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
           widget.menuType == null ? "Tambah Tipe Menu" : "Update Tipe Menu",
           style: AppTheme.appBarTitle,

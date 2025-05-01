@@ -39,9 +39,6 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
           widget.transactionType == null ? "Tambah Tipe Transaksi" : "Update Tipe Transaksi",
           style: AppTheme.appBarTitle,

@@ -9,7 +9,6 @@ import 'package:the_djenggot/screens/stock/stock_screen.dart';
 import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
-import 'package:the_djenggot/widgets/floating_button.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -30,14 +29,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const SettingScreen()
   ];
 
-  late final List<Widget> floatingButtonList;
-
   @override
   void initState() {
     super.initState();
-    floatingButtonList = [
-      floatingButton(icon: Icons.point_of_sale, onPressed: () {}),
-    ];
   }
 
   @override
@@ -53,25 +47,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: pages,
       ),
       bottomNavigationBar: buildMyNavBar(context),
-      floatingActionButton: (pageIndex >= 0 && pageIndex < floatingButtonList.length)
-          ? floatingButtonList[pageIndex]
-          : null,
     );
   }
 
   Container buildMyNavBar(BuildContext context) {
     return Container(
       height: 80,
-      decoration: const BoxDecoration(
-        color: AppTheme.background,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 25,
-            offset: Offset(0, 2),
-          ),
-        ]
-      ),
+      decoration: const BoxDecoration(color: AppTheme.background, boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 25,
+          offset: Offset(0, 2),
+        ),
+      ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

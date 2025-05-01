@@ -38,9 +38,6 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
           widget.stockType == null ? "Tambah Tipe Stok" : "Update Tipe Stok",
           style: AppTheme.appBarTitle,

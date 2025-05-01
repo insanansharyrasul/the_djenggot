@@ -28,6 +28,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   TransactionType? selectedType;
   String sortBy = 'date';
   bool ascending = false;
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -39,9 +40,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: const Text(
           "Daftar Transaksi",
           style: AppTheme.appBarTitle,
@@ -51,7 +49,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         builder: (context, state) {
           if (state is TransactionLoaded) {
             var transactions = state.transactions;
-      
+
             // Apply date filter
             if (startDate != null && endDate != null) {
               transactions = transactions.where((t) {
@@ -60,15 +58,15 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     date.isBefore(endDate!.add(const Duration(days: 1)));
               }).toList();
             }
-      
+
             // Apply type filter
             if (selectedType != null) {
               transactions = transactions
-                  .where((t) =>
-                      t.transactionType.idTransactionType == selectedType!.idTransactionType)
+                  .where(
+                      (t) => t.transactionType.idTransactionType == selectedType!.idTransactionType)
                   .toList();
             }
-      
+
             // Apply sorting
             transactions.sort((a, b) {
               switch (sortBy) {
@@ -88,28 +86,36 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                   return 0;
               }
             });
-      
+
             if (transactions.isEmpty) {
-              return const EmptyState(
-                icon: Iconsax.receipt,
-                title: "Belum ada transaksi",
-                subtitle:
-                    "Tambahkan transaksi baru dengan menekan tombol '+' di pojok kanan bawah.",
+              return const Expanded(
+                child: EmptyState(
+                  icon: Iconsax.receipt,
+                  title: "Belum ada transaksi",
+                  subtitle:
+                      "Tambahkan transaksi baru dengan menekan tombol '+' di pojok kanan bawah.",
+                ),
               );
             }
-      
-            return RefreshIndicator(
-              onRefresh: () async {
-                _reloadTransactions();
-              },
-              child: ListView.builder(
-                padding: const EdgeInsets.all(32),
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  final transaction = transactions[index];
-                  return _buildTransactionCard(context, transaction);
-                },
-              ),
+
+            return Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      _reloadTransactions();
+                    },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: transactions.length,
+                      itemBuilder: (context, index) {
+                        final transaction = transactions[index];
+                        return _buildTransactionCard(context, transaction);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             );
           }
           return const Center(child: CircularProgressIndicator());

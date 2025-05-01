@@ -91,10 +91,6 @@ class _MenuScreenState extends State<MenuScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
         title: const Text(
           "Daftar Menu",
           style: AppTheme.appBarTitle,

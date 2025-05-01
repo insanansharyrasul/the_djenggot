@@ -37,6 +37,13 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: AppTheme.background,
         scaffoldBackgroundColor: AppTheme.background,
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          backgroundColor: AppTheme.background,
+          centerTitle: true,
+          titleTextStyle: AppTheme.appBarTitle,
+          scrolledUnderElevation: 0,
+        ),
       ),
     );
   }

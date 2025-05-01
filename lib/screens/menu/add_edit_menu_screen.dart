@@ -54,10 +54,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
           widget.menu == null ? "Tambah Menu" : "Update Menu",
           style: AppTheme.appBarTitle,

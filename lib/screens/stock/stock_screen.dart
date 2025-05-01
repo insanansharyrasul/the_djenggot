@@ -88,10 +88,6 @@ class _StockScreenState extends State<StockScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
         title: const Text(
           "Daftar Stok",
           style: AppTheme.appBarTitle,

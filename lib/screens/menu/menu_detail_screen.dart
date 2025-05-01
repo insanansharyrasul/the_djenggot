@@ -43,9 +43,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
     return Scaffold(
         backgroundColor: AppTheme.background,
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: AppTheme.background,
-          centerTitle: true,
           title: const Text(
             'Detail Menu',
             style: AppTheme.appBarTitle,
