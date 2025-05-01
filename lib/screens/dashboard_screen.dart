@@ -75,6 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             0,
             pageIndex,
             "Beranda",
+            context,
           ),
           bottomNavItem(
             () {
@@ -85,6 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             1,
             pageIndex,
             "Stok",
+            context,
           ),
           bottomNavItem(
             () {
@@ -95,6 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             2,
             pageIndex,
             "Menu",
+            context,
           ),
           bottomNavItem(
             () {
@@ -105,6 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             3,
             pageIndex,
             "Transaksi",
+            context,
           ),
           bottomNavItem(
             () {
@@ -115,6 +119,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             4,
             pageIndex,
             "Setting",
+            context,
           ),
         ],
       ),
