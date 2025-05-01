@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:the_djenggot/screens/home_screen/home_screen.dart';
 import 'package:the_djenggot/screens/setting_screen.dart';
-import 'package:the_djenggot/screens/home_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_list_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_list_screen.dart';
 import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
