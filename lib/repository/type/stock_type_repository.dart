@@ -5,7 +5,8 @@ class StockTypeRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
   Future<List<StockType>> getAllStockTypes() async {
-    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('STOCK_TYPE', '', []);
+    final List<Map<String, dynamic>> maps =
+        await _databaseHelper.getAllQuery('STOCK_TYPE', '', []);
     return maps.map((map) => StockType.fromMap(map)).toList();
   }
 
@@ -19,10 +20,7 @@ class StockTypeRepository {
   }
 
   Future<int> addStockType(StockType stockType) async {
-    return await _databaseHelper.insertQuery(
-      'STOCK_TYPE',
-      stockType.toMap()
-    );
+    return await _databaseHelper.insertQuery('STOCK_TYPE', stockType.toMap());
   }
 
   Future<int> updateStockType(StockType stockType) async {

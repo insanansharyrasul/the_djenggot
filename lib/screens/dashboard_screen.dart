@@ -1,14 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:the_djenggot/screens/home_screen/home_screen.dart';
 import 'package:the_djenggot/screens/setting_screen.dart';
-import 'package:the_djenggot/screens/home_screen.dart';
-import 'package:the_djenggot/screens/menu/menu_screen.dart';
-import 'package:the_djenggot/screens/stock/stock_screen.dart';
+import 'package:the_djenggot/screens/menu/menu_list_screen.dart';
+import 'package:the_djenggot/screens/stock/stock_list_screen.dart';
 import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
-import 'package:the_djenggot/widgets/floating_button.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -21,63 +21,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final PageController pageController = PageController();
   int pageIndex = 0;
 
-  final pages = <Widget>[
-    const HomeScreen(),
-    const StockScreen(),
-    const MenuScreen(),
-    const TransactionListScreen(),
-    const SettingScreen()
-  ];
-
-  late final List<Widget> floatingButtonList;
-
   @override
   void initState() {
     super.initState();
-    floatingButtonList = [
-      floatingButton(icon: Icons.point_of_sale, onPressed: () {
-        context.push('/add-transaction');
-      }),
-      floatingButton(
-        icon: Iconsax.add,
-        onPressed: () {
-          context.push('/add-edit-stock');
-        },
-      ),
-      floatingButton(
-        icon: Iconsax.add,
-        onPressed: () {
-          context.push('/add-edit-menu');
-        },
-      ),
-      floatingButton(
-        icon: Iconsax.add,
-        onPressed: () {
-          context.push('/add-transaction');
-        },
-      ),
-    ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final pages = <Widget>[
+      HomeScreen(pageController: pageController),
+      const StockScreen(),
+      const MenuScreen(),
+      const TransactionListScreen(),
+      const SettingScreen()
+    ];
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: PageView(
-          controller: pageController,
-          onPageChanged: (index) {
-            setState(() {
-              pageIndex = index;
-            });
-          },
-          children: pages,
-        ),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            pageIndex = index;
+          });
+        },
+        children: pages,
       ),
       bottomNavigationBar: buildMyNavBar(context),
-      floatingActionButton: (pageIndex >= 0 && pageIndex < floatingButtonList.length)
-          ? floatingButtonList[pageIndex]
-          : null,
     );
   }
 
@@ -86,6 +55,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       height: 80,
       decoration: const BoxDecoration(
         color: AppTheme.background,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 25,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -99,6 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             0,
             pageIndex,
             "Beranda",
+            context,
           ),
           bottomNavItem(
             () {
@@ -109,6 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             1,
             pageIndex,
             "Stok",
+            context,
           ),
           bottomNavItem(
             () {
@@ -119,6 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             2,
             pageIndex,
             "Menu",
+            context,
           ),
           bottomNavItem(
             () {
@@ -128,7 +107,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Iconsax.receipt,
             3,
             pageIndex,
-            "Laporan",
+            "Transaksi",
+            context,
           ),
           bottomNavItem(
             () {
@@ -139,6 +119,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             4,
             pageIndex,
             "Setting",
+            context,
           ),
         ],
       ),

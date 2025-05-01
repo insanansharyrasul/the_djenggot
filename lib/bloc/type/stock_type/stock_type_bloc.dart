@@ -8,14 +8,16 @@ import 'package:uuid/uuid.dart';
 class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
   final StockTypeRepository stockTypeRepository;
 
-  StockTypeBloc({required this.stockTypeRepository}) : super(StockTypeInitial()) {
+  StockTypeBloc({required this.stockTypeRepository})
+      : super(StockTypeInitial()) {
     on<LoadStockTypes>(_onLoadStockTypes);
     on<AddStockType>(_onAddStockType);
     on<UpdateStockType>(_onUpdateStockType);
     on<DeleteStockType>(_onDeleteStockType);
   }
 
-  Future<void> _onLoadStockTypes(LoadStockTypes event, Emitter<StockTypeState> emit) async {
+  Future<void> _onLoadStockTypes(
+      LoadStockTypes event, Emitter<StockTypeState> emit) async {
     emit(StockTypeLoading());
     try {
       final stockTypes = await stockTypeRepository.getAllStockTypes();
@@ -25,7 +27,8 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
     }
   }
 
-  Future<void> _onAddStockType(AddStockType event, Emitter<StockTypeState> emit) async {
+  Future<void> _onAddStockType(
+      AddStockType event, Emitter<StockTypeState> emit) async {
     final currentState = state;
     try {
       // final stockTypeId = const Uuid().v4();
@@ -47,7 +50,8 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
     }
   }
 
-  Future<void> _onUpdateStockType(UpdateStockType event, Emitter<StockTypeState> emit) async {
+  Future<void> _onUpdateStockType(
+      UpdateStockType event, Emitter<StockTypeState> emit) async {
     final currentState = state;
     try {
       final updatedStockType = StockType(
@@ -75,14 +79,16 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
     }
   }
 
-  Future<void> _onDeleteStockType(DeleteStockType event, Emitter<StockTypeState> emit) async {
+  Future<void> _onDeleteStockType(
+      DeleteStockType event, Emitter<StockTypeState> emit) async {
     final currentState = state;
     try {
       await stockTypeRepository.deleteStockType(event.stockType.idStockType);
 
       if (currentState is StockTypeLoaded) {
         final filteredStockTypes = currentState.stockTypes
-            .where((stockType) => stockType.idStockType != event.stockType.idStockType)
+            .where((stockType) =>
+                stockType.idStockType != event.stockType.idStockType)
             .toList();
 
         emit(StockTypeLoaded(filteredStockTypes));

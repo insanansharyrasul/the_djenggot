@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +11,7 @@ import 'package:the_djenggot/models/transaction/transaction_history.dart';
 import 'package:the_djenggot/models/transaction/transaction_item.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
+import 'package:the_djenggot/widgets/full_screen_image_viewer.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 
 class TransactionDetailScreen extends StatefulWidget {
@@ -35,9 +34,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: const Text(
           "Detail Transaksi",
           style: AppTheme.appBarTitle,
@@ -91,13 +87,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Transaction Info Card
         Card(
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          color: AppTheme.background,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -121,7 +115,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                         ),
                         Text(
                           formattedDate,
-                          style: const TextStyle(color: Colors.grey),
+                          style: const TextStyle(color: Colors.grey, fontFamily: AppTheme.fontName),
                         ),
                       ],
                     ),
@@ -132,15 +126,46 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 const SizedBox(height: 16),
                 const Text(
                   "Total Pembayaran",
-                  style: TextStyle(fontSize: 16),
+                  style: AppTheme.title,
                 ),
                 Text(
                   formatter.format(transaction.transactionAmount),
-                  style: const TextStyle(
+                  style: AppTheme.body1.copyWith(
                     color: AppTheme.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                   ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Uang Diterima",
+                      style: AppTheme.body1,
+                    ),
+                    Text(
+                      formatter.format(transaction.moneyReceived),
+                      style: AppTheme.body1.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Kembalian",
+                      style: AppTheme.body1,
+                    ),
+                    Text(
+                      formatter.format(transaction.moneyReceived - transaction.transactionAmount),
+                      style: AppTheme.body1.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 if (transaction.imageEvident.isNotEmpty) ...[
@@ -151,7 +176,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      _showFullScreenImage(context, transaction.imageEvident);
+                      showFullScreenImage(context, imageProvider: transaction.imageEvident);
                     },
                     child: Container(
                       height: 200,
@@ -170,10 +195,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             ),
           ),
         ),
-
         const SizedBox(height: 20),
-
-        // Transaction Items
         Text(
           "Daftar Item",
           style: AppTheme.headline.copyWith(
@@ -182,12 +204,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           ),
         ),
         const SizedBox(height: 8),
-
-        // Items List
         if (transaction.items != null && transaction.items!.isNotEmpty)
           ...transaction.items!.map((item) => _buildItemCard(context, item, formatter))
         else
           Card(
+            color: AppTheme.white,
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -205,6 +226,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
   Widget _buildItemCard(BuildContext context, TransactionItem item, NumberFormat formatter) {
     return Card(
+      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(
@@ -286,7 +308,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
           context.read<TransactionBloc>().add(DeleteTransactionEvent(widget.id));
 
-          Navigator.pop(context); // Close the loading dialog
+          Navigator.pop(context);
 
           showDialog(
             barrierDismissible: false,
@@ -302,62 +324,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           );
 
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context); // Back to transactions list
+            Navigator.pop(context);
+            Navigator.pop(context);
           });
         },
       ),
-    );
-  }
-
-  void _showFullScreenImage(BuildContext context, Uint8List imageBytes) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.all(10),
-          backgroundColor: Colors.transparent,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withAlpha(5),
-                    ),
-                    child: const Icon(
-                      Iconsax.close_circle,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.7,
-                  maxWidth: MediaQuery.of(context).size.width,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: InteractiveViewer(
-                  minScale: 0.5,
-                  maxScale: 4.0,
-                  child: Image.memory(
-                    imageBytes,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

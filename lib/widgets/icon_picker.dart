@@ -26,8 +26,8 @@ class _IconPickerState extends State<IconPicker> {
     // Filter icons based on search query
     final filteredIcons = searchQuery.isEmpty
         ? iconsaxIcons
-        : Map.fromEntries(iconsaxIcons.entries
-            .where((entry) => entry.key.toLowerCase().contains(searchQuery.toLowerCase())));
+        : Map.fromEntries(iconsaxIcons.entries.where((entry) =>
+            entry.key.toLowerCase().contains(searchQuery.toLowerCase())));
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
@@ -84,15 +84,18 @@ class _IconPickerState extends State<IconPicker> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color:
-                          isSelected ? Colors.blue.withValues(alpha:  0.2) : Colors.grey.withValues(alpha: 0.1),
+                      color: isSelected
+                          ? Colors.blue.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: isSelected ? Border.all(color: Colors.blue) : null,
+                      border:
+                          isSelected ? Border.all(color: Colors.blue) : null,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(entry.value, size: 28, color: isSelected ? Colors.blue : null),
+                        Icon(entry.value,
+                            size: 28, color: isSelected ? Colors.blue : null),
                         const SizedBox(height: 4),
                         Text(
                           entry.key,
@@ -173,7 +176,7 @@ class _IconPickerState extends State<IconPicker> {
       'cash': Icons.paid,
       'currency_exchange': Icons.currency_exchange,
       'atm': Icons.atm,
-      
+
       // Stock/Inventory-related icons
       'box': Icons.inventory_2,
       'box_add': Icons.add_box,

@@ -3,7 +3,8 @@ import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_event.d
 import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_state.dart';
 import 'package:the_djenggot/repository/type/transaction_type_repository.dart';
 
-class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeState> {
+class TransactionTypeBloc
+    extends Bloc<TransactionTypeEvent, TransactionTypeState> {
   final TransactionTypeRepository _repository;
 
   TransactionTypeBloc(this._repository) : super(TransactionTypeLoading()) {
@@ -19,7 +20,11 @@ class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeStat
 
     on<AddTransactionType>((event, emit) async {
       try {
-        await _repository.addTransactionType(event.name, icon: event.icon);
+        await _repository.addTransactionType(
+          event.name,
+          icon: event.icon,
+          needEvidence: event.needEvidence ?? true,
+        );
         final transactionTypes = await _repository.getAllTransactionTypes();
         emit(TransactionTypeLoaded(transactionTypes));
       } catch (e) {
@@ -29,8 +34,12 @@ class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeStat
 
     on<UpdateTransactionType>((event, emit) async {
       try {
-        await _repository.updateTransactionType(event.transactionType, event.newName,
-            icon: event.icon);
+        await _repository.updateTransactionType(
+          event.transactionType,
+          event.newName,
+          icon: event.icon,
+          needEvidence: event.needEvidence,
+        );
         final transactionTypes = await _repository.getAllTransactionTypes();
         emit(TransactionTypeLoaded(transactionTypes));
       } catch (e) {
@@ -50,7 +59,8 @@ class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeStat
 
     on<SearchTransactionTypes>((event, emit) async {
       try {
-        final transactionTypes = await _repository.searchTransactionTypes(event.query);
+        final transactionTypes =
+            await _repository.searchTransactionTypes(event.query);
         emit(TransactionTypeLoaded(transactionTypes));
       } catch (e) {
         emit(TransactionTypeError(e.toString()));

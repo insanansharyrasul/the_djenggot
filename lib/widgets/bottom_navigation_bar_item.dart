@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 
 Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int currentPageIndex,
-        String itemName) =>
+        String itemName, BuildContext currentContext) =>
     GestureDetector(
       onTap: onTap,
       child: Container(
         height: double.infinity,
-        width: 80,
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        width:
+            MediaQuery.of(currentContext).size.width / 5 - 8, 
+        padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -42,7 +43,7 @@ Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int
                           : Colors.grey,
                   fontSize: 12,
                   fontFamily: AppTheme.fontName),
-                textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

@@ -32,9 +32,13 @@ class Menu {
       idMenu: map['id_menu']?.toString() ?? '',
       menuName: map['menu_name']?.toString() ?? '',
       menuPrice: map['menu_price'] != null
-          ? (map['menu_price'] is String ? int.parse(map['menu_price']) : map['menu_price'] as int)
+          ? (map['menu_price'] is String
+              ? int.parse(map['menu_price'])
+              : map['menu_price'] as int)
           : 0,
-      menuImage: map['menu_image'] != null ? Uint8List.fromList(map['menu_image']) : Uint8List(0),
+      menuImage: map['menu_image'] != null
+          ? Uint8List.fromList(map['menu_image'])
+          : Uint8List(0),
       idMenuType: menuType,
     );
   }

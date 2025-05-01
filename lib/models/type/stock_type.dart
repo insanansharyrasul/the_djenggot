@@ -32,5 +32,6 @@ class StockType extends Equatable {
   }
 
   @override
-  List<Object?> get props => [idStockType, stockTypeName, stockTypeIcon, stockUnit];
+  List<Object?> get props =>
+      [idStockType, stockTypeName, stockTypeIcon, stockUnit];
 }

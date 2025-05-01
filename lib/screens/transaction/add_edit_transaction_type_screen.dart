@@ -1,4 +1,3 @@
-// TODO: Compress image before upload
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,13 +15,16 @@ class AddEditTransactionTypeScreen extends StatefulWidget {
   const AddEditTransactionTypeScreen({super.key, this.transactionType});
 
   @override
-  State<AddEditTransactionTypeScreen> createState() => _AddEditTransactionTypeScreenState();
+  State<AddEditTransactionTypeScreen> createState() =>
+      _AddEditTransactionTypeScreenState();
 }
 
-class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScreen> {
+class _AddEditTransactionTypeScreenState
+    extends State<AddEditTransactionTypeScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
+  bool needEvidence = true;
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
     if (widget.transactionType != null) {
       name.text = widget.transactionType!.transactionTypeName;
       iconController.text = widget.transactionType!.transactionTypeIcon;
+      needEvidence = widget.transactionType!.needEvidence;
     }
   }
 
@@ -37,11 +40,10 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
-          widget.transactionType == null ? "Tambah Tipe Transaksi" : "Update Tipe Transaksi",
+          widget.transactionType == null
+              ? "Tambah Tipe Transaksi"
+              : "Update Tipe Transaksi",
           style: AppTheme.appBarTitle,
         ),
         leading: IconButton(
@@ -61,13 +63,14 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.background,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Nama Tipe Transaksi", style: AppTheme.textField),
+                    const Text("Nama Tipe Transaksi",
+                        style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     InputField(
                       controller: name,
                       hintText: "Pembayaran",
@@ -124,6 +127,26 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                     const SizedBox(height: 16),
                     const Divider(),
                     const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: needEvidence,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              needEvidence = value ?? true;
+                            });
+                          },
+                        ),
+                        Text(
+                          "Membutuhkan bukti pembayaran",
+                          style: AppTheme.textField.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -141,7 +164,8 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                             if (iconController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("Pilih icon untuk tipe transaksi"),
+                                  content:
+                                      Text("Pilih icon untuk tipe transaksi"),
                                   backgroundColor: AppTheme.danger,
                                 ),
                               );
@@ -152,7 +176,8 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -165,16 +190,16 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                                     UpdateTransactionType(
                                       widget.transactionType!,
                                       name.text,
-                                      icon:
-                                          iconController.text.isEmpty ? null : iconController.text,
+                                      iconController.text,
+                                      needEvidence,
                                     ),
                                   );
                             } else {
                               context.read<TransactionTypeBloc>().add(
                                     AddTransactionType(
                                       name.text,
-                                      icon:
-                                          iconController.text.isEmpty ? null : iconController.text,
+                                      iconController.text,
+                                      needEvidence,
                                     ),
                                   );
                             }
@@ -184,7 +209,8 @@ class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScr
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "success",
                                 title: "Pengajuan Berhasil",
                                 message: "Kembali ke dashboard...",

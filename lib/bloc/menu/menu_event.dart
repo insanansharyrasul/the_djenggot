@@ -25,7 +25,8 @@ class UpdateMenu extends MenuEvent {
   final int newPrice;
   final String newMenuType;
   final Uint8List? newMenuImage;
-  UpdateMenu(this.menu, this.newName, this.newPrice, this.newMenuType, this.newMenuImage);
+  UpdateMenu(this.menu, this.newName, this.newPrice, this.newMenuType,
+      this.newMenuImage);
 }
 
 class DeleteMenu extends MenuEvent {

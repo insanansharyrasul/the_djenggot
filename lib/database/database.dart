@@ -36,7 +36,8 @@ class DatabaseHelper {
         CREATE TABLE TRANSACTION_TYPE (
           id_transaction_type TEXT PRIMARY KEY NOT NULL,
           transaction_type_name TEXT NOT NULL,
-          transaction_type_icon TEXT NOT NULL
+          transaction_type_icon TEXT NOT NULL,
+          need_evidence INTEGER NOT NULL DEFAULT 1
         )
       ''');
 
@@ -62,7 +63,8 @@ class DatabaseHelper {
         CREATE TABLE TRANSACTION_HISTORY (
           id_transaction_history TEXT PRIMARY KEY NOT NULL,
           id_transaction_type TEXT NOT NULL,
-          transaction_amount REAL NOT NULL,
+          transaction_amount INTEGER NOT NULL,
+          money_received INTEGER NOT NULL DEFAULT 0,
           image_evident BLOB NOT NULL,
           timestamp TEXT NOT NULL,  
           FOREIGN KEY (id_transaction_type) REFERENCES TRANSACTION_TYPE(id_transaction_type) ON DELETE CASCADE ON UPDATE CASCADE
@@ -116,7 +118,8 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> countQuery(String tableName, String where, List<dynamic> whereArgs) async {
+  Future<int> countQuery(
+      String tableName, String where, List<dynamic> whereArgs) async {
     Database db = await instance.db;
     final result = await db.query(
       tableName,

@@ -31,8 +31,9 @@ class Stock {
       stockName: map['stock_name'],
       stockQuantity: int.parse(map['stock_quantity'].toString()),
       idStockType: StockType.fromMap(map['id_stock_type']),
-      stockThreshold:
-          map['stock_threshold'] != null ? int.parse(map['stock_threshold'].toString()) : 0,
+      stockThreshold: map['stock_threshold'] != null
+          ? int.parse(map['stock_threshold'].toString())
+          : 0,
     );
   }
 }

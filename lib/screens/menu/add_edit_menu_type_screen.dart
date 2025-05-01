@@ -14,11 +14,13 @@ class AddEditMenuTypeScreen extends StatefulWidget {
   final MenuType? menuType;
   const AddEditMenuTypeScreen({super.key, this.menuType});
 
+  // Use key in createState to improve performance when reusing widgets
   @override
   State<AddEditMenuTypeScreen> createState() => _AddEditMenuTypeScreenState();
 }
 
 class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
+  // Make controllers and formKey instance variables to prevent recreation on rebuild
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
@@ -36,9 +38,6 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: Text(
           widget.menuType == null ? "Tambah Tipe Menu" : "Update Tipe Menu",
           style: AppTheme.appBarTitle,
@@ -60,13 +59,14 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.background,
+              color: AppTheme.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Nama Tipe Menu", style: AppTheme.textField),
+                    const SizedBox(height: 16),
                     InputField(
                       controller: name,
                       hintText: "contoh: Minuman", // Change from "Tipe Menu"
