@@ -46,11 +46,17 @@ class MainApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: AppTheme.background,
         appBarTheme: const AppBarTheme(
-          elevation: 0,
+          elevation: 5,
+          foregroundColor: AppTheme.white,
           backgroundColor: AppTheme.white,
+          iconTheme: IconThemeData(
+            color: AppTheme.nearlyBlack,
+          ),
+          shadowColor: AppTheme.white,
+          surfaceTintColor: AppTheme.white,
           centerTitle: true,
           titleTextStyle: AppTheme.appBarTitle,
-          scrolledUnderElevation: 0,
+          scrolledUnderElevation: 5,
         ),
       ),
     );

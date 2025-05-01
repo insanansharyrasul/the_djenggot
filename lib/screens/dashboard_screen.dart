@@ -21,14 +21,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final PageController pageController = PageController();
   int pageIndex = 0;
 
-  final pages = <Widget>[
-    const HomeScreen(),
-    const StockScreen(),
-    const MenuScreen(),
-    const TransactionListScreen(),
-    const SettingScreen()
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -36,6 +28,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = <Widget>[
+      HomeScreen(pageController: pageController),
+      const StockScreen(),
+      const MenuScreen(),
+      const TransactionListScreen(),
+      const SettingScreen()
+    ];
+
     return Scaffold(
       body: PageView(
         controller: pageController,

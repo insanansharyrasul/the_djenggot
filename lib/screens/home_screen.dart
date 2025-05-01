@@ -14,10 +14,14 @@ import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_event.dart';
 import 'package:the_djenggot/models/transaction/transaction_item.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/transaction/daily_sales_card.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final PageController pageController;
+
+  const HomeScreen({super.key, required this.pageController});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,6 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    refresh();
+  }
+
+  void refresh() {
     context.read<MenuBloc>().add(LoadMenu());
     context.read<StockBloc>().add(LoadStock());
     context.read<MenuTypeBloc>().add(LoadMenuTypes());
@@ -45,39 +53,40 @@ class _HomeScreenState extends State<HomeScreen> {
           style: AppTheme.appBarTitle,
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<MenuBloc>().add(LoadMenu());
-          context.read<StockBloc>().add(LoadStock());
-          context.read<MenuTypeBloc>().add(LoadMenuTypes());
-          context.read<StockTypeBloc>().add(LoadStockTypes());
-          context.read<TransactionBloc>().add(LoadTransactions());
-        },
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            BlocBuilder<TransactionBloc, TransactionState>(
-              builder: (context, state) {
-                if (state is TransactionLoaded) {
-                  return DailySalesCard(
-                    transactions: state.transactions,
-                    onDateChanged: (date) {
-                      setState(() {
-                        selectedDate = date;
-                      });
-                    },
-                    selectedDate: selectedDate,
-                  );
-                } else if (state is TransactionLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  return const Center(child: Text("Error loading transactions"));
-                }
-              },
-            ),
-            const SizedBox(height: 32),
-            _buildStatsGrid(),
-          ],
+      body: BlocListener<TransactionBloc, TransactionState>(
+        listener: (context, state) {},
+        child: RefreshIndicator(
+          onRefresh: () async {
+            refresh();
+          },
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              BlocBuilder<TransactionBloc, TransactionState>(
+                builder: (context, state) {
+                  if (state is TransactionLoaded) {
+                    return DailySalesCard(
+                      transactions: state.transactions,
+                      onDateChanged: (date) {
+                        setState(() {
+                          selectedDate = date;
+                        });
+                      },
+                      selectedDate: selectedDate,
+                    );
+                  } else if (state is TransactionLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return const Center(child: Text("Error loading transactions"));
+                  }
+                },
+              ),
+              const SizedBox(height: 32),
+              _buildStatsGrid(),
+              const SizedBox(height: 32),
+              _buildRecentTransactions(),
+            ],
+          ),
         ),
       ),
     );
@@ -379,6 +388,145 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRecentTransactions() {
+    final formatter = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
+
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        if (state is TransactionLoaded) {
+          final recentTransactions = state.transactions.take(3).toList();
+
+          return Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primary.withAlpha(26),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Iconsax.receipt,
+                          color: AppTheme.primary,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        "Transaksi Terakhir",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          widget.pageController.jumpToPage(3);
+                        },
+                        child: const Text(
+                          "Lihat Semua",
+                          style: TextStyle(
+                            color: AppTheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  recentTransactions.isEmpty
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text("Belum ada transaksi"),
+                          ),
+                        )
+                      : Column(
+                          children: recentTransactions.map((transaction) {
+                            final date = DateTime.parse(transaction.timestamp);
+                            final formattedDate = DateFormat('dd MMMM yyyy - HH:mm').format(date);
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12.0),
+                              child: InkWell(
+                                onTap: () {
+                                  context
+                                      .push(
+                                          '/transaction-detail/${transaction.idTransactionHistory}')
+                                      .then(
+                                    (value) {
+                                      refresh();
+                                    },
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        getIconFromString(
+                                            transaction.transactionType.transactionTypeIcon),
+                                        color: AppTheme.primary,
+                                        size: 24,
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              transaction.transactionType.transactionTypeName,
+                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              formattedDate,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        formatter.format(transaction.transactionAmount),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppTheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                ],
+              ),
+            ),
+          );
+        }
+        return _buildLoadingOrError();
+      },
     );
   }
 }
