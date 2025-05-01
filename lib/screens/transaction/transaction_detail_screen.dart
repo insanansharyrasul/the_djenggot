@@ -20,7 +20,8 @@ class TransactionDetailScreen extends StatefulWidget {
   const TransactionDetailScreen({super.key, required this.id});
 
   @override
-  State<TransactionDetailScreen> createState() => _TransactionDetailScreenState();
+  State<TransactionDetailScreen> createState() =>
+      _TransactionDetailScreenState();
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
@@ -74,7 +75,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     );
   }
 
-  Widget _buildTransactionDetail(BuildContext context, TransactionHistory transaction) {
+  Widget _buildTransactionDetail(
+      BuildContext context, TransactionHistory transaction) {
     final formatter = NumberFormat.currency(
       locale: 'id',
       symbol: 'Rp',
@@ -88,7 +90,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         Card(
-          color: AppTheme.white,
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -101,7 +102,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 Row(
                   children: [
                     Icon(
-                      getIconFromString(transaction.transactionType.transactionTypeIcon),
+                      getIconFromString(
+                          transaction.transactionType.transactionTypeIcon),
                       color: AppTheme.primary,
                       size: 28,
                     ),
@@ -111,12 +113,14 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       children: [
                         Text(
                           transaction.transactionType.transactionTypeName,
-                          style:
-                              AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+                          style: AppTheme.headline.copyWith(
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Text(
                           formattedDate,
-                          style: const TextStyle(color: Colors.grey),
+                          style: const TextStyle(
+                              color: Colors.grey,
+                              fontFamily: AppTheme.fontName),
                         ),
                       ],
                     ),
@@ -161,7 +165,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       style: AppTheme.body1,
                     ),
                     Text(
-                      formatter.format(transaction.moneyReceived - transaction.transactionAmount),
+                      formatter.format(transaction.moneyReceived -
+                          transaction.transactionAmount),
                       style: AppTheme.body1.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -177,7 +182,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      showFullScreenImage(context, imageProvider: transaction.imageEvident);
+                      showFullScreenImage(context,
+                          imageProvider: transaction.imageEvident);
                     },
                     child: Container(
                       height: 200,
@@ -196,10 +202,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             ),
           ),
         ),
-
         const SizedBox(height: 20),
-
-        // Transaction Items
         Text(
           "Daftar Item",
           style: AppTheme.headline.copyWith(
@@ -208,10 +211,9 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           ),
         ),
         const SizedBox(height: 8),
-
-        // Items List
         if (transaction.items != null && transaction.items!.isNotEmpty)
-          ...transaction.items!.map((item) => _buildItemCard(context, item, formatter))
+          ...transaction.items!
+              .map((item) => _buildItemCard(context, item, formatter))
         else
           Card(
             color: AppTheme.white,
@@ -230,7 +232,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     );
   }
 
-  Widget _buildItemCard(BuildContext context, TransactionItem item, NumberFormat formatter) {
+  Widget _buildItemCard(
+      BuildContext context, TransactionItem item, NumberFormat formatter) {
     return Card(
       color: AppTheme.white,
       elevation: 2,
@@ -312,9 +315,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             ),
           );
 
-          context.read<TransactionBloc>().add(DeleteTransactionEvent(widget.id));
+          context
+              .read<TransactionBloc>()
+              .add(DeleteTransactionEvent(widget.id));
 
-          Navigator.pop(context); // Close the loading dialog
+          Navigator.pop(context);
 
           showDialog(
             barrierDismissible: false,
@@ -330,7 +335,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           );
 
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context); // Back to transactions list
+            Navigator.pop(context);
             Navigator.pop(context);
           });
         },

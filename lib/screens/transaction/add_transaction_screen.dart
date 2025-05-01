@@ -89,7 +89,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             menu.idMenuType.idMenuType == selectedMenuTypeId;
 
         bool matchesSearch = searchController.text.isEmpty ||
-            menu.menuName.toLowerCase().contains(searchController.text.toLowerCase());
+            menu.menuName
+                .toLowerCase()
+                .contains(searchController.text.toLowerCase());
 
         return matchesType && matchesSearch;
       }).toList();
@@ -117,8 +119,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   int _calculateChange() {
     if (isExactChange || moneyReceivedController.text.isEmpty) return 0;
-    final received =
-        int.tryParse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    final received = int.tryParse(
+            moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ??
+        0;
     return received - totalAmount;
   }
 
@@ -184,7 +187,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   void _submitTransaction() {
     if (_formKey.currentState!.validate()) {
-      if ((selectedType?.needEvidence ?? true) && evidenceImage == null && currentStep == 3) {
+      if ((selectedType?.needEvidence ?? true) &&
+          evidenceImage == null &&
+          currentStep == 3) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Tambahkan bukti pembayaran!"),
@@ -218,7 +223,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     }
   }
 
-  Future<void> _processAndSaveTransaction(List<TransactionItem> transactionItems) async {
+  Future<void> _processAndSaveTransaction(
+      List<TransactionItem> transactionItems) async {
     final imageBytes = selectedType?.needEvidence ?? true
         ? await evidenceImage?.readAsBytes() ?? Uint8List(0)
         : Uint8List(0);
@@ -229,7 +235,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             totalAmount,
             isExactChange
                 ? totalAmount
-                : int.parse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')),
+                : int.parse(moneyReceivedController.text
+                    .replaceAll(RegExp(r'[^0-9]'), '')),
             imageBytes,
             transactionItems,
           ),
@@ -284,7 +291,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: _buildStepIndicator(),
             ),
             Expanded(
@@ -295,7 +303,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   if (currentStep == 2) _buildTransactionTypeStep(),
                   if (currentStep == 3 && (selectedType?.needEvidence ?? true))
                     _buildEvidenceStep(),
-                  if (currentStep == 4) _buildPaymentConfirmationStep(formatter),
+                  if (currentStep == 4)
+                    _buildPaymentConfirmationStep(formatter),
                 ],
               ),
             ),
@@ -423,12 +432,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Iconsax.minus_cirlce, color: AppTheme.danger),
+                        icon: const Icon(Iconsax.minus_cirlce,
+                            color: AppTheme.danger),
                         onPressed: () {
                           setState(() {
-                            if (cartItems.any((cartItem) => cartItem.menu.idMenu == item.idMenu)) {
-                              final cartItem = cartItems
-                                  .firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu);
+                            if (cartItems.any((cartItem) =>
+                                cartItem.menu.idMenu == item.idMenu)) {
+                              final cartItem = cartItems.firstWhere(
+                                  (cartItem) =>
+                                      cartItem.menu.idMenu == item.idMenu);
                               if (cartItem.quantity > 1) {
                                 cartItem.quantity--;
                               } else {
@@ -444,12 +456,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       IconButton(
-                        icon: const Icon(Iconsax.add_circle, color: AppTheme.primary),
+                        icon: const Icon(Iconsax.add_circle,
+                            color: AppTheme.primary),
                         onPressed: () {
                           setState(() {
-                            if (cartItems.any((cartItem) => cartItem.menu.idMenu == item.idMenu)) {
-                              final cartItem = cartItems
-                                  .firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu);
+                            if (cartItems.any((cartItem) =>
+                                cartItem.menu.idMenu == item.idMenu)) {
+                              final cartItem = cartItems.firstWhere(
+                                  (cartItem) =>
+                                      cartItem.menu.idMenu == item.idMenu);
                               cartItem.quantity++;
                             } else {
                               cartItems.add(CartItem(menu: item, quantity: 1));
@@ -547,7 +562,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     return DropdownButtonFormField<String>(
                       isExpanded: true,
                       dropdownColor: AppTheme.white,
-                      decoration: dropdownCategoryDecoration(prefixIcon: Iconsax.category),
+                      decoration: dropdownCategoryDecoration(
+                          prefixIcon: Iconsax.category),
                       hint: Text(
                         "Pilih Kategori Menu",
                         style: createBlackThinTextStyle(14),
@@ -560,7 +576,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           value: 'all',
                           child: Row(
                             children: [
-                              const Icon(Iconsax.category, size: 18, color: AppTheme.primary),
+                              const Icon(Iconsax.category,
+                                  size: 18, color: AppTheme.primary),
                               const SizedBox(width: 8),
                               Text(
                                 "Semua Kategori",
@@ -617,12 +634,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     });
                   },
                 ),
-                Text("Uang pas", style: AppTheme.textField.copyWith(fontSize: 14)),
+                Text("Uang pas",
+                    style: AppTheme.textField.copyWith(fontSize: 14)),
               ],
             ),
             if (!isExactChange) ...[
               const SizedBox(height: 8),
-              Text("Uang Diterima", style: AppTheme.textField.copyWith(fontSize: 14)),
+              Text("Uang Diterima",
+                  style: AppTheme.textField.copyWith(fontSize: 14)),
               const SizedBox(height: 8),
               InputField(
                 controller: moneyReceivedController,
@@ -634,7 +653,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   if (value == null || value.isEmpty) {
                     return "Harga tidak boleh kosong";
                   }
-                  final amount = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+                  final amount =
+                      int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ??
+                          0;
                   if (amount < totalAmount) {
                     return "Uang yang diterima kurang dari total";
                   }
@@ -658,7 +679,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Kembalian:",
-                        style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold)),
+                        style: AppTheme.textField
+                            .copyWith(fontWeight: FontWeight.bold)),
                     Text(
                       formatter.format(_calculateChange()),
                       style: const TextStyle(
@@ -702,11 +724,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     Navigator.of(context)
                         .push(
                       MaterialPageRoute(
-                        builder: (context) => const AddEditTransactionTypeScreen(),
+                        builder: (context) =>
+                            const AddEditTransactionTypeScreen(),
                       ),
                     )
                         .then((_) {
-                      context.read<TransactionTypeBloc>().add(LoadTransactionTypes());
+                      context
+                          .read<TransactionTypeBloc>()
+                          .add(LoadTransactionTypes());
                     });
                   },
                 ),
@@ -735,7 +760,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                              color: selectedType?.idTransactionType == type.idTransactionType
+                              color: selectedType?.idTransactionType ==
+                                      type.idTransactionType
                                   ? AppTheme.primary
                                   : Colors.transparent,
                               width: 2,
@@ -760,7 +786,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           type.transactionTypeName,
@@ -782,7 +809,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                       ],
                                     ),
                                   ),
-                                  if (selectedType?.idTransactionType == type.idTransactionType)
+                                  if (selectedType?.idTransactionType ==
+                                      type.idTransactionType)
                                     const Icon(
                                       Icons.check_circle,
                                       color: AppTheme.primary,
@@ -880,7 +908,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget _buildPaymentConfirmationStep(NumberFormat formatter) {
     final int moneyReceived = isExactChange
         ? totalAmount
-        : int.parse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+        : int.parse(
+            moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), ''));
     final int change = moneyReceived - totalAmount;
 
     final now = DateTime.now();
@@ -986,11 +1015,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                               children: [
                                 Text(
                                   item.menu.menuName,
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   formatter.format(item.menu.menuPrice),
-                                  style: const TextStyle(color: AppTheme.primary),
+                                  style:
+                                      const TextStyle(color: AppTheme.primary),
                                 ),
                               ],
                             ),
@@ -1060,7 +1091,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ],
             ),
             const SizedBox(height: 24),
-            if (evidenceImage != null && selectedType?.needEvidence == true) ...[
+            if (evidenceImage != null &&
+                selectedType?.needEvidence == true) ...[
               const Text(
                 "Bukti Pembayaran",
                 style: TextStyle(
@@ -1071,7 +1103,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () async {
-                  showFullScreenImage(context, imageProvider: await evidenceImage!.readAsBytes());
+                  showFullScreenImage(context,
+                      imageProvider: await evidenceImage!.readAsBytes());
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
@@ -1197,7 +1230,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   label: Text(
                     currentStep == 1
                         ? 'Lanjut'
-                        : (currentStep == totalSteps ? 'Simpan Transaksi' : 'Lanjutkan'),
+                        : (currentStep == totalSteps
+                            ? 'Simpan Transaksi'
+                            : 'Lanjutkan'),
                     style: AppTheme.buttonText.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

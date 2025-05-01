@@ -8,4 +8,3 @@ final class StockLoaded extends StockState {
   final List<Stock> stocks;
   StockLoaded(this.stocks);
 }
-

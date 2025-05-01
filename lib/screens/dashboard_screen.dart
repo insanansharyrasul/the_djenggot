@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/screens/setting_screen.dart';
 import 'package:the_djenggot/screens/home_screen.dart';
-import 'package:the_djenggot/screens/menu/menu_screen.dart';
-import 'package:the_djenggot/screens/stock/stock_screen.dart';
+import 'package:the_djenggot/screens/menu/menu_list_screen.dart';
+import 'package:the_djenggot/screens/stock/stock_list_screen.dart';
 import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
@@ -53,13 +53,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Container buildMyNavBar(BuildContext context) {
     return Container(
       height: 80,
-      decoration: const BoxDecoration(color: AppTheme.background, boxShadow: [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 25,
-          offset: Offset(0, 2),
-        ),
-      ]),
+      decoration: const BoxDecoration(
+        color: AppTheme.background,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 25,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

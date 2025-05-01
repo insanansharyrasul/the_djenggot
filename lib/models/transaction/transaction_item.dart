@@ -18,7 +18,9 @@ class TransactionItem extends Equatable {
     return TransactionItem(
       idTransactionItem: map['id_transaction_item'] ?? '',
       idTransactionHistory: map['id_transaction_history'] ?? '',
-      menu: map['id_menu'] is Map ? Menu.fromMap(map['id_menu']) : Menu.fromMap(map),
+      menu: map['id_menu'] is Map
+          ? Menu.fromMap(map['id_menu'])
+          : Menu.fromMap(map),
       transactionQuantity: map['transaction_quantity'] ?? 0,
     );
   }

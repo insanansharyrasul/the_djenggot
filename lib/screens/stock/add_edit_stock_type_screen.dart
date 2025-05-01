@@ -59,7 +59,6 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -69,7 +68,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     const SizedBox(height: 16),
                     InputField(
                       controller: name,
-                      hintText: "contoh: Daging-dagingan", // Change from "Tipe Stok"
+                      hintText: "contoh: Daging-dagingan",
                       prefixIcon: const Icon(Iconsax.box),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -84,7 +83,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                     const SizedBox(height: 16),
                     InputField(
                       controller: unitController,
-                      hintText: "contoh: kg, liter, pcs", // Changed from "Satuan Stok"
+                      hintText: "contoh: kg, liter, pcs",
                       prefixIcon: const Icon(Iconsax.ruler),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -152,7 +151,8 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         style: AppTheme.buttonStyleSecond,
                         onPressed: () async {
                           if (iconController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
                               content: Text("Icon tidak boleh kosong"),
                               backgroundColor: AppTheme.danger,
                             ));
@@ -163,7 +163,8 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -195,7 +196,8 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "success",
                                 title: "Pengajuan Berhasil",
                                 message: "Kembali ke dashboard...",

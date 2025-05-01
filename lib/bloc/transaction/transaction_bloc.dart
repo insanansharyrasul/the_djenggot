@@ -38,7 +38,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     emit(TransactionDetailLoading());
     try {
-      final transaction = await _transactionRepository.getTransactionById(event.id);
+      final transaction =
+          await _transactionRepository.getTransactionById(event.id);
       if (transaction != null) {
         emit(TransactionDetailLoaded(transaction));
       } else {

@@ -14,7 +14,8 @@ InputDecoration dropdownCategoryDecoration({
       ),
     ),
     fillColor: Colors.white,
-    contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+    contentPadding: contentPadding ??
+        const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
       borderSide: BorderSide(

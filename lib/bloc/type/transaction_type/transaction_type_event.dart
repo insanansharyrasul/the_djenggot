@@ -18,7 +18,8 @@ class UpdateTransactionType extends TransactionTypeEvent {
   final String icon;
   final bool needEvidence;
 
-  UpdateTransactionType(this.transactionType, this.newName, this.icon, this.needEvidence);
+  UpdateTransactionType(
+      this.transactionType, this.newName, this.icon, this.needEvidence);
 }
 
 class DeleteTransactionType extends TransactionTypeEvent {

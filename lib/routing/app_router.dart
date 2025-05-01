@@ -27,22 +27,18 @@ import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/screens/type/menu_type_list_screen.dart';
 import 'package:the_djenggot/screens/type/stock_type_list_screen.dart';
 import 'package:the_djenggot/screens/type/transaction_type_list_screen.dart';
-// Import other necessary screens
 
 class AppRouter {
   final MenuTypeBloc menuTypeBloc;
   final StockTypeBloc stockTypeBloc;
   final TransactionTypeBloc transactionTypeBloc;
   final MenuBloc menuBloc;
-  // Other BLoCs
 
   AppRouter(
       {required this.menuTypeBloc,
       required this.stockTypeBloc,
       required this.transactionTypeBloc,
-      required this.menuBloc
-      // Other BLoCs
-      });
+      required this.menuBloc});
 
   GoRouter get router => GoRouter(
         routes: [
@@ -211,7 +207,8 @@ class AppRouter {
               final id = state.pathParameters['id'] ?? '';
 
               if (transactionTypeState is TransactionTypeLoaded) {
-                final transactionType = transactionTypeState.transactionTypes.firstWhere(
+                final transactionType =
+                    transactionTypeState.transactionTypes.firstWhere(
                   (type) => type.idTransactionType == id,
                   orElse: () => const TransactionType(
                     idTransactionType: '',
@@ -220,7 +217,8 @@ class AppRouter {
                   ),
                 );
 
-                return AddEditTransactionTypeScreen(transactionType: transactionType);
+                return AddEditTransactionTypeScreen(
+                    transactionType: transactionType);
               }
 
               return const Center(child: CircularProgressIndicator());

@@ -9,12 +9,14 @@ class CurrencyInputFormatter extends TextInputFormatter {
   );
 
   static int getNumericalValue(String text) {
-    String numericString = text.replaceAll('Rp.', '').replaceAll('.', '').trim();
+    String numericString =
+        text.replaceAll('Rp.', '').replaceAll('.', '').trim();
     return int.parse(numericString);
   }
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }

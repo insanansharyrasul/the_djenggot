@@ -35,11 +35,19 @@ class MainApp extends StatelessWidget {
       routerConfig: appRouter.router,
       title: 'TheDjenggot',
       theme: ThemeData(
+        fontFamily: AppTheme.fontName,
         primaryColor: AppTheme.background,
+        cardTheme: CardTheme(
+          color: AppTheme.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
         scaffoldBackgroundColor: AppTheme.background,
         appBarTheme: const AppBarTheme(
           elevation: 0,
-          backgroundColor: AppTheme.background,
+          backgroundColor: AppTheme.white,
           centerTitle: true,
           titleTextStyle: AppTheme.appBarTitle,
           scrolledUnderElevation: 0,

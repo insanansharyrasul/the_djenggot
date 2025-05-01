@@ -84,12 +84,12 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        showFullScreenImage(context, imageProvider: menu.menuImage);
+                        showFullScreenImage(context,
+                            imageProvider: menu.menuImage);
                       },
                       child: Stack(
                         children: [
                           Card(
-                            color: AppTheme.white,
                             elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
@@ -115,18 +115,20 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                             child: Container(
                               height: 80,
                               decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.vertical(bottom: Radius.circular(16)),
+                                borderRadius: const BorderRadius.vertical(
+                                    bottom: Radius.circular(16)),
                                 gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
                                     Colors.transparent,
-                                    Colors.black.withAlpha(179), // Changed from withOpacity(0.7)
+                                    Colors.black.withAlpha(
+                                        179), // Changed from withOpacity(0.7)
                                   ],
                                 ),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                             ),
                           ),
                         ],
@@ -137,7 +139,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
 
                     // Menu details card
                     Card(
-                      color: AppTheme.white,
                       elevation: 2,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -163,7 +164,8 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                               children: [
                                 Icon(
                                   menu.idMenuType.menuTypeIcon.isNotEmpty
-                                      ? getIconFromString(menu.idMenuType.menuTypeIcon)
+                                      ? getIconFromString(
+                                          menu.idMenuType.menuTypeIcon)
                                       : Iconsax.category,
                                   color: AppTheme.nearlyBlue,
                                   size: 18,
@@ -242,7 +244,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
 
           context.read<MenuBloc>().add(DeleteMenu(widget.menu.idMenu));
 
-          Navigator.pop(context); // Close the loading dialog
+          Navigator.pop(context);
 
           showDialog(
             barrierDismissible: false,
@@ -258,7 +260,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           );
 
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context); // Back to transactions list
+            Navigator.pop(context);
           });
         },
       ),

@@ -28,39 +28,27 @@ class _SettingScreenState extends State<SettingScreen> {
           right: 32,
         ),
         children: [
-          // Categories section
           _buildSectionHeader("Kategori"),
-
-          // Menu Types
           _buildSettingItem(
             icon: Iconsax.menu_board,
             title: "Kelola Tipe Menu",
             subtitle: "Tambah, ubah, atau hapus kategori menu",
             onTap: () => _navigateToTypeScreen(context, 'menu'),
           ),
-
-          // Stock Types
           _buildSettingItem(
             icon: Iconsax.box,
             title: "Kelola Tipe Stok",
             subtitle: "Tambah, ubah, atau hapus kategori stok",
             onTap: () => _navigateToTypeScreen(context, 'stock'),
           ),
-
-          // Transaction Types (currently there's no specific screen for this)
           _buildSettingItem(
             icon: Iconsax.receipt,
             title: "Kelola Tipe Transaksi",
             subtitle: "Tambah, ubah, atau hapus kategori transaksi",
             onTap: () => _navigateToTypeScreen(context, 'transaction'),
           ),
-
           const SizedBox(height: 24),
-
-          // App section
           _buildSectionHeader("Aplikasi"),
-
-          // App Version
           _buildSettingItem(
             icon: Iconsax.information,
             title: "Versi Aplikasi",
@@ -166,17 +154,12 @@ class _SettingScreenState extends State<SettingScreen> {
   void _navigateToTypeScreen(BuildContext context, String typeCategory) {
     switch (typeCategory) {
       case 'menu':
-        // Navigate to the menu type management screen
-        // This pushes to the add-edit screen with null, which means adding a new type
-        // You might want to create a dedicated list screen for types instead
         context.push('/menu-types');
         break;
       case 'stock':
-        // Navigate to the stock type management screen
         context.push('/stock-types');
         break;
       case 'transaction':
-        // Navigate to the transaction type management screen
         context.push('/transaction-types');
         break;
     }

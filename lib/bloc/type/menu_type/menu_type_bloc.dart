@@ -29,7 +29,8 @@ class MenuTypeBloc extends Bloc<MenuTypeEvent, MenuTypeState> {
 
     on<UpdateMenuType>((event, emit) async {
       try {
-        await _repository.updateMenuType(event.menuType, event.newName, icon: event.icon);
+        await _repository.updateMenuType(event.menuType, event.newName,
+            icon: event.icon);
         final menuTypes = await _repository.getAllMenuTypes();
         emit(MenuTypeLoaded(menuTypes));
       } catch (e) {

@@ -24,8 +24,8 @@ class AppTheme {
   static const String fontName = 'Lexend';
 
   static const Color danger = Color(0xFFEB5757);
-  static const Color success = Color(0xFF27AE60); 
-  static const Color lightSuccess = Color(0xFF6FCF97); 
+  static const Color success = Color(0xFF27AE60);
+  static const Color lightSuccess = Color(0xFF6FCF97);
 
   static const TextStyle display1 = TextStyle(
     fontFamily: fontName,
@@ -50,6 +50,13 @@ class AppTheme {
     fontSize: 16,
     letterSpacing: 0.18,
     color: darkerText,
+  );
+
+  static const TextStyle stockDetail = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.normal,
+    fontSize: 12,
+    letterSpacing: 0.18,
   );
 
   static const TextStyle subtitle = TextStyle(
@@ -81,7 +88,7 @@ class AppTheme {
     fontWeight: FontWeight.w400,
     fontSize: 12,
     letterSpacing: 0.2,
-    color: lightText, // was lightText
+    color: lightText,
   );
 
   static const TextStyle appBarTitle = TextStyle(
@@ -89,7 +96,7 @@ class AppTheme {
     fontWeight: FontWeight.w500,
     fontSize: 18,
     letterSpacing: 0.5,
-    color: Colors.black, // Replace with your theme color
+    color: Colors.black,
   );
 
   static const TextStyle buttonText = TextStyle(
@@ -97,7 +104,7 @@ class AppTheme {
     fontWeight: FontWeight.w500,
     fontSize: 16,
     letterSpacing: 0.5,
-    color: AppTheme.nearlyWhite, // Replace with your theme color
+    color: AppTheme.nearlyWhite,
   );
 
   static const TextStyle textField = TextStyle(
@@ -105,7 +112,7 @@ class AppTheme {
     fontWeight: FontWeight.w500,
     fontSize: 16,
     letterSpacing: 0.5,
-    color: AppTheme.nearlyBlue, // Replace with your theme color
+    color: AppTheme.nearlyBlue,
   );
 
   static ButtonStyle buttonStyle = ButtonStyle(
@@ -129,6 +136,6 @@ class AppTheme {
     fontWeight: FontWeight.w500,
     fontSize: 16,
     letterSpacing: 0.5,
-    color: AppTheme.nearlyWhite, // Replace with your theme color
+    color: AppTheme.nearlyWhite,
   );
 }

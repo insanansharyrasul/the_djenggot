@@ -75,7 +75,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.white,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -93,13 +92,15 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                         children: [
                           Text(
                             "Gambar Menu",
-                            style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                            style: AppTheme.textField
+                                .copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 12),
                           GestureDetector(
                             onTap: _showImageSourceBottomSheet,
                             child: Center(
-                              child: widget.menu?.menuImage != null || image != null
+                              child: widget.menu?.menuImage != null ||
+                                      image != null
                                   ? Container(
                                       height: 200,
                                       width: double.infinity,
@@ -108,7 +109,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                         image: DecorationImage(
                                           image: image != null
                                               ? FileImage(image!)
-                                              : MemoryImage(widget.menu!.menuImage),
+                                              : MemoryImage(
+                                                  widget.menu!.menuImage),
                                           fit: BoxFit.cover,
                                         ),
                                         // ),
@@ -126,7 +128,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Icon(
                                             Iconsax.camera,
@@ -157,7 +160,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     // Form Fields
                     Text(
                       "Nama Menu",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     InputField(
@@ -176,7 +180,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Harga",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     InputField(
@@ -196,7 +201,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Kategori Menu",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
 
@@ -213,7 +219,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                           // If menu is being edited, try to find its menu type in the list
                           if (widget.menu != null && selectedMenuType == null) {
                             for (var type in menuTypes) {
-                              if (type.idMenuType == widget.menu!.idMenuType.idMenuType) {
+                              if (type.idMenuType ==
+                                  widget.menu!.idMenuType.idMenuType) {
                                 selectedMenuType = type;
                                 break;
                               }
@@ -228,7 +235,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                   decoration: BoxDecoration(
                                     color: Colors.amber.shade50,
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.amber.shade200),
+                                    border: Border.all(
+                                        color: Colors.amber.shade200),
                                   ),
                                   child: Column(
                                     children: [
@@ -249,7 +257,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                       Text(
                                         "Silahkan buat kategori menu terlebih dahulu",
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(color: Colors.amber.shade800),
+                                        style: TextStyle(
+                                            color: Colors.amber.shade800),
                                       ),
                                       const SizedBox(height: 16),
                                       ElevatedButton.icon(
@@ -259,13 +268,18 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                           backgroundColor: AppTheme.primary,
                                           foregroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
                                         onPressed: () {
-                                          context.push('/add-edit-menu-type').then((_) {
+                                          context
+                                              .push('/add-edit-menu-type')
+                                              .then((_) {
                                             // Reload menu types when returning from add screen
-                                            context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                                            context
+                                                .read<MenuTypeBloc>()
+                                                .add(LoadMenuTypes());
                                           });
                                         },
                                       ),
@@ -300,11 +314,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                       children: [
                                         if (type.menuTypeIcon.isNotEmpty)
                                           Icon(
-                                            getIconFromString(type.menuTypeIcon),
+                                            getIconFromString(
+                                                type.menuTypeIcon),
                                             color: AppTheme.primary,
                                             size: 18,
                                           ),
-                                        if (type.menuTypeIcon.isNotEmpty) const SizedBox(width: 12),
+                                        if (type.menuTypeIcon.isNotEmpty)
+                                          const SizedBox(width: 12),
                                         Text(type.menuTypeName),
                                       ],
                                     ),
@@ -329,9 +345,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                     foregroundColor: AppTheme.primary,
                                   ),
                                   onPressed: () {
-                                    context.push('/add-edit-menu-type').then((_) {
+                                    context
+                                        .push('/add-edit-menu-type')
+                                        .then((_) {
                                       // Reload menu types when returning from add screen
-                                      context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                                      context
+                                          .read<MenuTypeBloc>()
+                                          .add(LoadMenuTypes());
                                     });
                                   },
                                 ),
@@ -348,7 +368,9 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                                    context
+                                        .read<MenuTypeBloc>()
+                                        .add(LoadMenuTypes());
                                   },
                                   child: const Text("Retry"),
                                 ),
@@ -375,7 +397,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        icon: const Icon(Iconsax.tick_square, color: Colors.white),
+                        icon: const Icon(Iconsax.tick_square,
+                            color: Colors.white),
                         label: Text(
                           "Simpan Menu",
                           style: AppTheme.buttonText.copyWith(
@@ -386,7 +409,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             if (image == null && widget.menu == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
                                 content: Text("Harap pilih gambar menu"),
                                 backgroundColor: Colors.red,
                               ));
@@ -394,7 +418,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                             }
 
                             if (selectedMenuType == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
                                 content: Text("Harap pilih kategori menu"),
                                 backgroundColor: Colors.red,
                               ));
@@ -402,11 +427,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                             }
 
                             final int numericPrice =
-                                CurrencyInputFormatter.getNumericalValue(price.text);
+                                CurrencyInputFormatter.getNumericalValue(
+                                    price.text);
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -440,7 +467,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "success",
                                 title: "Berhasil",
                                 message: widget.menu == null
@@ -450,7 +478,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                               ),
                             );
 
-                            Future.delayed(const Duration(milliseconds: 500), () {
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
                               Navigator.pop(context);
                               Navigator.pop(context);
                             });

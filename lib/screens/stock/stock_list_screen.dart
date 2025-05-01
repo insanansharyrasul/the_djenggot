@@ -23,7 +23,7 @@ class StockScreen extends StatefulWidget {
 class _StockScreenState extends State<StockScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _currentSort = 'nameAsc'; 
+  String _currentSort = 'nameAsc';
   StockType? _selectedType;
 
   @override
@@ -48,17 +48,15 @@ class _StockScreenState extends State<StockScreen> {
   }
 
   List<Stock> _getFilteredStocks(List<Stock> stocks) {
-    // Apply search filter is handled by SearchStock event
     var filtered = stocks;
 
-    // Apply stock type filter
     if (_selectedType != null) {
       filtered = filtered
-          .where((stock) => stock.idStockType.idStockType == _selectedType!.idStockType)
+          .where((stock) =>
+              stock.idStockType.idStockType == _selectedType!.idStockType)
           .toList();
     }
 
-    // Apply sorting
     switch (_currentSort) {
       case 'nameAsc':
         filtered.sort((a, b) => a.stockName.compareTo(b.stockName));
@@ -73,10 +71,12 @@ class _StockScreenState extends State<StockScreen> {
         filtered.sort((a, b) => b.stockQuantity.compareTo(a.stockQuantity));
         break;
       case 'typeAsc':
-        filtered.sort((a, b) => a.idStockType.stockTypeName.compareTo(b.idStockType.stockTypeName));
+        filtered.sort((a, b) =>
+            a.idStockType.stockTypeName.compareTo(b.idStockType.stockTypeName));
         break;
       case 'typeDesc':
-        filtered.sort((a, b) => b.idStockType.stockTypeName.compareTo(a.idStockType.stockTypeName));
+        filtered.sort((a, b) =>
+            b.idStockType.stockTypeName.compareTo(a.idStockType.stockTypeName));
         break;
     }
 
@@ -94,10 +94,9 @@ class _StockScreenState extends State<StockScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Search Bar
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -115,6 +114,7 @@ class _StockScreenState extends State<StockScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Cari stok...',
+                  hintStyle: AppTheme.body1,
                   prefixIcon: const Icon(Iconsax.search_normal),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
@@ -138,7 +138,8 @@ class _StockScreenState extends State<StockScreen> {
                 onRefresh: () async {
                   BlocProvider.of<StockBloc>(context).add(LoadStock());
                 },
-                child: BlocBuilder<StockBloc, StockState>(builder: (context, state) {
+                child: BlocBuilder<StockBloc, StockState>(
+                    builder: (context, state) {
                   if (state is StockLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is StockLoaded) {
@@ -148,11 +149,13 @@ class _StockScreenState extends State<StockScreen> {
                       return ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         children: [
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1),
                           const EmptyState(
                             icon: Iconsax.box,
                             title: "Tidak ada stok yang ditemukan.",
-                            subtitle: "Coba ubah filter atau kata kunci pencarian",
+                            subtitle:
+                                "Coba ubah filter atau kata kunci pencarian",
                           ),
                         ],
                       );
@@ -160,7 +163,8 @@ class _StockScreenState extends State<StockScreen> {
 
                     return ListView.separated(
                       itemCount: filteredStocks.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: 8),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 8),
                       itemBuilder: (context, index) {
                         final stock = filteredStocks[index];
                         final stockUnit = stock.idStockType.stockUnit;
@@ -172,8 +176,9 @@ class _StockScreenState extends State<StockScreen> {
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side:
-                                isLowStock ? const BorderSide(color: Colors.red) : BorderSide.none,
+                            side: isLowStock
+                                ? const BorderSide(color: Colors.red)
+                                : BorderSide.none,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -186,7 +191,8 @@ class _StockScreenState extends State<StockScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Icon(
-                                  getIconFromString(stock.idStockType.stockTypeIcon),
+                                  getIconFromString(
+                                      stock.idStockType.stockTypeIcon),
                                   color: AppTheme.primary,
                                 ),
                               ),
@@ -212,8 +218,7 @@ class _StockScreenState extends State<StockScreen> {
                                       const SizedBox(width: 4),
                                       Text(
                                         stock.idStockType.stockTypeName,
-                                        style: const TextStyle(
-                                          fontSize: 12,
+                                        style: AppTheme.stockDetail.copyWith(
                                           color: Colors.grey,
                                         ),
                                       ),
@@ -225,21 +230,25 @@ class _StockScreenState extends State<StockScreen> {
                                       Icon(
                                         Iconsax.chart_1,
                                         size: 14,
-                                        color: isLowStock ? Colors.red : Colors.grey,
+                                        color: isLowStock
+                                            ? Colors.red
+                                            : Colors.grey,
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        "Kuantitas: ${stock.stockQuantity}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: isLowStock ? Colors.red : Colors.grey,
-                                          fontWeight:
-                                              isLowStock ? FontWeight.bold : FontWeight.normal,
-                                        ),
-                                      ),
+                                          "Kuantitas: ${stock.stockQuantity}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                                          style: AppTheme.stockDetail.copyWith(
+                                            color: isLowStock
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            fontWeight: isLowStock
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                          )),
                                     ],
                                   ),
-                                  if (stock.stockThreshold != null && stock.stockThreshold! > 0)
+                                  if (stock.stockThreshold != null &&
+                                      stock.stockThreshold! > 0)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 4.0),
                                       child: Row(
@@ -247,22 +256,29 @@ class _StockScreenState extends State<StockScreen> {
                                           Icon(
                                             Iconsax.warning_2,
                                             size: 14,
-                                            color: isLowStock ? Colors.red : Colors.grey,
+                                            color: isLowStock
+                                                ? Colors.red
+                                                : Colors.grey,
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
-                                            "Minimum: ${stock.stockThreshold}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: isLowStock ? Colors.red : Colors.grey,
-                                            ),
-                                          ),
+                                              "Minimum: ${stock.stockThreshold}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                                              style:
+                                                  AppTheme.stockDetail.copyWith(
+                                                color: isLowStock
+                                                    ? Colors.red
+                                                    : Colors.grey,
+                                                fontWeight: isLowStock
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                              )),
                                         ],
                                       ),
                                     ),
                                 ],
                               ),
-                              trailing: Icon(Iconsax.arrow_right_3, color: Colors.grey.shade400),
+                              trailing: Icon(Iconsax.arrow_right_3,
+                                  color: Colors.grey.shade400),
                               onTap: () {
                                 context.push('/stock-detail', extra: stock);
                               },

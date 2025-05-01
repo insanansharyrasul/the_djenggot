@@ -6,7 +6,8 @@ class MenuTypeRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
   Future<List<MenuType>> getAllMenuTypes() async {
-    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('MENU_TYPE', '', []);
+    final List<Map<String, dynamic>> maps =
+        await _databaseHelper.getAllQuery('MENU_TYPE', '', []);
     return maps.map((map) => MenuType.fromMap(map)).toList();
   }
 
@@ -31,7 +32,8 @@ class MenuTypeRepository {
     );
   }
 
-  Future<int> updateMenuType(MenuType menuType, String newName, {String? icon}) async {
+  Future<int> updateMenuType(MenuType menuType, String newName,
+      {String? icon}) async {
     final db = await _databaseHelper.db;
     return await db.update(
       'MENU_TYPE',

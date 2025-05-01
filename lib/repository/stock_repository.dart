@@ -58,34 +58,31 @@ class StockRepository {
 
     final map = results.first;
 
-    // Create a StockType map from the joined data
     final stockTypeMap = {
       'id_stock_type': map['id_stock_type'],
       'stock_type_name': map['stock_type_name'],
       'stock_type_icon': map['stock_type_icon'],
     };
 
-    // Create a modified map with the StockType as a nested object
     final stockMap = {
       'id_stock': map['id_stock'],
       'stock_name': map['stock_name'],
       'stock_price': map['stock_price'],
       'stock_image': map['stock_image'],
-      'id_stock_type': stockTypeMap, // Pass the entire StockType as a map
+      'id_stock_type': stockTypeMap,
     };
 
     return Stock.fromMap(stockMap);
   }
 
   Future<List<Stock>> getAllStocks() async {
-    // final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('STOCK', '', []);
-    // return maps.map((map) => Stock.fromMap(map)).toList();
     final db = await _databaseHelper.db;
     final stocksData = await db.query('STOCK');
 
     return await Future.wait(stocksData.map((stockData) async {
       final stockTypeId = stockData['id_stock_type'];
-      final stockType = await StockTypeRepository().getStockTypeById(stockTypeId);
+      final stockType =
+          await StockTypeRepository().getStockTypeById(stockTypeId);
 
       return Stock(
         idStock: stockData['id_stock'] as String,
@@ -98,7 +95,8 @@ class StockRepository {
   }
 
   Future<List<Stock>> searchStocks(String query) async {
-    final List<Map<String, dynamic>> stocksData = await _databaseHelper.getAllQuery(
+    final List<Map<String, dynamic>> stocksData =
+        await _databaseHelper.getAllQuery(
       'STOCK',
       'stock_name LIKE ?',
       ['%$query%'],
@@ -106,7 +104,8 @@ class StockRepository {
 
     return await Future.wait(stocksData.map((stockData) async {
       final stockTypeId = stockData['id_stock_type'];
-      final stockType = await StockTypeRepository().getStockTypeById(stockTypeId);
+      final stockType =
+          await StockTypeRepository().getStockTypeById(stockTypeId);
 
       return Stock(
         idStock: stockData['id_stock'] as String,
@@ -119,7 +118,8 @@ class StockRepository {
   }
 
   Future<List<Stock>> getAllStok() async {
-    final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery('STOCK', '', []);
+    final List<Map<String, dynamic>> maps =
+        await _databaseHelper.getAllQuery('STOCK', '', []);
     return maps.map((map) => Stock.fromMap(map)).toList();
   }
 

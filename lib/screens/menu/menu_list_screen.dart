@@ -26,7 +26,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _currentSort = 'nameAsc'; 
+  String _currentSort = 'nameAsc';
   MenuType? _selectedType;
 
   @override
@@ -47,21 +47,21 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   List<Menu> _getFilteredMenus(List<Menu> menus) {
-    // Apply search filter
     var filtered = _searchQuery.isEmpty
         ? menus
         : menus
-            .where((menu) => menu.menuName.toLowerCase().contains(_searchQuery.toLowerCase()))
+            .where((menu) => menu.menuName
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()))
             .toList();
 
-    // Apply menu type filter
     if (_selectedType != null) {
       filtered = filtered
-          .where((menu) => menu.idMenuType.idMenuType == _selectedType!.idMenuType)
+          .where(
+              (menu) => menu.idMenuType.idMenuType == _selectedType!.idMenuType)
           .toList();
     }
 
-    // Apply sorting
     switch (_currentSort) {
       case 'nameAsc':
         filtered.sort((a, b) => a.menuName.compareTo(b.menuName));
@@ -76,10 +76,12 @@ class _MenuScreenState extends State<MenuScreen> {
         filtered.sort((a, b) => b.menuPrice.compareTo(a.menuPrice));
         break;
       case 'typeAsc':
-        filtered.sort((a, b) => a.idMenuType.menuTypeName.compareTo(b.idMenuType.menuTypeName));
+        filtered.sort((a, b) =>
+            a.idMenuType.menuTypeName.compareTo(b.idMenuType.menuTypeName));
         break;
       case 'typeDesc':
-        filtered.sort((a, b) => b.idMenuType.menuTypeName.compareTo(a.idMenuType.menuTypeName));
+        filtered.sort((a, b) =>
+            b.idMenuType.menuTypeName.compareTo(a.idMenuType.menuTypeName));
         break;
     }
 
@@ -97,10 +99,9 @@ class _MenuScreenState extends State<MenuScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Search Bar
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -118,6 +119,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Cari menu...',
+                  hintStyle: AppTheme.body1,
                   prefixIcon: const Icon(Iconsax.search_normal),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
@@ -132,16 +134,14 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            // Menu Grid
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
                   BlocProvider.of<MenuBloc>(context).add(LoadMenu());
                 },
-                child: BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
+                child:
+                    BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
                   if (state is MenuLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is MenuLoaded) {
@@ -151,18 +151,21 @@ class _MenuScreenState extends State<MenuScreen> {
                       return ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         children: [
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1),
                           const EmptyState(
                             icon: Icons.egg_alt,
                             title: "Tidak ada menu yang ditemukan.",
-                            subtitle: "Coba ubah filter atau kata kunci pencarian",
+                            subtitle:
+                                "Coba ubah filter atau kata kunci pencarian",
                           )
                         ],
                       );
                     }
 
                     return GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 12,
                         crossAxisSpacing: 12,
@@ -201,13 +204,12 @@ class _MenuScreenState extends State<MenuScreen> {
                                   ),
                                 ),
 
-                                // Menu Details
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      // Menu Name
                                       Text(
                                         menu.menuName,
                                         style: const TextStyle(
@@ -222,11 +224,11 @@ class _MenuScreenState extends State<MenuScreen> {
 
                                       const SizedBox(height: 4),
 
-                                      // Menu Type
                                       Row(
                                         children: [
                                           Icon(
-                                            getIconFromString(menu.idMenuType.menuTypeIcon),
+                                            getIconFromString(
+                                                menu.idMenuType.menuTypeIcon),
                                             size: 14,
                                             color: Colors.grey.shade600,
                                           ),

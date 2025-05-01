@@ -43,15 +43,17 @@ class MenuFilterFab extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Pilih Kategori', style: AppTheme.headline.copyWith(fontSize: 18)),
-                backgroundColor: AppTheme.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                title: Text('Pilih Kategori',
+                    style: AppTheme.headline.copyWith(fontSize: 18)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(
-                        title: const Text('Semua Kategori', style: AppTheme.body1),
+                        title:
+                            const Text('Semua Kategori', style: AppTheme.body1),
                         selected: selectedType == null,
                         selectedColor: AppTheme.primary,
                         onTap: () {
@@ -60,10 +62,12 @@ class MenuFilterFab extends StatelessWidget {
                         },
                       ),
                       ...menuTypes.map((type) => ListTile(
-                            leading:
-                                Icon(getIconFromString(type.menuTypeIcon), color: AppTheme.primary),
-                            title: Text(type.menuTypeName, style: AppTheme.body1),
-                            selected: selectedType?.idMenuType == type.idMenuType,
+                            leading: Icon(getIconFromString(type.menuTypeIcon),
+                                color: AppTheme.primary),
+                            title:
+                                Text(type.menuTypeName, style: AppTheme.body1),
+                            selected:
+                                selectedType?.idMenuType == type.idMenuType,
                             selectedColor: AppTheme.primary,
                             onTap: () {
                               onTypeChanged(type);
@@ -86,9 +90,11 @@ class MenuFilterFab extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Urutkan Berdasarkan', style: AppTheme.headline.copyWith(fontSize: 18)),
+                title: Text('Urutkan Berdasarkan',
+                    style: AppTheme.headline.copyWith(fontSize: 18)),
                 backgroundColor: AppTheme.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -111,7 +117,8 @@ class MenuFilterFab extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: const Text('Harga (Rendah-Tinggi)', style: AppTheme.body1),
+                      title: const Text('Harga (Rendah-Tinggi)',
+                          style: AppTheme.body1),
                       selected: sortBy == 'priceAsc',
                       selectedColor: AppTheme.primary,
                       onTap: () {
@@ -120,7 +127,8 @@ class MenuFilterFab extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: const Text('Harga (Tinggi-Rendah)', style: AppTheme.body1),
+                      title: const Text('Harga (Tinggi-Rendah)',
+                          style: AppTheme.body1),
                       selected: sortBy == 'priceDesc',
                       selectedColor: AppTheme.primary,
                       onTap: () {

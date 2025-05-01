@@ -148,7 +148,8 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -161,16 +162,18 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                                     UpdateMenuType(
                                       widget.menuType!,
                                       name.text,
-                                      icon:
-                                          iconController.text.isEmpty ? null : iconController.text,
+                                      icon: iconController.text.isEmpty
+                                          ? null
+                                          : iconController.text,
                                     ),
                                   );
                             } else {
                               context.read<MenuTypeBloc>().add(
                                     AddMenuType(
                                       name.text,
-                                      icon:
-                                          iconController.text.isEmpty ? null : iconController.text,
+                                      icon: iconController.text.isEmpty
+                                          ? null
+                                          : iconController.text,
                                     ),
                                   );
                             }
@@ -180,7 +183,8 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "success",
                                 title: "Pengajuan Berhasil",
                                 message: "Kembali ke dashboard...",

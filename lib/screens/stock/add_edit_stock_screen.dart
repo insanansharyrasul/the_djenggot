@@ -49,8 +49,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(widget.stock == null ? "Tambah Stok" : "Update Stok", style: AppTheme.appBarTitle),
+        title: Text(widget.stock == null ? "Tambah Stok" : "Update Stok",
+            style: AppTheme.appBarTitle),
         leading: IconButton(
           icon: const Icon(Iconsax.arrow_left_2),
           onPressed: () {
@@ -68,7 +68,6 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              color: AppTheme.background,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -77,12 +76,13 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     // Form Fields
                     Text(
                       "Nama Stok",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     InputField(
                       controller: stockName,
-                      hintText: "contoh: Minyak Goreng", // Change from "Nama Stok"
+                      hintText: "contoh: Minyak Goreng",
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Iconsax.box),
                       validator: (value) {
@@ -96,7 +96,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Kuantitas",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -104,7 +105,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockQuantity,
-                            hintText: "contoh: 100", // Change from "Jumlah Stok"
+                            hintText: "contoh: 100",
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.calculator),
                             validator: (value) {
@@ -121,7 +122,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         if (selectedStockType?.stockUnit != null &&
                             selectedStockType!.stockUnit.isNotEmpty)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(left: 8),
                             decoration: BoxDecoration(
                               color: AppTheme.primary.withValues(alpha: 0.1),
@@ -141,7 +143,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Batas Minimum",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -149,7 +152,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockThreshold,
-                            hintText: "contoh: 15", // Change from "Batas Minimum Stok"
+                            hintText:
+                                "contoh: 15", // Change from "Batas Minimum Stok"
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.warning_2),
                             validator: (value) {
@@ -166,7 +170,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         if (selectedStockType?.stockUnit != null &&
                             selectedStockType!.stockUnit.isNotEmpty)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(left: 8),
                             decoration: BoxDecoration(
                               color: AppTheme.primary.withValues(alpha: 0.1),
@@ -186,11 +191,11 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Kategori Stok",
-                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
 
-                    // Stock Type Dropdown
                     BlocBuilder<StockTypeBloc, StockTypeState>(
                       builder: (context, state) {
                         if (state is StockTypeLoading) {
@@ -200,17 +205,17 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         } else if (state is StockTypeLoaded) {
                           final stockTypes = state.stockTypes;
 
-                          // If stock is being edited, try to find its stock type in the list
-                          if (widget.stock != null && selectedStockType == null) {
+                          if (widget.stock != null &&
+                              selectedStockType == null) {
                             for (var type in stockTypes) {
-                              if (type.idStockType == widget.stock!.idStockType.idStockType) {
+                              if (type.idStockType ==
+                                  widget.stock!.idStockType.idStockType) {
                                 selectedStockType = type;
                                 break;
                               }
                             }
                           }
 
-                          // Check if stock types list is empty
                           if (stockTypes.isEmpty) {
                             return Column(
                               children: [
@@ -219,7 +224,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                   decoration: BoxDecoration(
                                     color: Colors.amber.shade50,
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.amber.shade200),
+                                    border: Border.all(
+                                        color: Colors.amber.shade200),
                                   ),
                                   child: Column(
                                     children: [
@@ -240,7 +246,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       Text(
                                         "Silahkan buat kategori stok terlebih dahulu",
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(color: Colors.amber.shade800),
+                                        style: TextStyle(
+                                            color: Colors.amber.shade800),
                                       ),
                                       const SizedBox(height: 16),
                                       ElevatedButton.icon(
@@ -250,13 +257,17 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                           backgroundColor: AppTheme.primary,
                                           foregroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
                                         onPressed: () {
-                                          context.push('/add-edit-stock-type').then((_) {
-                                            // Reload stock types when returning from add screen
-                                            context.read<StockTypeBloc>().add(LoadStockTypes());
+                                          context
+                                              .push('/add-edit-stock-type')
+                                              .then((_) {
+                                            context
+                                                .read<StockTypeBloc>()
+                                                .add(LoadStockTypes());
                                           });
                                         },
                                       ),
@@ -285,7 +296,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       children: [
                                         if (type.stockTypeIcon.isNotEmpty)
                                           Icon(
-                                            getIconFromString(type.stockTypeIcon),
+                                            getIconFromString(
+                                                type.stockTypeIcon),
                                             color: AppTheme.primary,
                                             size: 18,
                                           ),
@@ -320,7 +332,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       '/add-edit-stock-type',
                                     )
                                         .then((_) {
-                                      context.read<StockTypeBloc>().add(LoadStockTypes());
+                                      context
+                                          .read<StockTypeBloc>()
+                                          .add(LoadStockTypes());
                                     });
                                   },
                                 ),
@@ -337,7 +351,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    context.read<StockTypeBloc>().add(LoadStockTypes());
+                                    context
+                                        .read<StockTypeBloc>()
+                                        .add(LoadStockTypes());
                                   },
                                   child: const Text("Retry"),
                                 ),
@@ -364,7 +380,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        icon: const Icon(Iconsax.tick_square, color: Colors.white),
+                        icon: const Icon(Iconsax.tick_square,
+                            color: Colors.white),
                         label: Text(
                           "Simpan Stok",
                           style: AppTheme.buttonText.copyWith(
@@ -377,7 +394,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -385,7 +403,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               ),
                             );
 
-                            final int threshold = int.tryParse(stockThreshold.text) ?? 0;
+                            final int threshold =
+                                int.tryParse(stockThreshold.text) ?? 0;
 
                             if (widget.stock != null) {
                               context.read<StockBloc>().add(
@@ -401,7 +420,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               context.read<StockBloc>().add(
                                     AddStock(
                                       stockName: stockName.text,
-                                      stockQuantity: int.parse(stockQuantity.text),
+                                      stockQuantity:
+                                          int.parse(stockQuantity.text),
                                       stockType: selectedStockType,
                                       threshold: threshold,
                                     ),
@@ -413,7 +433,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) => AppDialog(
+                              builder: (BuildContext dialogContext) =>
+                                  AppDialog(
                                 type: "success",
                                 title: "Berhasil",
                                 message: widget.stock == null
@@ -423,7 +444,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               ),
                             );
 
-                            Future.delayed(const Duration(milliseconds: 500), () {
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
                               Navigator.pop(context);
                               Navigator.pop(context);
                             });

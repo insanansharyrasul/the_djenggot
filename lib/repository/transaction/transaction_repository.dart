@@ -9,12 +9,10 @@ import 'package:uuid/uuid.dart';
 class TransactionRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
-  // Get all transactions
   Future<List<TransactionHistory>> getAllTransactions() async {
     try {
       final db = await _databaseHelper.db;
 
-      // Get all transaction histories with type info
       final List<Map<String, dynamic>> transactions = await db.rawQuery('''
         SELECT th.*, tt.transaction_type_name, tt.transaction_type_icon
         FROM TRANSACTION_HISTORY th
@@ -22,11 +20,9 @@ class TransactionRepository {
         ORDER BY th.timestamp DESC
       ''');
 
-      // Convert raw data to TransactionHistory objects with items
       List<TransactionHistory> result = [];
 
       for (var transaction in transactions) {
-        // Get items for this transaction
         final List<Map<String, dynamic>> items = await db.rawQuery('''
           SELECT 
             ti.*,
@@ -42,7 +38,6 @@ class TransactionRepository {
           WHERE ti.id_transaction_history = ?
         ''', [transaction['id_transaction_history']]);
 
-        // Convert items to TransactionItem objects
         List<TransactionItem> transactionItems = items.map((item) {
           return TransactionItem(
             idTransactionItem: item['id_transaction_item'],
@@ -52,7 +47,6 @@ class TransactionRepository {
           );
         }).toList();
 
-        // Create TransactionHistory with items
         result.add(
           TransactionHistory(
             idTransactionHistory: transaction['id_transaction_history'],
@@ -81,7 +75,6 @@ class TransactionRepository {
     try {
       final db = await _databaseHelper.db;
 
-      // Get transaction history with type info
       final List<Map<String, dynamic>> transactions = await db.rawQuery('''
         SELECT th.*, tt.transaction_type_name, tt.transaction_type_icon
         FROM TRANSACTION_HISTORY th
@@ -93,7 +86,6 @@ class TransactionRepository {
         return null;
       }
 
-      // Get items for this transaction
       final List<Map<String, dynamic>> items = await db.rawQuery('''
         SELECT 
           ti.*,
@@ -109,7 +101,6 @@ class TransactionRepository {
         WHERE ti.id_transaction_history = ?
       ''', [id]);
 
-      // Convert items to TransactionItem objects
       List<TransactionItem> transactionItems = items.map((item) {
         return TransactionItem(
           idTransactionItem: item['id_transaction_item'],
@@ -119,7 +110,6 @@ class TransactionRepository {
         );
       }).toList();
 
-      // Create and return TransactionHistory with items
       return TransactionHistory(
         idTransactionHistory: transactions[0]['id_transaction_history'],
         transactionType: TransactionType(
@@ -138,7 +128,6 @@ class TransactionRepository {
     }
   }
 
-  // Add a new transaction
   Future<void> addTransaction(
     String transactionTypeId,
     int amount,
@@ -161,7 +150,6 @@ class TransactionRepository {
       },
     );
 
-    // Insert transaction items
     for (var item in items) {
       await _databaseHelper.insertQuery(
         'TRANSACTION_ITEM',
@@ -175,12 +163,10 @@ class TransactionRepository {
     }
   }
 
-  // Delete a transaction
   Future<int> deleteTransaction(String id) async {
     try {
       final db = await _databaseHelper.db;
 
-      // The foreign key constraints will handle deleting related items
       return await db.delete(
         'TRANSACTION_HISTORY',
         where: 'id_transaction_history = ?',

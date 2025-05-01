@@ -30,9 +30,6 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: const Text(
           "Daftar Tipe Stok",
           style: AppTheme.appBarTitle,
@@ -69,7 +66,8 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
               return const EmptyState(
                 icon: Iconsax.box,
                 title: "Belum ada tipe stok",
-                subtitle: "Tambahkan tipe stok baru dengan menekan tombol '+' di pojok kanan atas.",
+                subtitle:
+                    "Tambahkan tipe stok baru dengan menekan tombol '+' di pojok kanan atas.",
               );
             }
 
@@ -91,7 +89,6 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
 
   Widget _buildStockTypeCard(BuildContext context, StockType stockType) {
     return Card(
-      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -106,7 +103,8 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
         ),
         title: Text(
           stockType.stockTypeName,
-          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         subtitle: Text(
           "Satuan: ${stockType.stockUnit}",
@@ -139,7 +137,8 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
       builder: (BuildContext dialogContext) => AppDialog(
         type: "confirm",
         title: "Hapus Tipe Stok",
-        message: "Apakah Anda yakin ingin menghapus tipe stok '${stockType.stockTypeName}'?",
+        message:
+            "Apakah Anda yakin ingin menghapus tipe stok '${stockType.stockTypeName}'?",
         onOkPress: () async {
           Navigator.pop(dialogContext);
 
@@ -177,7 +176,6 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
             Navigator.pop(context);
           });
         },
-        // showCancelButton: true,
       ),
     );
   }

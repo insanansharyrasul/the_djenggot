@@ -118,7 +118,8 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> countQuery(String tableName, String where, List<dynamic> whereArgs) async {
+  Future<int> countQuery(
+      String tableName, String where, List<dynamic> whereArgs) async {
     Database db = await instance.db;
     final result = await db.query(
       tableName,

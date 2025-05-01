@@ -71,9 +71,11 @@ class TransactionFilterFab extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Pilih Tipe Transaksi', style: AppTheme.headline.copyWith(fontSize: 18)),
+                title: Text('Pilih Tipe Transaksi',
+                    style: AppTheme.headline.copyWith(fontSize: 18)),
                 backgroundColor: AppTheme.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -88,10 +90,13 @@ class TransactionFilterFab extends StatelessWidget {
                         },
                       ),
                       ...transactionTypes.map((type) => ListTile(
-                            leading: Icon(getIconFromString(type.transactionTypeIcon), 
-                                        color: AppTheme.primary),
-                            title: Text(type.transactionTypeName, style: AppTheme.body1),
-                            selected: selectedType?.idTransactionType == type.idTransactionType,
+                            leading: Icon(
+                                getIconFromString(type.transactionTypeIcon),
+                                color: AppTheme.primary),
+                            title: Text(type.transactionTypeName,
+                                style: AppTheme.body1),
+                            selected: selectedType?.idTransactionType ==
+                                type.idTransactionType,
                             selectedColor: AppTheme.primary,
                             onTap: () {
                               onTypeChanged(type);
@@ -114,9 +119,11 @@ class TransactionFilterFab extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Urutkan Berdasarkan', style: AppTheme.headline.copyWith(fontSize: 18)),
+                title: Text('Urutkan Berdasarkan',
+                    style: AppTheme.headline.copyWith(fontSize: 18)),
                 backgroundColor: AppTheme.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -124,12 +131,15 @@ class TransactionFilterFab extends StatelessWidget {
                       title: const Text('Tanggal', style: AppTheme.body1),
                       trailing: sortBy == 'date'
                           ? Icon(
-                              ascending ? Iconsax.arrow_up_1 : Iconsax.arrow_down_1,
+                              ascending
+                                  ? Iconsax.arrow_up_1
+                                  : Iconsax.arrow_down_1,
                               color: AppTheme.primary,
                             )
                           : null,
                       onTap: () {
-                        onSortChanged('date', sortBy == 'date' ? !ascending : true);
+                        onSortChanged(
+                            'date', sortBy == 'date' ? !ascending : true);
                         Navigator.pop(context);
                       },
                     ),
@@ -137,12 +147,15 @@ class TransactionFilterFab extends StatelessWidget {
                       title: const Text('Total Harga', style: AppTheme.body1),
                       trailing: sortBy == 'amount'
                           ? Icon(
-                              ascending ? Iconsax.arrow_up_1 : Iconsax.arrow_down_1,
+                              ascending
+                                  ? Iconsax.arrow_up_1
+                                  : Iconsax.arrow_down_1,
                               color: AppTheme.primary,
                             )
                           : null,
                       onTap: () {
-                        onSortChanged('amount', sortBy == 'amount' ? !ascending : true);
+                        onSortChanged(
+                            'amount', sortBy == 'amount' ? !ascending : true);
                         Navigator.pop(context);
                       },
                     ),
@@ -150,12 +163,15 @@ class TransactionFilterFab extends StatelessWidget {
                       title: const Text('Jumlah Item', style: AppTheme.body1),
                       trailing: sortBy == 'items'
                           ? Icon(
-                              ascending ? Iconsax.arrow_up_1 : Iconsax.arrow_down_1,
+                              ascending
+                                  ? Iconsax.arrow_up_1
+                                  : Iconsax.arrow_down_1,
                               color: AppTheme.primary,
                             )
                           : null,
                       onTap: () {
-                        onSortChanged('items', sortBy == 'items' ? !ascending : true);
+                        onSortChanged(
+                            'items', sortBy == 'items' ? !ascending : true);
                         Navigator.pop(context);
                       },
                     ),

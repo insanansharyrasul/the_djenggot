@@ -30,9 +30,6 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: const Text(
           "Daftar Tipe Menu",
           style: AppTheme.appBarTitle,
@@ -69,7 +66,8 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
               return const EmptyState(
                 icon: Iconsax.category,
                 title: "Belum ada tipe menu",
-                subtitle: "Tambahkan tipe menu baru dengan menekan tombol '+' di pojok kanan atas.",
+                subtitle:
+                    "Tambahkan tipe menu baru dengan menekan tombol '+' di pojok kanan atas.",
               );
             }
 
@@ -91,7 +89,6 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
 
   Widget _buildMenuTypeCard(BuildContext context, MenuType menuType) {
     return Card(
-      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -106,7 +103,8 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
         ),
         title: Text(
           menuType.menuTypeName,
-          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -135,7 +133,8 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
       builder: (BuildContext dialogContext) => AppDialog(
         type: "confirm",
         title: "Hapus Tipe Menu",
-        message: "Apakah Anda yakin ingin menghapus tipe menu '${menuType.menuTypeName}'?",
+        message:
+            "Apakah Anda yakin ingin menghapus tipe menu '${menuType.menuTypeName}'?",
         onOkPress: () async {
           Navigator.pop(dialogContext);
 
@@ -176,7 +175,6 @@ class _MenuTypeListScreenState extends State<MenuTypeListScreen> {
             },
           );
         },
-        // showCancelButton: true,
       ),
     );
   }

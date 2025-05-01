@@ -44,5 +44,6 @@ class TransactionType extends Equatable {
   }
 
   @override
-  List<Object?> get props => [idTransactionType, transactionTypeName, transactionTypeIcon];
+  List<Object?> get props =>
+      [idTransactionType, transactionTypeName, transactionTypeIcon];
 }

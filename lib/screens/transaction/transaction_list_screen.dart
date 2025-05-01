@@ -50,7 +50,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           if (state is TransactionLoaded) {
             var transactions = state.transactions;
 
-            // Apply date filter
             if (startDate != null && endDate != null) {
               transactions = transactions.where((t) {
                 final date = DateTime.parse(t.timestamp);
@@ -59,15 +58,14 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               }).toList();
             }
 
-            // Apply type filter
             if (selectedType != null) {
               transactions = transactions
-                  .where(
-                      (t) => t.transactionType.idTransactionType == selectedType!.idTransactionType)
+                  .where((t) =>
+                      t.transactionType.idTransactionType ==
+                      selectedType!.idTransactionType)
                   .toList();
             }
 
-            // Apply sorting
             transactions.sort((a, b) {
               switch (sortBy) {
                 case 'date':
@@ -106,7 +104,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                       _reloadTransactions();
                     },
                     child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.all(16),
                       itemCount: transactions.length,
                       itemBuilder: (context, index) {
                         final transaction = transactions[index];
@@ -121,7 +119,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           return const Center(child: CircularProgressIndicator());
         },
       ),
-      floatingActionButton: BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
+      floatingActionButton:
+          BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
         builder: (context, state) {
           if (state is TransactionTypeLoaded) {
             return Column(
@@ -167,7 +166,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     );
   }
 
-  Widget _buildTransactionCard(BuildContext context, TransactionHistory transaction) {
+  Widget _buildTransactionCard(
+      BuildContext context, TransactionHistory transaction) {
     final formatter = NumberFormat.currency(
       locale: 'id',
       symbol: 'Rp',
@@ -179,7 +179,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
 
     return Card(
       elevation: 2,
-      color: AppTheme.white,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -193,7 +192,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         ),
         title: Text(
           transaction.transactionType.transactionTypeName,
-          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,27 +201,30 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             Text(
               formatter.format(transaction.transactionAmount),
               style: const TextStyle(
-                color: AppTheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
+                  color: AppTheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppTheme.fontName),
             ),
             Text(
               formattedDate,
               style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontFamily: AppTheme.fontName),
             ),
             Text(
               "${transaction.items?.length ?? 0} items",
-              style: const TextStyle(fontSize: 12),
+              style:
+                  const TextStyle(fontSize: 12, fontFamily: AppTheme.fontName),
             ),
           ],
         ),
         trailing: IconButton(
           icon: const Icon(Iconsax.eye, color: AppTheme.primary),
           onPressed: () {
-            context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
+            context
+                .push('/transaction-detail/${transaction.idTransactionHistory}')
+                .then(
               (_) async {
                 _reloadTransactions();
               },
@@ -229,7 +232,9 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           },
         ),
         onTap: () {
-          context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
+          context
+              .push('/transaction-detail/${transaction.idTransactionHistory}')
+              .then(
             (_) async {
               _reloadTransactions();
             },

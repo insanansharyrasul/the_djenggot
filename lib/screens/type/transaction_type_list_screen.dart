@@ -16,7 +16,8 @@ class TransactionTypeListScreen extends StatefulWidget {
   const TransactionTypeListScreen({super.key});
 
   @override
-  State<TransactionTypeListScreen> createState() => _TransactionTypeListScreenState();
+  State<TransactionTypeListScreen> createState() =>
+      _TransactionTypeListScreenState();
 }
 
 class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
@@ -30,9 +31,6 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppTheme.background,
-        centerTitle: true,
         title: const Text(
           "Daftar Tipe Transaksi",
           style: AppTheme.appBarTitle,
@@ -90,9 +88,9 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
     );
   }
 
-  Widget _buildTransactionTypeCard(BuildContext context, TransactionType transactionType) {
+  Widget _buildTransactionTypeCard(
+      BuildContext context, TransactionType transactionType) {
     return Card(
-      color: AppTheme.white,
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -107,7 +105,8 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
         ),
         title: Text(
           transactionType.transactionTypeName,
-          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -115,7 +114,8 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
             IconButton(
               icon: const Icon(Iconsax.edit, color: AppTheme.primary),
               onPressed: () {
-                context.push('/edit-transaction-type/${transactionType.idTransactionType}');
+                context.push(
+                    '/edit-transaction-type/${transactionType.idTransactionType}');
               },
             ),
             IconButton(
@@ -130,7 +130,8 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, TransactionType transactionType) {
+  void _showDeleteConfirmation(
+      BuildContext context, TransactionType transactionType) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) => AppDialog(

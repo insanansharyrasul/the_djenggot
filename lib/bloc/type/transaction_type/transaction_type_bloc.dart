@@ -3,7 +3,8 @@ import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_event.d
 import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_state.dart';
 import 'package:the_djenggot/repository/type/transaction_type_repository.dart';
 
-class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeState> {
+class TransactionTypeBloc
+    extends Bloc<TransactionTypeEvent, TransactionTypeState> {
   final TransactionTypeRepository _repository;
 
   TransactionTypeBloc(this._repository) : super(TransactionTypeLoading()) {
@@ -58,7 +59,8 @@ class TransactionTypeBloc extends Bloc<TransactionTypeEvent, TransactionTypeStat
 
     on<SearchTransactionTypes>((event, emit) async {
       try {
-        final transactionTypes = await _repository.searchTransactionTypes(event.query);
+        final transactionTypes =
+            await _repository.searchTransactionTypes(event.query);
         emit(TransactionTypeLoaded(transactionTypes));
       } catch (e) {
         emit(TransactionTypeError(e.toString()));

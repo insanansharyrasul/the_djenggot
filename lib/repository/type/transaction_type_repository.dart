@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 class TransactionTypeRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
-  // Get all transaction types
   Future<List<TransactionType>> getAllTransactionTypes() async {
     try {
       final List<Map<String, dynamic>> maps =
@@ -16,7 +15,6 @@ class TransactionTypeRepository {
     }
   }
 
-  // Search transaction types
   Future<List<TransactionType>> searchTransactionTypes(String query) async {
     try {
       final List<Map<String, dynamic>> maps = await _databaseHelper.getAllQuery(
@@ -30,8 +28,8 @@ class TransactionTypeRepository {
     }
   }
 
-  // Add a new transaction type
-  Future<int> addTransactionType(String name, {String? icon, bool needEvidence = true}) async {
+  Future<int> addTransactionType(String name,
+      {String? icon, bool needEvidence = true}) async {
     try {
       final String uniqueId = "transaction-type-${const Uuid().v4()}";
       return await _databaseHelper.insertQuery(
@@ -48,7 +46,6 @@ class TransactionTypeRepository {
     }
   }
 
-  // Update an existing transaction type
   Future<int> updateTransactionType(
     TransactionType transactionType,
     String newName, {
@@ -62,7 +59,11 @@ class TransactionTypeRepository {
         {
           'transaction_type_name': newName,
           'transaction_type_icon': icon ?? transactionType.transactionTypeIcon,
-          'need_evidence': needEvidence != null ? (needEvidence ? 1 : 0) : transactionType.needEvidence ? 1 : 0,
+          'need_evidence': needEvidence != null
+              ? (needEvidence ? 1 : 0)
+              : transactionType.needEvidence
+                  ? 1
+                  : 0,
         },
         where: 'id_transaction_type = ?',
         whereArgs: [transactionType.idTransactionType],
@@ -72,7 +73,6 @@ class TransactionTypeRepository {
     }
   }
 
-  // Delete a transaction type
   Future<int> deleteTransactionType(String id) async {
     try {
       final db = await _databaseHelper.db;
