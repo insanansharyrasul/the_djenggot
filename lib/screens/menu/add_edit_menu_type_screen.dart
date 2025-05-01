@@ -14,11 +14,13 @@ class AddEditMenuTypeScreen extends StatefulWidget {
   final MenuType? menuType;
   const AddEditMenuTypeScreen({super.key, this.menuType});
 
+  // Use key in createState to improve performance when reusing widgets
   @override
   State<AddEditMenuTypeScreen> createState() => _AddEditMenuTypeScreenState();
 }
 
 class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
+  // Make controllers and formKey instance variables to prevent recreation on rebuild
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
@@ -148,8 +150,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
+                              builder: (BuildContext dialogContext) => AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -162,18 +163,16 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                                     UpdateMenuType(
                                       widget.menuType!,
                                       name.text,
-                                      icon: iconController.text.isEmpty
-                                          ? null
-                                          : iconController.text,
+                                      icon:
+                                          iconController.text.isEmpty ? null : iconController.text,
                                     ),
                                   );
                             } else {
                               context.read<MenuTypeBloc>().add(
                                     AddMenuType(
                                       name.text,
-                                      icon: iconController.text.isEmpty
-                                          ? null
-                                          : iconController.text,
+                                      icon:
+                                          iconController.text.isEmpty ? null : iconController.text,
                                     ),
                                   );
                             }
@@ -183,8 +182,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
+                              builder: (BuildContext dialogContext) => AppDialog(
                                 type: "success",
                                 title: "Pengajuan Berhasil",
                                 message: "Kembali ke dashboard...",

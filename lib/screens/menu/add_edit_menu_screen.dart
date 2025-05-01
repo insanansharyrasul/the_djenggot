@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
-// TODO : Compress image before upload
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +21,7 @@ import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/image_source_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image/image.dart' as img;
 
 class AddEditMenuScreen extends StatefulWidget {
   final Menu? menu;
@@ -37,6 +37,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   final TextEditingController price = TextEditingController();
   File? image;
   MenuType? selectedMenuType;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -44,9 +45,117 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     if (widget.menu != null) {
       name.text = widget.menu!.menuName;
       price.text = widget.menu!.menuPrice.toString();
+      // Load menu types only once in initState
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     } else {
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
+    }
+  }
+  
+  @override
+  void dispose() {
+    name.dispose();
+    price.dispose();
+    super.dispose();
+  }
+
+  // Compress image to reduce memory usage
+  Future<Uint8List> compressImage(File imageFile) async {
+    final bytes = await imageFile.readAsBytes();
+    final image = img.decodeImage(Uint8List.fromList(bytes));
+    if (image == null) return bytes;
+    
+    // Resize if too large (keeping aspect ratio)
+    img.Image resized;
+    if (image.width > 1024 || image.height > 1024) {
+      int targetWidth, targetHeight;
+      if (image.width > image.height) {
+        targetWidth = 1024;
+        targetHeight = (1024 * image.height / image.width).round();
+      } else {
+        targetHeight = 1024;
+        targetWidth = (1024 * image.width / image.height).round();
+      }
+      resized = img.copyResize(image, width: targetWidth, height: targetHeight);
+    } else {
+      resized = image;
+    }
+    
+    // Compress quality
+    return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
+  }
+
+  // Extract menu form validators to avoid rebuilding them
+  String? validateMenuName(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Menu tidak boleh kosong";
+    }
+    return null;
+  }
+
+  String? validatePrice(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Harga tidak boleh kosong";
+    }
+    return null;
+  }
+
+  // Extract image widget to prevent unnecessary rebuilds
+  Widget _buildImageWidget() {
+    if (widget.menu?.menuImage != null && image == null) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: DecorationImage(
+            image: MemoryImage(widget.menu!.menuImage),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else if (image != null) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: DecorationImage(
+            image: FileImage(image!),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.shade50,
+          border: Border.all(
+            color: Colors.grey.shade400,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Iconsax.camera,
+              size: 48,
+              color: Colors.grey.shade600,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Tap untuk pilih gambar",
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -97,57 +206,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                           ),
                           const SizedBox(height: 12),
                           GestureDetector(
-                            onTap: _showImageSourceBottomSheet,
-                            child: Center(
-                              child: widget.menu?.menuImage != null ||
-                                      image != null
-                                  ? Container(
-                                      height: 200,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        image: DecorationImage(
-                                          image: image != null
-                                              ? FileImage(image!)
-                                              : MemoryImage(
-                                                  widget.menu!.menuImage),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        // ),
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 200,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: Colors.grey.shade50,
-                                        border: Border.all(
-                                          color: Colors.grey.shade400,
-                                          // style: BorderStyle.dashed,
-                                        ),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Iconsax.camera,
-                                            size: 48,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                          const SizedBox(height: 12),
-                                          Text(
-                                            "Tap untuk pilih gambar",
-                                            style: TextStyle(
-                                              color: Colors.grey.shade600,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                            ),
+                            onTap: _isProcessing ? null : _showImageSourceBottomSheet,
+                            child: _buildImageWidget(),
                           ),
                         ],
                       ),
@@ -169,12 +229,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                       hintText: "contoh: Nasi Goreng",
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Iconsax.coffee),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Menu tidak boleh kosong";
-                        }
-                        return null;
-                      },
+                      validator: validateMenuName,
                     ),
 
                     const SizedBox(height: 20),
@@ -190,12 +245,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                       keyboardType: const TextInputType.numberWithOptions(),
                       prefixIcon: const Icon(Iconsax.money),
                       enableCommaSeparator: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Harga tidak boleh kosong";
-                        }
-                        return null;
-                      },
+                      validator: validatePrice,
                     ),
 
                     const SizedBox(height: 20),
@@ -206,181 +256,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     ),
                     const SizedBox(height: 8),
 
-                    // Menu Type Dropdown
-                    BlocBuilder<MenuTypeBloc, MenuTypeState>(
-                      builder: (context, state) {
-                        if (state is MenuTypeLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (state is MenuTypeLoaded) {
-                          final menuTypes = state.menuTypes;
-
-                          // If menu is being edited, try to find its menu type in the list
-                          if (widget.menu != null && selectedMenuType == null) {
-                            for (var type in menuTypes) {
-                              if (type.idMenuType ==
-                                  widget.menu!.idMenuType.idMenuType) {
-                                selectedMenuType = type;
-                                break;
-                              }
-                            }
-                          }
-                          // Check if menu types list is empty
-                          if (menuTypes.isEmpty) {
-                            return Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.amber.shade50,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                        color: Colors.amber.shade200),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      const Icon(
-                                        Iconsax.info_circle,
-                                        color: Colors.amber,
-                                        size: 32,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        "Belum ada kategori menu",
-                                        style: AppTheme.textField.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.amber.shade800,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        "Silahkan buat kategori menu terlebih dahulu",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.amber.shade800),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      ElevatedButton.icon(
-                                        icon: const Icon(Iconsax.add_circle),
-                                        label: const Text("Buat Kategori Menu"),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppTheme.primary,
-                                          foregroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          context
-                                              .push('/add-edit-menu-type')
-                                              .then((_) {
-                                            // Reload menu types when returning from add screen
-                                            context
-                                                .read<MenuTypeBloc>()
-                                                .add(LoadMenuTypes());
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-
-                          return Column(
-                            children: [
-                              DropdownButtonFormField<MenuType>(
-                                value: selectedMenuType,
-                                decoration: dropdownCategoryDecoration(
-                                  prefixIcon: Iconsax.category,
-                                ),
-                                hint: Text(
-                                  "Pilih Kategori Menu",
-                                  style: createBlackThinTextStyle(14),
-                                ),
-                                validator: (value) {
-                                  if (value == null) {
-                                    return "Kategori menu harus dipilih";
-                                  }
-                                  return null;
-                                },
-                                items: menuTypes.map((type) {
-                                  return DropdownMenuItem<MenuType>(
-                                    value: type,
-                                    child: Row(
-                                      children: [
-                                        if (type.menuTypeIcon.isNotEmpty)
-                                          Icon(
-                                            getIconFromString(
-                                                type.menuTypeIcon),
-                                            color: AppTheme.primary,
-                                            size: 18,
-                                          ),
-                                        if (type.menuTypeIcon.isNotEmpty)
-                                          const SizedBox(width: 12),
-                                        Text(type.menuTypeName),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedMenuType = newValue;
-                                  });
-                                },
-                                dropdownColor: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                icon: const Icon(Iconsax.arrow_down_1),
-                              ),
-                              const SizedBox(height: 8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton.icon(
-                                  icon: const Icon(Iconsax.add, size: 16),
-                                  label: const Text("Tambah Kategori Baru"),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: AppTheme.primary,
-                                  ),
-                                  onPressed: () {
-                                    context
-                                        .push('/add-edit-menu-type')
-                                        .then((_) {
-                                      // Reload menu types when returning from add screen
-                                      context
-                                          .read<MenuTypeBloc>()
-                                          .add(LoadMenuTypes());
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        } else if (state is MenuTypeError) {
-                          return Center(
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Error loading menu types: ${state.message}",
-                                  style: const TextStyle(color: Colors.red),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    context
-                                        .read<MenuTypeBloc>()
-                                        .add(LoadMenuTypes());
-                                  },
-                                  child: const Text("Retry"),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                        return Container(); // Fallback
-                      },
-                    ),
+                    // Menu Type Dropdown - using const for static parts
+                    _buildMenuTypeDropdown(),
 
                     const SizedBox(height: 32),
                     const Divider(),
@@ -400,91 +277,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                         icon: const Icon(Iconsax.tick_square,
                             color: Colors.white),
                         label: Text(
-                          "Simpan Menu",
+                          _isProcessing ? "Memproses..." : "Simpan Menu",
                           style: AppTheme.buttonText.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (image == null && widget.menu == null) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text("Harap pilih gambar menu"),
-                                backgroundColor: Colors.red,
-                              ));
-                              return;
-                            }
-
-                            if (selectedMenuType == null) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text("Harap pilih kategori menu"),
-                                backgroundColor: Colors.red,
-                              ));
-                              return;
-                            }
-
-                            final int numericPrice =
-                                CurrencyInputFormatter.getNumericalValue(
-                                    price.text);
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
-                                type: "loading",
-                                title: "Memproses",
-                                message: "Mohon tunggu...",
-                                onOkPress: () {},
-                              ),
-                            );
-
-                            if (widget.menu != null) {
-                              context.read<MenuBloc>().add(
-                                    UpdateMenu(
-                                      widget.menu!,
-                                      name.text,
-                                      numericPrice,
-                                      selectedMenuType!.idMenuType,
-                                      widget.menu!.menuImage,
-                                    ),
-                                  );
-                            } else {
-                              Uint8List imageBytes = await image!.readAsBytes();
-                              context.read<MenuBloc>().add(
-                                    AddMenu(
-                                      menuName: name.text,
-                                      menuPrice: numericPrice,
-                                      menuImage: imageBytes,
-                                      menuType: selectedMenuType!.idMenuType,
-                                    ),
-                                  );
-                            }
-                            Navigator.pop(context);
-
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
-                                type: "success",
-                                title: "Berhasil",
-                                message: widget.menu == null
-                                    ? "Menu berhasil ditambahkan"
-                                    : "Menu berhasil diperbarui",
-                                onOkPress: () {},
-                              ),
-                            );
-
-                            Future.delayed(const Duration(milliseconds: 500),
-                                () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            });
-                          }
-                        },
+                        onPressed: _isProcessing ? null : _saveMenu,
                       ),
                     ),
                   ],
@@ -497,12 +296,289 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     );
   }
 
+  // Extract menu type dropdown to prevent unnecessary rebuilds
+  Widget _buildMenuTypeDropdown() {
+    return BlocBuilder<MenuTypeBloc, MenuTypeState>(
+      builder: (context, state) {
+        if (state is MenuTypeLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is MenuTypeLoaded) {
+          final menuTypes = state.menuTypes;
+
+          // If menu is being edited, try to find its menu type in the list
+          if (widget.menu != null && selectedMenuType == null) {
+            for (var type in menuTypes) {
+              if (type.idMenuType ==
+                  widget.menu!.idMenuType.idMenuType) {
+                selectedMenuType = type;
+                break;
+              }
+            }
+          }
+          // Check if menu types list is empty
+          if (menuTypes.isEmpty) {
+            return _buildEmptyMenuTypesWidget();
+          }
+
+          return _buildMenuTypeSelector(menuTypes);
+        } else if (state is MenuTypeError) {
+          return Center(
+            child: Column(
+              children: [
+                Text(
+                  "Error loading menu types: ${state.message}",
+                  style: const TextStyle(color: Colors.red),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<MenuTypeBloc>()
+                        .add(LoadMenuTypes());
+                  },
+                  child: const Text("Retry"),
+                ),
+              ],
+            ),
+          );
+        }
+        return Container(); // Fallback
+      },
+    );
+  }
+
+  Widget _buildEmptyMenuTypesWidget() {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.amber.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.amber.shade200),
+          ),
+          child: Column(
+            children: [
+              const Icon(
+                Iconsax.info_circle,
+                color: Colors.amber,
+                size: 32,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Belum ada kategori menu",
+                style: AppTheme.textField.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber.shade800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "Silahkan buat kategori menu terlebih dahulu",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.amber.shade800),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                icon: const Icon(Iconsax.add_circle),
+                label: const Text("Buat Kategori Menu"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  context.push('/add-edit-menu-type').then((_) {
+                    // Reload menu types when returning from add screen
+                    context.read<MenuTypeBloc>().add(LoadMenuTypes());
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuTypeSelector(List<MenuType> menuTypes) {
+    return Column(
+      children: [
+        DropdownButtonFormField<MenuType>(
+          value: selectedMenuType,
+          decoration: dropdownCategoryDecoration(
+            prefixIcon: Iconsax.category,
+          ),
+          hint: Text(
+            "Pilih Kategori Menu",
+            style: createBlackThinTextStyle(14),
+          ),
+          validator: (value) {
+            if (value == null) {
+              return "Kategori menu harus dipilih";
+            }
+            return null;
+          },
+          items: menuTypes.map((type) {
+            return DropdownMenuItem<MenuType>(
+              value: type,
+              child: Row(
+                children: [
+                  if (type.menuTypeIcon.isNotEmpty)
+                    Icon(
+                      getIconFromString(type.menuTypeIcon),
+                      color: AppTheme.primary,
+                      size: 18,
+                    ),
+                  if (type.menuTypeIcon.isNotEmpty)
+                    const SizedBox(width: 12),
+                  Text(type.menuTypeName),
+                ],
+              ),
+            );
+          }).toList(),
+          onChanged: (newValue) {
+            setState(() {
+              selectedMenuType = newValue;
+            });
+          },
+          dropdownColor: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          icon: const Icon(Iconsax.arrow_down_1),
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            icon: const Icon(Iconsax.add, size: 16),
+            label: const Text("Tambah Kategori Baru"),
+            style: TextButton.styleFrom(
+              foregroundColor: AppTheme.primary,
+            ),
+            onPressed: () {
+              context.push('/add-edit-menu-type').then((_) {
+                // Reload menu types when returning from add screen
+                context.read<MenuTypeBloc>().add(LoadMenuTypes());
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   void _showImageSourceBottomSheet() async {
     final File? pickedFile = await showImageSourcePicker(context);
     if (pickedFile != null) {
       setState(() {
         image = pickedFile;
       });
+    }
+  }
+
+  // Extract save menu logic from the build method
+  Future<void> _saveMenu() async {
+    if (_isProcessing) return;
+
+    if (_formKey.currentState!.validate()) {
+      if (image == null && widget.menu == null) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Harap pilih gambar menu"),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+
+      if (selectedMenuType == null) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Harap pilih kategori menu"),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+
+      setState(() {
+        _isProcessing = true;
+      });
+
+      final int numericPrice = CurrencyInputFormatter.getNumericalValue(price.text);
+
+      try {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext dialogContext) => AppDialog(
+            type: "loading",
+            title: "Memproses",
+            message: "Mohon tunggu...",
+            onOkPress: () {},
+          ),
+        );
+
+        if (widget.menu != null) {
+          // Update existing menu
+          Uint8List imageBytes;
+          if (image != null) {
+            imageBytes = await compressImage(image!);
+          } else {
+            imageBytes = widget.menu!.menuImage;
+          }
+          
+          context.read<MenuBloc>().add(
+                UpdateMenu(
+                  widget.menu!,
+                  name.text,
+                  numericPrice,
+                  selectedMenuType!.idMenuType,
+                  imageBytes,
+                ),
+              );
+        } else {
+          // Add new menu
+          Uint8List imageBytes = await compressImage(image!);
+          context.read<MenuBloc>().add(
+                AddMenu(
+                  menuName: name.text,
+                  menuPrice: numericPrice,
+                  menuImage: imageBytes,
+                  menuType: selectedMenuType!.idMenuType,
+                ),
+              );
+        }
+        
+        Navigator.pop(context); // Close loading dialog
+
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext dialogContext) => AppDialog(
+            type: "success",
+            title: "Berhasil",
+            message: widget.menu == null
+                ? "Menu berhasil ditambahkan"
+                : "Menu berhasil diperbarui",
+            onOkPress: () {},
+          ),
+        );
+
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Navigator.pop(context); // Close success dialog
+          Navigator.pop(context); // Return to previous screen
+        });
+      } catch (e) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Error: ${e.toString()}"),
+          backgroundColor: Colors.red,
+        ));
+      } finally {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 }

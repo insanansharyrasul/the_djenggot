@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:the_djenggot/utils/currency_formatter_util.dart';
 
 class CurrencyInputFormatter extends TextInputFormatter {
   final NumberFormat _formatter = NumberFormat.currency(
@@ -9,14 +10,11 @@ class CurrencyInputFormatter extends TextInputFormatter {
   );
 
   static int getNumericalValue(String text) {
-    String numericString =
-        text.replaceAll('Rp.', '').replaceAll('.', '').trim();
-    return int.parse(numericString);
+    return CurrencyFormatterUtil.getNumericalValue(text);
   }
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }

@@ -20,8 +20,7 @@ class TransactionDetailScreen extends StatefulWidget {
   const TransactionDetailScreen({super.key, required this.id});
 
   @override
-  State<TransactionDetailScreen> createState() =>
-      _TransactionDetailScreenState();
+  State<TransactionDetailScreen> createState() => _TransactionDetailScreenState();
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
@@ -75,8 +74,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     );
   }
 
-  Widget _buildTransactionDetail(
-      BuildContext context, TransactionHistory transaction) {
+  Widget _buildTransactionDetail(BuildContext context, TransactionHistory transaction) {
     final formatter = NumberFormat.currency(
       locale: 'id',
       symbol: 'Rp',
@@ -102,8 +100,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 Row(
                   children: [
                     Icon(
-                      getIconFromString(
-                          transaction.transactionType.transactionTypeIcon),
+                      getIconFromString(transaction.transactionType.transactionTypeIcon),
                       color: AppTheme.primary,
                       size: 28,
                     ),
@@ -113,14 +110,12 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       children: [
                         Text(
                           transaction.transactionType.transactionTypeName,
-                          style: AppTheme.headline.copyWith(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                          style:
+                              AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Text(
                           formattedDate,
-                          style: const TextStyle(
-                              color: Colors.grey,
-                              fontFamily: AppTheme.fontName),
+                          style: const TextStyle(color: Colors.grey, fontFamily: AppTheme.fontName),
                         ),
                       ],
                     ),
@@ -165,8 +160,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       style: AppTheme.body1,
                     ),
                     Text(
-                      formatter.format(transaction.moneyReceived -
-                          transaction.transactionAmount),
+                      formatter.format(transaction.moneyReceived - transaction.transactionAmount),
                       style: AppTheme.body1.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -182,8 +176,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      showFullScreenImage(context,
-                          imageProvider: transaction.imageEvident);
+                      showFullScreenImage(context, imageProvider: transaction.imageEvident);
                     },
                     child: Container(
                       height: 200,
@@ -212,8 +205,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         ),
         const SizedBox(height: 8),
         if (transaction.items != null && transaction.items!.isNotEmpty)
-          ...transaction.items!
-              .map((item) => _buildItemCard(context, item, formatter))
+          ...transaction.items!.map((item) => _buildItemCard(context, item, formatter))
         else
           Card(
             color: AppTheme.white,
@@ -232,8 +224,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     );
   }
 
-  Widget _buildItemCard(
-      BuildContext context, TransactionItem item, NumberFormat formatter) {
+  Widget _buildItemCard(BuildContext context, TransactionItem item, NumberFormat formatter) {
     return Card(
       color: AppTheme.white,
       elevation: 2,
@@ -315,9 +306,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             ),
           );
 
-          context
-              .read<TransactionBloc>()
-              .add(DeleteTransactionEvent(widget.id));
+          context.read<TransactionBloc>().add(DeleteTransactionEvent(widget.id));
 
           Navigator.pop(context);
 

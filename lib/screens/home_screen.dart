@@ -14,6 +14,7 @@ import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_event.dart';
 import 'package:the_djenggot/models/transaction/transaction_item.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/utils/currency_formatter_util.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/transaction/daily_sales_card.dart';
 import 'package:go_router/go_router.dart';
@@ -262,16 +263,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           }
 
-          String formattedTotal;
-          if (totalIncome >= 1000000000) {
-            formattedTotal = "${(totalIncome / 1000000000).toStringAsFixed(1)}B";
-          } else if (totalIncome >= 1000000) {
-            formattedTotal = "${(totalIncome / 1000000).toStringAsFixed(1)}M";
-          } else if (totalIncome >= 1000) {
-            formattedTotal = "${(totalIncome / 1000).toStringAsFixed(1)}K";
-          } else {
-            formattedTotal = totalIncome.toString();
-          }
+          // Use our compact currency formatter for more readable display
+          String formattedTotal = CurrencyFormatterUtil.formatCurrency(totalIncome)
+              .replaceAll("Rp", ""); // Remove the Rp prefix for cleaner stats display
 
           String percentageText = "";
           bool isPositive = true;
@@ -341,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           value,
           style: const TextStyle(
-            fontSize: 26,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -392,12 +386,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecentTransactions() {
-    final formatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
-
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         if (state is TransactionLoaded) {
@@ -507,7 +495,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       Text(
-                                        formatter.format(transaction.transactionAmount),
+                                        CurrencyFormatterUtil.formatCurrency(
+                                            transaction.transactionAmount),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: AppTheme.primary,

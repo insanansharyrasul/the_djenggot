@@ -4,14 +4,9 @@ import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SettingScreen extends StatefulWidget {
+class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
-  @override
-  State<SettingScreen> createState() => _SettingScreenState();
-}
-
-class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +56,7 @@ class _SettingScreenState extends State<SettingScreen> {
             title: "Laporkan Masalah",
             subtitle: "Laporkan masalah atau bug yang ditemukan",
             onTap: () {
-              _openWhatsapp();
+              _openGmail();
             },
           )
         ],
@@ -69,16 +64,18 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  void _openWhatsapp() async {
+  Future<void> _openGmail() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: 'insanansryrasul21@gmail.com',
       query: 'subject=Report bug&body=Masalah yang ditemukan: ',
     );
-    if (await canLaunchUrl(emailUri)) {
-      await launchUrl(emailUri);
-    } else {
-      throw 'Could not launch $emailUri';
+    try {
+      if (await canLaunchUrl(emailUri)) {
+        await launchUrl(emailUri);
+      }
+    } catch (e) {
+      debugPrint('Could not launch $emailUri: $e');
     }
   }
 

@@ -50,15 +50,12 @@ class _MenuScreenState extends State<MenuScreen> {
     var filtered = _searchQuery.isEmpty
         ? menus
         : menus
-            .where((menu) => menu.menuName
-                .toLowerCase()
-                .contains(_searchQuery.toLowerCase()))
+            .where((menu) => menu.menuName.toLowerCase().contains(_searchQuery.toLowerCase()))
             .toList();
 
     if (_selectedType != null) {
       filtered = filtered
-          .where(
-              (menu) => menu.idMenuType.idMenuType == _selectedType!.idMenuType)
+          .where((menu) => menu.idMenuType.idMenuType == _selectedType!.idMenuType)
           .toList();
     }
 
@@ -76,12 +73,10 @@ class _MenuScreenState extends State<MenuScreen> {
         filtered.sort((a, b) => b.menuPrice.compareTo(a.menuPrice));
         break;
       case 'typeAsc':
-        filtered.sort((a, b) =>
-            a.idMenuType.menuTypeName.compareTo(b.idMenuType.menuTypeName));
+        filtered.sort((a, b) => a.idMenuType.menuTypeName.compareTo(b.idMenuType.menuTypeName));
         break;
       case 'typeDesc':
-        filtered.sort((a, b) =>
-            b.idMenuType.menuTypeName.compareTo(a.idMenuType.menuTypeName));
+        filtered.sort((a, b) => b.idMenuType.menuTypeName.compareTo(a.idMenuType.menuTypeName));
         break;
     }
 
@@ -102,198 +97,23 @@ class _MenuScreenState extends State<MenuScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withAlpha(26),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Cari menu...',
-                  hintStyle: AppTheme.body1,
-                  prefixIcon: const Icon(Iconsax.search_normal),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Iconsax.close_circle),
-                          onPressed: () {
-                            _searchController.clear();
-                          },
-                        )
-                      : null,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            ),
+            _buildSearchBar(),
             const SizedBox(height: 16),
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
                   BlocProvider.of<MenuBloc>(context).add(LoadMenu());
                 },
-                child:
-                    BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
-                  if (state is MenuLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is MenuLoaded) {
-                    final filteredMenus = _getFilteredMenus(state.menus);
-
-                    if (filteredMenus.isEmpty) {
-                      return ListView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        children: [
-                          SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.1),
-                          const EmptyState(
-                            icon: Icons.egg_alt,
-                            title: "Tidak ada menu yang ditemukan.",
-                            subtitle:
-                                "Coba ubah filter atau kata kunci pencarian",
-                          )
-                        ],
-                      );
+                child: BlocBuilder<MenuBloc, MenuState>(
+                  builder: (context, state) {
+                    if (state is MenuLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is MenuLoaded) {
+                      return _buildMenuList(state.menus);
                     }
-
-                    return GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                        childAspectRatio: 0.75,
-                      ),
-                      itemCount: filteredMenus.length,
-                      itemBuilder: (context, index) {
-                        final menu = filteredMenus[index];
-                        return GestureDetector(
-                          onTap: () {
-                            context.push('/menu-detail/${menu.idMenu}');
-                          },
-                          child: Card(
-                            color: AppTheme.white,
-                            clipBehavior: Clip.antiAlias,
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Menu Image
-                                Expanded(
-                                  child: Hero(
-                                    tag: "menu-image-${menu.idMenu}",
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: MemoryImage(menu.menuImage),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        menu.menuName,
-                                        style: const TextStyle(
-                                          fontFamily: AppTheme.fontName,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: AppTheme.nearlyBlue,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-
-                                      const SizedBox(height: 4),
-
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            getIconFromString(
-                                                menu.idMenuType.menuTypeIcon),
-                                            size: 14,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              menu.idMenuType.menuTypeName,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey.shade600,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      const SizedBox(height: 8),
-
-                                      // Price
-                                      Text(
-                                        NumberFormat.currency(
-                                          locale: 'id_ID',
-                                          decimalDigits: 0,
-                                          symbol: 'Rp ',
-                                        ).format(menu.menuPrice),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: AppTheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Iconsax.document_1,
-                          size: 64,
-                          color: Colors.grey.shade400,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Belum ada menu',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                    return _buildEmptyMenuIndicator();
+                  },
+                ),
               ),
             ),
           ],
@@ -302,35 +122,235 @@ class _MenuScreenState extends State<MenuScreen> {
       floatingActionButton: BlocBuilder<MenuTypeBloc, MenuTypeState>(
         builder: (context, state) {
           if (state is MenuTypeLoaded) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                MenuFilterFab(
-                  selectedType: _selectedType,
-                  sortBy: _currentSort,
-                  menuTypes: state.menuTypes,
-                  onTypeChanged: (type) {
-                    setState(() {
-                      _selectedType = type;
-                    });
-                  },
-                  onSortChanged: (sort) {
-                    setState(() {
-                      _currentSort = sort;
-                    });
-                  },
-                ),
-                const SizedBox(height: 8),
-                FloatingActionButton(
-                  onPressed: () => context.push('/add-edit-menu'),
-                  backgroundColor: AppTheme.primary,
-                  child: const Icon(Iconsax.add),
-                ),
-              ],
-            );
+            return _buildFloatingActionButtons(state.menuTypes);
           }
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          hintText: 'Cari menu...',
+          hintStyle: AppTheme.body1,
+          prefixIcon: const Icon(Iconsax.search_normal),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Iconsax.close_circle),
+                  onPressed: () {
+                    _searchController.clear();
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuList(List<Menu> menus) {
+    final filteredMenus = _getFilteredMenus(menus);
+
+    if (filteredMenus.isEmpty) {
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          const EmptyState(
+            icon: Icons.egg_alt,
+            title: "Tidak ada menu yang ditemukan.",
+            subtitle: "Coba ubah filter atau kata kunci pencarian",
+          )
+        ],
+      );
+    }
+
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 0.75,
+      ),
+      itemCount: filteredMenus.length,
+      itemBuilder: (context, index) {
+        return _MenuCard(menu: filteredMenus[index]);
+      },
+    );
+  }
+
+  Widget _buildEmptyMenuIndicator() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Iconsax.document_1,
+            size: 64,
+            color: Colors.grey.shade400,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Belum ada menu',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButtons(List<MenuType> menuTypes) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        MenuFilterFab(
+          selectedType: _selectedType,
+          sortBy: _currentSort,
+          menuTypes: menuTypes,
+          onTypeChanged: (type) {
+            setState(() {
+              _selectedType = type;
+            });
+          },
+          onSortChanged: (sort) {
+            setState(() {
+              _currentSort = sort;
+            });
+          },
+        ),
+        const SizedBox(height: 8),
+        FloatingActionButton(
+          onPressed: () => context.push('/add-edit-menu'),
+          backgroundColor: AppTheme.primary,
+          child: const Icon(Iconsax.add),
+        ),
+      ],
+    );
+  }
+}
+
+// Extract menu card into separate widget to prevent rebuild
+class _MenuCard extends StatelessWidget {
+  final Menu menu;
+
+  const _MenuCard({required this.menu});
+
+  @override
+  Widget build(BuildContext context) {
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      decimalDigits: 0,
+      symbol: 'Rp ',
+    );
+
+    return GestureDetector(
+      onTap: () {
+        context.push('/menu-detail/${menu.idMenu}');
+      },
+      child: Card(
+        color: AppTheme.white,
+        clipBehavior: Clip.antiAlias,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Menu Image
+            Expanded(
+              child: Hero(
+                tag: "menu-image-${menu.idMenu}",
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: MemoryImage(menu.menuImage),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    menu.menuName,
+                    style: const TextStyle(
+                      fontFamily: AppTheme.fontName,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppTheme.nearlyBlue,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Row(
+                    children: [
+                      Icon(
+                        getIconFromString(menu.idMenuType.menuTypeIcon),
+                        size: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          menu.idMenuType.menuTypeName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Price
+                  Text(
+                    formatter.format(menu.menuPrice),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

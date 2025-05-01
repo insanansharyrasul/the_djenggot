@@ -29,6 +29,7 @@ import 'package:the_djenggot/widgets/full_screen_image_viewer.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/image_source_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
+import 'package:image/image.dart' as img;
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -46,13 +47,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   File? evidenceImage;
   int totalAmount = 0;
   String? selectedMenuTypeId;
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
   final TextEditingController moneyReceivedController = TextEditingController();
   bool isExactChange = true;
 
   int currentStep = 1;
-  int totalSteps = 4;
-  List<String> stepTitles = [
+  static const int totalSteps = 4;
+  static const List<String> stepTitles = [
     "Pilih Menu",
     "Pilih Tipe Transaksi",
     "Bukti Pembayaran",
@@ -61,19 +62,35 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   bool isSearchVisible = false;
 
+  // Formatter instance reused across the widget
+  final formatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+    decimalDigits: 0,
+  );
+
   @override
   void initState() {
     super.initState();
+    _loadInitialData();
+  }
+
+  // Extract data loading to a separate method
+  void _loadInitialData() {
     context.read<TransactionTypeBloc>().add(LoadTransactionTypes());
     context.read<MenuBloc>().add(LoadMenu());
     context.read<MenuTypeBloc>().add(LoadMenuTypes());
-    searchController.addListener(() {
-      filterMenus();
-    });
+    searchController.addListener(_onSearchChanged);
+  }
+
+  // Debounced search
+  void _onSearchChanged() {
+    filterMenus();
   }
 
   @override
   void dispose() {
+    searchController.removeListener(_onSearchChanged);
     searchController.dispose();
     moneyReceivedController.dispose();
     super.dispose();
@@ -89,9 +106,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             menu.idMenuType.idMenuType == selectedMenuTypeId;
 
         bool matchesSearch = searchController.text.isEmpty ||
-            menu.menuName
-                .toLowerCase()
-                .contains(searchController.text.toLowerCase());
+            menu.menuName.toLowerCase().contains(searchController.text.toLowerCase());
 
         return matchesType && matchesSearch;
       }).toList();
@@ -119,9 +134,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   int _calculateChange() {
     if (isExactChange || moneyReceivedController.text.isEmpty) return 0;
-    final received = int.tryParse(
-            moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ??
-        0;
+    final received =
+        int.tryParse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
     return received - totalAmount;
   }
 
@@ -129,22 +143,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     if (currentStep < totalSteps) {
       if (currentStep == 1) {
         if (cartItems.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Pilih minimal satu menu!"),
-              backgroundColor: AppTheme.danger,
-            ),
-          );
+          _showSnackBar("Pilih minimal satu menu!");
           return;
         }
       } else if (currentStep == 2) {
         if (selectedType == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Pilih tipe transaksi!"),
-              backgroundColor: AppTheme.danger,
-            ),
-          );
+          _showSnackBar("Pilih tipe transaksi!");
           return;
         }
 
@@ -155,12 +159,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         }
       } else if (currentStep == 3 && (selectedType?.needEvidence ?? true)) {
         if (evidenceImage == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Tambahkan bukti pembayaran!"),
-              backgroundColor: AppTheme.danger,
-            ),
-          );
+          _showSnackBar("Tambahkan bukti pembayaran!");
           return;
         }
       }
@@ -171,6 +170,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     } else {
       _submitTransaction();
     }
+  }
+
+  // Extract showing snackbar to a separate method
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppTheme.danger,
+      ),
+    );
   }
 
   void _previousStep() {
@@ -187,28 +196,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   void _submitTransaction() {
     if (_formKey.currentState!.validate()) {
-      if ((selectedType?.needEvidence ?? true) &&
-          evidenceImage == null &&
-          currentStep == 3) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Tambahkan bukti pembayaran!"),
-            backgroundColor: AppTheme.danger,
-          ),
-        );
+      if ((selectedType?.needEvidence ?? true) && evidenceImage == null && currentStep == 3) {
+        _showSnackBar("Tambahkan bukti pembayaran!");
         return;
       }
 
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext dialogContext) => AppDialog(
-          type: "loading",
-          title: "Memproses",
-          message: "Mohon tunggu...",
-          onOkPress: () {},
-        ),
-      );
+      _showLoadingDialog();
 
       List<TransactionItem> transactionItems = cartItems.map((item) {
         return TransactionItem(
@@ -223,11 +216,31 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     }
   }
 
-  Future<void> _processAndSaveTransaction(
-      List<TransactionItem> transactionItems) async {
-    final imageBytes = selectedType?.needEvidence ?? true
-        ? await evidenceImage?.readAsBytes() ?? Uint8List(0)
-        : Uint8List(0);
+  // Extract loading dialog to separate method
+  void _showLoadingDialog() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext dialogContext) => AppDialog(
+        type: "loading",
+        title: "Memproses",
+        message: "Mohon tunggu...",
+        onOkPress: () {
+          Navigator.pop(dialogContext);
+        },
+      ),
+    );
+  }
+
+  Future<void> _processAndSaveTransaction(List<TransactionItem> transactionItems) async {
+    final Uint8List imageBytes;
+
+    // Only process image if needed, using a more efficient approach
+    if (selectedType?.needEvidence ?? true) {
+      imageBytes = evidenceImage != null ? await _compressImage(evidenceImage!) : Uint8List(0);
+    } else {
+      imageBytes = Uint8List(0);
+    }
 
     context.read<TransactionBloc>().add(
           AddNewTransaction(
@@ -235,8 +248,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             totalAmount,
             isExactChange
                 ? totalAmount
-                : int.parse(moneyReceivedController.text
-                    .replaceAll(RegExp(r'[^0-9]'), '')),
+                : int.parse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')),
             imageBytes,
             transactionItems,
           ),
@@ -244,6 +256,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     Navigator.pop(context);
 
+    _showSuccessDialog();
+  }
+
+  // Extract success dialog to separate method
+  void _showSuccessDialog() {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -251,7 +268,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         type: "success",
         title: "Berhasil",
         message: "Transaksi berhasil disimpan",
-        onOkPress: () {},
+        onOkPress: () {
+          Navigator.pop(dialogContext);
+        },
       ),
     );
 
@@ -261,14 +280,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     });
   }
 
+  Future<Uint8List> _compressImage(File imageFile) async {
+    final image = img.decodeImage(await imageFile.readAsBytes());
+    if (image == null) {
+      return Uint8List(0);
+    }
+    final compressedImage = img.encodeJpg(image, quality: 70);
+    return Uint8List.fromList(compressedImage);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final formatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -291,20 +313,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: _buildStepIndicator(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(16.0),
                 children: [
-                  if (currentStep == 1) _buildMenuSelectionStep(formatter),
+                  if (currentStep == 1) _buildMenuSelectionStep(),
                   if (currentStep == 2) _buildTransactionTypeStep(),
                   if (currentStep == 3 && (selectedType?.needEvidence ?? true))
                     _buildEvidenceStep(),
-                  if (currentStep == 4)
-                    _buildPaymentConfirmationStep(formatter),
+                  if (currentStep == 4) _buildPaymentConfirmationStep(),
                 ],
               ),
             ),
@@ -356,7 +376,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  Widget _buildMenuListView(MenuState state, NumberFormat formatter) {
+  Widget _buildMenuListView(MenuState state) {
     if (state is MenuLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -369,21 +389,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       }
 
       if (filteredMenus.isEmpty) {
-        return Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Center(
-            child: Text(
-              "Tidak ada menu yang tersedia dengan filter ini",
-              style: TextStyle(color: Colors.grey.shade600),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
+        return _buildEmptyMenuIndicator();
       }
 
       return ListView.builder(
@@ -391,94 +397,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         itemCount: filteredMenus.length,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          final item = filteredMenus[index];
-          return Card(
-            color: AppTheme.white,
-            elevation: 1,
-            margin: const EdgeInsets.only(bottom: 8),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: AppTheme.primary.withValues(alpha: 23),
-                    ),
-                    child: Center(
-                        child: Image.memory(
-                      item.menuImage,
-                      fit: BoxFit.cover,
-                    )),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.menuName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          formatter.format(item.menuPrice),
-                          style: const TextStyle(color: AppTheme.primary),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Iconsax.minus_cirlce,
-                            color: AppTheme.danger),
-                        onPressed: () {
-                          setState(() {
-                            if (cartItems.any((cartItem) =>
-                                cartItem.menu.idMenu == item.idMenu)) {
-                              final cartItem = cartItems.firstWhere(
-                                  (cartItem) =>
-                                      cartItem.menu.idMenu == item.idMenu);
-                              if (cartItem.quantity > 1) {
-                                cartItem.quantity--;
-                              } else {
-                                cartItems.remove(cartItem);
-                              }
-                            }
-                            calculateTotal();
-                          });
-                        },
-                      ),
-                      Text(
-                        "${cartItems.firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu, orElse: () => CartItem(menu: item, quantity: 0)).quantity}",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      IconButton(
-                        icon: const Icon(Iconsax.add_circle,
-                            color: AppTheme.primary),
-                        onPressed: () {
-                          setState(() {
-                            if (cartItems.any((cartItem) =>
-                                cartItem.menu.idMenu == item.idMenu)) {
-                              final cartItem = cartItems.firstWhere(
-                                  (cartItem) =>
-                                      cartItem.menu.idMenu == item.idMenu);
-                              cartItem.quantity++;
-                            } else {
-                              cartItems.add(CartItem(menu: item, quantity: 1));
-                            }
-                            calculateTotal();
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
+          return _buildMenuItem(filteredMenus[index]);
         },
       );
     }
@@ -490,10 +409,113 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return const Center(child: CircularProgressIndicator());
   }
 
+  // Extract empty menu state to separate widget
+  Widget _buildEmptyMenuIndicator() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Center(
+        child: Text(
+          "Tidak ada menu yang tersedia dengan filter ini",
+          style: TextStyle(color: Colors.grey.shade600),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  // Extract menu item to separate widget
+  Widget _buildMenuItem(Menu item) {
+    // Check if item is in cart
+    final cartItem = cartItems.firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu,
+        orElse: () => CartItem(menu: item, quantity: 0));
+    final int quantity = cartItem.quantity;
+
+    return Card(
+      color: AppTheme.white,
+      elevation: 1,
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: AppTheme.primary.withValues(alpha: 23),
+              ),
+              child: Center(
+                  child: Image.memory(
+                item.menuImage,
+                fit: BoxFit.cover,
+              )),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.menuName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    formatter.format(item.menuPrice),
+                    style: const TextStyle(color: AppTheme.primary),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Iconsax.minus_cirlce, color: AppTheme.danger),
+                  onPressed: () => _updateCartItemQuantity(item, quantity - 1),
+                ),
+                Text(
+                  "$quantity",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Iconsax.add_circle, color: AppTheme.primary),
+                  onPressed: () => _updateCartItemQuantity(item, quantity + 1),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Extract cart update logic to a separate method
+  void _updateCartItemQuantity(Menu menu, int newQuantity) {
+    setState(() {
+      if (newQuantity <= 0) {
+        cartItems.removeWhere((item) => item.menu.idMenu == menu.idMenu);
+      } else {
+        final existingItemIndex = cartItems.indexWhere((item) => item.menu.idMenu == menu.idMenu);
+
+        if (existingItemIndex >= 0) {
+          cartItems[existingItemIndex].quantity = newQuantity;
+        } else {
+          cartItems.add(CartItem(menu: menu, quantity: newQuantity));
+        }
+      }
+      calculateTotal();
+    });
+  }
+
   // =====================================
   // Menu Selection Step
   // =====================================
-  Widget _buildMenuSelectionStep(NumberFormat formatter) {
+  Widget _buildMenuSelectionStep() {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -526,17 +548,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Iconsax.add, color: AppTheme.primary),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(
-                      MaterialPageRoute(
-                        builder: (context) => const AddEditMenuTypeScreen(),
-                      ),
-                    )
-                        .then((_) {
-                      context.read<MenuTypeBloc>().add(LoadMenuTypes());
-                    });
-                  },
+                  onPressed: _navigateToAddMenuType,
                 ),
               ],
             ),
@@ -550,153 +562,175 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 onChanged: (_) => filterMenus(),
               )
             else
-              BlocBuilder<MenuTypeBloc, MenuTypeState>(
-                builder: (context, state) {
-                  if (state is MenuTypeLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (state is MenuTypeLoaded) {
-                    final menuTypes = state.menuTypes;
-
-                    return DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      dropdownColor: AppTheme.white,
-                      decoration: dropdownCategoryDecoration(
-                          prefixIcon: Iconsax.category),
-                      hint: Text(
-                        "Pilih Kategori Menu",
-                        style: createBlackThinTextStyle(14),
-                      ),
-                      icon: const Icon(Iconsax.arrow_down_1),
-                      borderRadius: BorderRadius.circular(12),
-                      value: selectedMenuTypeId,
-                      items: [
-                        DropdownMenuItem<String>(
-                          value: 'all',
-                          child: Row(
-                            children: [
-                              const Icon(Iconsax.category,
-                                  size: 18, color: AppTheme.primary),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Semua Kategori",
-                                style: createBlackThinTextStyle(14),
-                              )
-                            ],
-                          ),
-                        ),
-                        ...menuTypes.map((type) {
-                          return DropdownMenuItem<String>(
-                            value: type.idMenuType,
-                            child: Row(
-                              children: [
-                                Icon(getIconFromString(type.menuTypeIcon),
-                                    size: 18, color: AppTheme.primary),
-                                const SizedBox(width: 8),
-                                Text(
-                                  type.menuTypeName,
-                                  style: createBlackThinTextStyle(14),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          selectedMenuTypeId = value;
-                        });
-                        filterMenus();
-                      },
-                    );
-                  }
-
-                  return const SizedBox.shrink();
-                },
-              ),
+              _buildMenuTypeDropdown(),
             const SizedBox(height: 16),
             BlocBuilder<MenuBloc, MenuState>(
               builder: (context, state) {
-                return _buildMenuListView(state, formatter);
+                return _buildMenuListView(state);
               },
             ),
-            Row(
-              children: [
-                Checkbox(
-                  value: isExactChange,
-                  onChanged: (value) {
-                    setState(() {
-                      isExactChange = value ?? true;
-                      if (isExactChange) {
-                        moneyReceivedController.text = totalAmount.toString();
-                      }
-                    });
-                  },
-                ),
-                Text("Uang pas",
-                    style: AppTheme.textField.copyWith(fontSize: 14)),
-              ],
-            ),
-            if (!isExactChange) ...[
-              const SizedBox(height: 8),
-              Text("Uang Diterima",
-                  style: AppTheme.textField.copyWith(fontSize: 14)),
-              const SizedBox(height: 8),
-              InputField(
-                controller: moneyReceivedController,
-                keyboardType: const TextInputType.numberWithOptions(),
-                prefixIcon: const Icon(Iconsax.money),
-                enableCommaSeparator: true,
-                hintText: "contoh: Rp. 12.000",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Harga tidak boleh kosong";
-                  }
-                  final amount =
-                      int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ??
-                          0;
-                  if (amount < totalAmount) {
-                    return "Uang yang diterima kurang dari total";
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    isExactChange = false;
-                    moneyReceivedController.text = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.primary.withAlpha(24),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Kembalian:",
-                        style: AppTheme.textField
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    Text(
-                      formatter.format(_calculateChange()),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.primary,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            _buildPaymentOptions(),
           ],
         ),
       ),
     );
+  }
+
+  // Extract navigation to a separate method
+  void _navigateToAddMenuType() {
+    Navigator.of(context)
+        .push(
+      MaterialPageRoute(
+        builder: (context) => const AddEditMenuTypeScreen(),
+      ),
+    )
+        .then((_) {
+      context.read<MenuTypeBloc>().add(LoadMenuTypes());
+    });
+  }
+
+  // Extract menu type dropdown to separate widget
+  Widget _buildMenuTypeDropdown() {
+    return BlocBuilder<MenuTypeBloc, MenuTypeState>(
+      builder: (context, state) {
+        if (state is MenuTypeLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is MenuTypeLoaded) {
+          final menuTypes = state.menuTypes;
+
+          return DropdownButtonFormField<String>(
+            isExpanded: true,
+            dropdownColor: AppTheme.white,
+            decoration: dropdownCategoryDecoration(prefixIcon: Iconsax.category),
+            hint: Text(
+              "Pilih Kategori Menu",
+              style: createBlackThinTextStyle(14),
+            ),
+            icon: const Icon(Iconsax.arrow_down_1),
+            borderRadius: BorderRadius.circular(12),
+            value: selectedMenuTypeId,
+            items: [
+              _buildDropdownMenuItem('all', "Semua Kategori", const Icon(Iconsax.category)),
+              ...menuTypes.map((type) => _buildDropdownMenuItem(
+                  type.idMenuType, type.menuTypeName, Icon(getIconFromString(type.menuTypeIcon)))),
+            ],
+            onChanged: (value) {
+              setState(() {
+                selectedMenuTypeId = value;
+              });
+              filterMenus();
+            },
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  // Helper method to build dropdown items
+  DropdownMenuItem<String> _buildDropdownMenuItem(String value, String text, Icon icon) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          IconTheme(
+            data: const IconThemeData(size: 18, color: AppTheme.primary),
+            child: icon,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: createBlackThinTextStyle(14),
+          )
+        ],
+      ),
+    );
+  }
+
+  // Extract payment options to separate widget
+  Widget _buildPaymentOptions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Checkbox(
+              value: isExactChange,
+              onChanged: (value) {
+                setState(() {
+                  isExactChange = value ?? true;
+                  if (isExactChange) {
+                    moneyReceivedController.text = totalAmount.toString();
+                  }
+                });
+              },
+            ),
+            Text("Uang pas", style: AppTheme.textField.copyWith(fontSize: 14)),
+          ],
+        ),
+        if (!isExactChange) ...[
+          const SizedBox(height: 8),
+          Text("Uang Diterima", style: AppTheme.textField.copyWith(fontSize: 14)),
+          const SizedBox(height: 8),
+          InputField(
+            controller: moneyReceivedController,
+            keyboardType: const TextInputType.numberWithOptions(),
+            prefixIcon: const Icon(Iconsax.money),
+            enableCommaSeparator: true,
+            hintText: "contoh: Rp. 12.000",
+            validator: _validateMoneyReceived,
+            onChanged: (value) {
+              setState(() {
+                isExactChange = false;
+                moneyReceivedController.text = value;
+              });
+            },
+          ),
+          const SizedBox(height: 8),
+          _buildChangeDisplay(),
+        ],
+      ],
+    );
+  }
+
+  // Extract change display to a separate widget
+  Widget _buildChangeDisplay() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTheme.primary.withAlpha(24),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Kembalian:", style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            formatter.format(_calculateChange()),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppTheme.primary,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Validation function for money received
+  String? _validateMoneyReceived(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Harga tidak boleh kosong";
+    }
+    final amount = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    if (amount < totalAmount) {
+      return "Uang yang diterima kurang dari total";
+    }
+    return null;
   }
 
   // =====================================
@@ -720,119 +754,119 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Iconsax.add, color: AppTheme.primary),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const AddEditTransactionTypeScreen(),
-                      ),
-                    )
-                        .then((_) {
-                      context
-                          .read<TransactionTypeBloc>()
-                          .add(LoadTransactionTypes());
-                    });
-                  },
+                  onPressed: _navigateToAddTransactionType,
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
-              builder: (context, state) {
-                if (state is TransactionTypeLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is TransactionTypeLoaded) {
-                  final types = state.transactionTypes;
-
-                  return SizedBox(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: types.length,
-                      itemBuilder: (context, index) {
-                        final type = types[index];
-                        return Card(
-                          elevation: 1,
-                          margin: const EdgeInsets.only(bottom: 8),
-                          color: AppTheme.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(
-                              color: selectedType?.idTransactionType ==
-                                      type.idTransactionType
-                                  ? AppTheme.primary
-                                  : Colors.transparent,
-                              width: 2,
-                            ),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                selectedType = type;
-                              });
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    getIconFromString(type.transactionTypeIcon),
-                                    color: AppTheme.primary,
-                                    size: 32,
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          type.transactionTypeName,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          type.needEvidence
-                                              ? "Membutuhkan bukti"
-                                              : "Tidak perlu bukti",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (selectedType?.idTransactionType ==
-                                      type.idTransactionType)
-                                    const Icon(
-                                      Icons.check_circle,
-                                      color: AppTheme.primary,
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
-
-                if (state is TransactionTypeError) {
-                  return Text('Error: ${state.message}');
-                }
-
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
+            _buildTransactionTypeList(),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Extract navigation to a separate method
+  void _navigateToAddTransactionType() {
+    Navigator.of(context)
+        .push(
+      MaterialPageRoute(
+        builder: (context) => const AddEditTransactionTypeScreen(),
+      ),
+    )
+        .then((_) {
+      context.read<TransactionTypeBloc>().add(LoadTransactionTypes());
+    });
+  }
+
+  // Extract transaction type list to a separate widget
+  Widget _buildTransactionTypeList() {
+    return BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
+      builder: (context, state) {
+        if (state is TransactionTypeLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is TransactionTypeLoaded) {
+          final types = state.transactionTypes;
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: types.length,
+            itemBuilder: (context, index) => _buildTransactionTypeItem(types[index]),
+          );
+        }
+
+        if (state is TransactionTypeError) {
+          return Text('Error: ${state.message}');
+        }
+
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  // Extract transaction type item to a separate widget
+  Widget _buildTransactionTypeItem(TransactionType type) {
+    final bool isSelected = selectedType?.idTransactionType == type.idTransactionType;
+
+    return Card(
+      elevation: 1,
+      margin: const EdgeInsets.only(bottom: 8),
+      color: AppTheme.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: isSelected ? AppTheme.primary : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            selectedType = type;
+          });
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(
+                getIconFromString(type.transactionTypeIcon),
+                color: AppTheme.primary,
+                size: 32,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      type.transactionTypeName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      type.needEvidence ? "Membutuhkan bukti" : "Tidak perlu bukti",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isSelected)
+                const Icon(
+                  Icons.check_circle,
+                  color: AppTheme.primary,
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -841,7 +875,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   // =====================================
   // Evidence Step
   // =====================================
-
   Widget _buildEvidenceStep() {
     return Card(
       elevation: 2,
@@ -905,11 +938,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   // =====================================
   // Payment Confirmation Step
   // =====================================
-  Widget _buildPaymentConfirmationStep(NumberFormat formatter) {
+  Widget _buildPaymentConfirmationStep() {
     final int moneyReceived = isExactChange
         ? totalAmount
-        : int.parse(
-            moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+        : int.parse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), ''));
     final int change = moneyReceived - totalAmount;
 
     final now = DateTime.now();
@@ -942,38 +974,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
             ),
             const Divider(height: 24),
-            if (selectedType != null)
-              Row(
-                children: [
-                  Icon(
-                    getIconFromString(selectedType!.transactionTypeIcon),
-                    color: AppTheme.primary,
-                    size: 28,
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        selectedType!.transactionTypeName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        selectedType!.needEvidence
-                            ? "Dengan bukti pembayaran"
-                            : "Tanpa bukti pembayaran",
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            _buildTransactionTypeInfo(),
             const SizedBox(height: 16),
             const Text(
               "Daftar Item",
@@ -983,267 +984,322 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            for (var item in cartItems)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppTheme.primary.withAlpha(23),
-                            ),
-                            child: Center(
-                              child: Image.memory(
-                                item.menu.menuImage,
-                                width: 32,
-                                height: 32,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.menu.menuName,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  formatter.format(item.menu.menuPrice),
-                                  style:
-                                      const TextStyle(color: AppTheme.primary),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      "x${item.quantity}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      formatter.format(item.menu.menuPrice * item.quantity),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            ...cartItems.map(_buildCartItemDisplay),
             const Divider(height: 24),
-            const Text(
-              "Detail Pembayaran",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Total Harga"),
-                Text(
-                  formatter.format(totalAmount),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Diterima"),
-                Text(
-                  formatter.format(moneyReceived),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Kembalian"),
-                Text(
-                  formatter.format(change),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primary,
-                  ),
-                ),
-              ],
-            ),
+            _buildPaymentDetails(moneyReceived, change),
             const SizedBox(height: 24),
-            if (evidenceImage != null &&
-                selectedType?.needEvidence == true) ...[
-              const Text(
-                "Bukti Pembayaran",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () async {
-                  showFullScreenImage(context,
-                      imageProvider: await evidenceImage!.readAsBytes());
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.file(
-                    evidenceImage!,
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
+            _buildEvidenceDisplay(),
             const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.green.shade100),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Iconsax.tick_circle,
-                    color: Colors.green.shade700,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      "Tekan tombol 'Simpan Transaksi' untuk menyimpan transaksi ini ke database",
-                      style: TextStyle(
-                        color: Colors.green.shade700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildSuccessIndicator(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBottomNavigationButtons() {
-    final formatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
+  // Extract transaction type info to a separate widget
+  Widget _buildTransactionTypeInfo() {
+    if (selectedType == null) return const SizedBox.shrink();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Row(
       children: [
-        if (currentStep == 1 && cartItems.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            color: AppTheme.primary.withAlpha(23),
+        Icon(
+          getIconFromString(selectedType!.transactionTypeIcon),
+          color: AppTheme.primary,
+          size: 28,
+        ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              selectedType!.transactionTypeName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              selectedType!.needEvidence ? "Dengan bukti pembayaran" : "Tanpa bukti pembayaran",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Extract cart item display to a separate widget
+  Widget _buildCartItemDisplay(CartItem item) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      "${cartItems.length} Barang",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: AppTheme.primary.withAlpha(23),
+                  ),
+                  child: Center(
+                    child: Image.memory(
+                      item.menu.menuImage,
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
                     ),
-                    const Icon(Icons.chevron_right),
-                  ],
+                  ),
                 ),
-                Text(
-                  formatter.format(totalAmount),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: AppTheme.primary,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.menu.menuName,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        formatter.format(item.menu.menuPrice),
+                        style: const TextStyle(color: AppTheme.primary),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: Offset(0, -2),
-              ),
-            ],
+          Text(
+            "x${item.quantity}",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
           ),
-          child: Row(
-            children: [
-              if (currentStep > 1)
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[200],
-                      foregroundColor: Colors.black87,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    onPressed: _previousStep,
-                    child: const Text('Kembali'),
-                  ),
-                ),
-              if (currentStep > 1) const SizedBox(width: 16),
-              Expanded(
-                flex: 2,
-                child: ElevatedButton.icon(
-                  style: AppTheme.buttonStyleSecond,
-                  onPressed: _nextStep,
-                  icon: currentStep == totalSteps
-                      ? const Icon(Iconsax.save_2, color: Colors.white)
-                      : const Icon(Iconsax.arrow_right_3, color: Colors.white),
-                  label: Text(
-                    currentStep == 1
-                        ? 'Lanjut'
-                        : (currentStep == totalSteps
-                            ? 'Simpan Transaksi'
-                            : 'Lanjutkan'),
-                    style: AppTheme.buttonText.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          const SizedBox(width: 8),
+          Text(
+            formatter.format(item.menu.menuPrice * item.quantity),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Extract payment details to a separate widget
+  Widget _buildPaymentDetails(int moneyReceived, int change) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Detail Pembayaran",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _buildPaymentRow("Total Harga", totalAmount),
+        const SizedBox(height: 8),
+        _buildPaymentRow("Diterima", moneyReceived),
+        const SizedBox(height: 8),
+        _buildPaymentRow(
+          "Kembalian",
+          change,
+          valueStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.primary,
           ),
         ),
       ],
+    );
+  }
+
+  // Helper method to build payment rows
+  Widget _buildPaymentRow(String label, int value, {TextStyle? valueStyle}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Text(
+          formatter.format(value),
+          style: valueStyle ?? const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  // Extract evidence display to a separate widget
+  Widget _buildEvidenceDisplay() {
+    if (evidenceImage == null || selectedType?.needEvidence != true) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Bukti Pembayaran",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () async {
+            showFullScreenImage(context, imageProvider: await evidenceImage!.readAsBytes());
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(
+              evidenceImage!,
+              height: 120,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Extract success indicator to a separate widget
+  Widget _buildSuccessIndicator() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green.shade100),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Iconsax.tick_circle,
+            color: Colors.green.shade700,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              "Tekan tombol 'Simpan Transaksi' untuk menyimpan transaksi ini ke database",
+              style: TextStyle(
+                color: Colors.green.shade700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationButtons() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Only show the cart summary when on the first step and have items
+        if (currentStep == 1 && cartItems.isNotEmpty) _buildCartSummary(),
+        _buildNavigationButtonsBar(),
+      ],
+    );
+  }
+
+  // Extract cart summary to a separate widget
+  Widget _buildCartSummary() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: AppTheme.primary.withAlpha(23),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                "${cartItems.length} Barang",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+          Text(
+            formatter.format(totalAmount),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: AppTheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Extract navigation buttons bar to a separate widget
+  Widget _buildNavigationButtonsBar() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          if (currentStep > 1)
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[200],
+                  foregroundColor: Colors.black87,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                onPressed: _previousStep,
+                child: const Text('Kembali'),
+              ),
+            ),
+          if (currentStep > 1) const SizedBox(width: 16),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton.icon(
+              style: AppTheme.buttonStyleSecond,
+              onPressed: _nextStep,
+              icon: currentStep == totalSteps
+                  ? const Icon(Iconsax.save_2, color: Colors.white)
+                  : const Icon(Iconsax.arrow_right_3, color: Colors.white),
+              label: Text(
+                currentStep == 1
+                    ? 'Lanjut'
+                    : (currentStep == totalSteps ? 'Simpan Transaksi' : 'Lanjutkan'),
+                style: AppTheme.buttonText.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

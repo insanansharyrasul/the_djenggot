@@ -11,6 +11,7 @@ import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_state.d
 import 'package:the_djenggot/models/transaction/transaction_history.dart';
 import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
+import 'package:the_djenggot/utils/currency_formatter_util.dart';
 import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/transaction/transaction_filter_fab.dart';
@@ -60,9 +61,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
 
             if (selectedType != null) {
               transactions = transactions
-                  .where((t) =>
-                      t.transactionType.idTransactionType ==
-                      selectedType!.idTransactionType)
+                  .where(
+                      (t) => t.transactionType.idTransactionType == selectedType!.idTransactionType)
                   .toList();
             }
 
@@ -119,8 +119,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           return const Center(child: CircularProgressIndicator());
         },
       ),
-      floatingActionButton:
-          BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
+      floatingActionButton: BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
         builder: (context, state) {
           if (state is TransactionTypeLoaded) {
             return Column(
@@ -166,14 +165,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     );
   }
 
-  Widget _buildTransactionCard(
-      BuildContext context, TransactionHistory transaction) {
-    final formatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
-
+  Widget _buildTransactionCard(BuildContext context, TransactionHistory transaction) {
     final date = DateTime.parse(transaction.timestamp);
     final formattedDate = DateFormat('dd MMM yyyy, HH:mm').format(date);
 
@@ -192,14 +184,13 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         ),
         title: Text(
           transaction.transactionType.transactionTypeName,
-          style: AppTheme.headline
-              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              formatter.format(transaction.transactionAmount),
+              CurrencyFormatterUtil.formatCurrency(transaction.transactionAmount),
               style: const TextStyle(
                   color: AppTheme.primary,
                   fontWeight: FontWeight.bold,
@@ -207,24 +198,19 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             ),
             Text(
               formattedDate,
-              style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                  fontFamily: AppTheme.fontName),
+              style:
+                  const TextStyle(color: Colors.grey, fontSize: 12, fontFamily: AppTheme.fontName),
             ),
             Text(
               "${transaction.items?.length ?? 0} items",
-              style:
-                  const TextStyle(fontSize: 12, fontFamily: AppTheme.fontName),
+              style: const TextStyle(fontSize: 12, fontFamily: AppTheme.fontName),
             ),
           ],
         ),
         trailing: IconButton(
           icon: const Icon(Iconsax.eye, color: AppTheme.primary),
           onPressed: () {
-            context
-                .push('/transaction-detail/${transaction.idTransactionHistory}')
-                .then(
+            context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
               (_) async {
                 _reloadTransactions();
               },
@@ -232,9 +218,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           },
         ),
         onTap: () {
-          context
-              .push('/transaction-detail/${transaction.idTransactionHistory}')
-              .then(
+          context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
             (_) async {
               _reloadTransactions();
             },
