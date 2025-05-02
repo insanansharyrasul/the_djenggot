@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/screens/home_screen/home_screen.dart';
@@ -10,14 +8,14 @@ import 'package:the_djenggot/screens/transaction/transaction_list_screen.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/bottom_navigation_bar_item.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class PageManagerScreen extends StatefulWidget {
+  const PageManagerScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<PageManagerScreen> createState() => _PageManagerScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _PageManagerScreenState extends State<PageManagerScreen> {
   final PageController pageController = PageController();
   int pageIndex = 0;
 
@@ -54,10 +52,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       height: 80,
       decoration: const BoxDecoration(
-        color: AppTheme.background,
+        color: AppTheme.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Color.fromRGBO(0, 0, 0, 0.1),
             blurRadius: 25,
             offset: Offset(0, 2),
           ),

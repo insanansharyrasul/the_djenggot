@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -66,8 +65,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
               return const EmptyState(
                 icon: Iconsax.box,
                 title: "Belum ada tipe stok",
-                subtitle:
-                    "Tambahkan tipe stok baru dengan menekan tombol '+' di pojok kanan atas.",
+                subtitle: "Tambahkan tipe stok baru dengan menekan tombol '+' di pojok kanan atas.",
               );
             }
 
@@ -103,8 +101,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
         ),
         title: Text(
           stockType.stockTypeName,
-          style: AppTheme.headline
-              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         subtitle: Text(
           "Satuan: ${stockType.stockUnit}",
@@ -137,8 +134,7 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
       builder: (BuildContext dialogContext) => AppDialog(
         type: "confirm",
         title: "Hapus Tipe Stok",
-        message:
-            "Apakah Anda yakin ingin menghapus tipe stok '${stockType.stockTypeName}'?",
+        message: "Apakah Anda yakin ingin menghapus tipe stok '${stockType.stockTypeName}'?",
         onOkPress: () async {
           Navigator.pop(dialogContext);
 
@@ -172,8 +168,9 @@ class _StockTypeListScreenState extends State<StockTypeListScreen> {
             ),
           );
 
+          final navigator = Navigator.of(context);
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
+            navigator.pop();
           });
         },
       ),

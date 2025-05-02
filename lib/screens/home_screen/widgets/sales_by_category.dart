@@ -15,14 +15,11 @@ class SalesByCategory extends StatelessWidget {
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         if (state is TransactionLoaded && state is! TransactionLoading) {
-          // Get current month transactions
           final now = DateTime.now();
           final currentMonth = DateTime(now.year, now.month);
 
-          // Create a map to store category totals
           final Map<String, double> categoryTotals = {};
 
-          // Calculate totals by category
           for (var transaction in state.transactions) {
             final transactionDate = DateTime.parse(transaction.timestamp);
             if (transactionDate.year == currentMonth.year &&
@@ -35,7 +32,6 @@ class SalesByCategory extends StatelessWidget {
             }
           }
 
-          // Sort categories by sales amount
           final sortedCategories = categoryTotals.entries.toList()
             ..sort((a, b) => b.value.compareTo(a.value));
 

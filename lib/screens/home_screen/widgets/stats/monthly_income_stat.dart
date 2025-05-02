@@ -37,9 +37,8 @@ class MonthlyIncomeStat extends StatelessWidget {
             }
           }
 
-          // Use our compact currency formatter for more readable display
           String formattedTotal = CurrencyFormatterUtil.formatCurrency(totalIncome)
-              .replaceAll("Rp", ""); // Remove the Rp prefix for cleaner stats display
+              .replaceAll("Rp", ""); 
 
           String percentageText = "";
           bool isPositive = true;

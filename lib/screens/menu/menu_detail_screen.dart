@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +40,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.background,
         appBar: AppBar(
           title: const Text(
             'Detail Menu',
@@ -74,7 +72,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           },
           child: BlocBuilder<MenuBloc, MenuState>(
             buildWhen: (previous, current) {
-              // Only rebuild when the state type changes or when we have new menu data
               if (previous is MenuLoaded && current is MenuLoaded) {
                 final previousMenu = previous.menus.firstWhere(
                   (menu) => menu.idMenu == widget.menu.idMenu,
@@ -86,7 +83,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                   orElse: () => widget.menu,
                 );
 
-                // Only rebuild if this specific menu changed
                 return previousMenu != currentMenu;
               }
               return true;
@@ -105,17 +101,12 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
         ));
   }
 
-  // Extract menu detail UI into a separate method to improve readability
   Widget _buildMenuDetail(BuildContext context, Menu menu) {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       children: [
-        // Image section
         _buildMenuImage(menu),
-
         const SizedBox(height: 20),
-
-        // Menu details card
         _buildMenuDetailsCard(menu),
       ],
     );
@@ -186,7 +177,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Menu Name
             Text(
               menu.menuName,
               style: AppTheme.headline.copyWith(
@@ -194,10 +184,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 8),
-
-            // Menu Type with Icon
             Row(
               children: [
                 Icon(
@@ -217,10 +204,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                 ),
               ],
             ),
-
             const Divider(height: 24),
-
-            // Price Display
             Row(
               children: [
                 Container(
@@ -274,7 +258,8 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
 
           context.read<MenuBloc>().add(DeleteMenu(widget.menu.idMenu));
 
-          Navigator.pop(context);
+          final navigator = Navigator.of(context);
+          navigator.pop();
 
           showDialog(
             barrierDismissible: false,
@@ -290,7 +275,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           );
 
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
+            navigator.pop();
           });
         },
       ),

@@ -1,5 +1,9 @@
+import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
@@ -21,7 +25,6 @@ class DatabaseHelper {
       version: 1,
       onCreate: _onCreate,
       onConfigure: _onConfigure,
-      // onUpgrade: _onUpgrade,
     );
   }
 
@@ -31,7 +34,6 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     await db.transaction((txn) async {
-      // TYPE TABLE
       await txn.execute('''
         CREATE TABLE TRANSACTION_TYPE (
           id_transaction_type TEXT PRIMARY KEY NOT NULL,
@@ -58,7 +60,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // TRANSACTION TABLE
       await txn.execute('''
         CREATE TABLE TRANSACTION_HISTORY (
           id_transaction_history TEXT PRIMARY KEY NOT NULL,
@@ -82,7 +83,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // STOCK TABLE
       await txn.execute('''
         CREATE TABLE STOCK (
           id_stock TEXT PRIMARY KEY NOT NULL,
@@ -94,7 +94,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // MENU TABLE
       await txn.execute('''
         CREATE TABLE MENU (
           id_menu TEXT PRIMARY KEY NOT NULL,
@@ -118,8 +117,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> countQuery(
-      String tableName, String where, List<dynamic> whereArgs) async {
+  Future<int> countQuery(String tableName, String where, List<dynamic> whereArgs) async {
     Database db = await instance.db;
     final result = await db.query(
       tableName,
@@ -141,5 +139,72 @@ class DatabaseHelper {
   Future<int> truncateQuery(String tableName) async {
     Database db = await instance.db;
     return await db.delete(tableName);
+  }
+
+  Future<String?> exportDatabase() async {
+    try {
+      if (!await _requestPermissions()) {
+        return 'Storage permission denied';
+      }
+
+      if (_database != null && _database!.isOpen) {
+        await _database!.close();
+        _database = null;
+      }
+
+      final dbPath = await getDatabasesPath();
+      final dbFile = join(dbPath, 'djenggot.db');
+
+      Directory? directory;
+      if (Platform.isAndroid) {
+        directory = Directory('/storage/emulated/0/Download');
+        if (!await directory.exists()) {
+          directory = await getExternalStorageDirectory();
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory == null) {
+        throw Exception('Could not access storage directory');
+      }
+
+      final exportDir = Directory('${directory.path}/DjenggotBackups');
+      if (!await exportDir.exists()) {
+        await exportDir.create(recursive: true);
+      }
+
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final exportPath = '${exportDir.path}/djenggot_db_$timestamp.db';
+
+      await File(dbFile).copy(exportPath);
+
+      _database = await initDb();
+
+      return exportPath;
+    } catch (e) {
+      if (_database == null || !_database!.isOpen) {
+        _database = await initDb();
+      }
+
+      return null;
+    }
+  }
+
+  Future<bool> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+      }
+
+      var manageStatus = await Permission.manageExternalStorage.status;
+      if (!manageStatus.isGranted) {
+        manageStatus = await Permission.manageExternalStorage.request();
+      }
+
+      return status.isGranted || manageStatus.isGranted;
+    }
+    return true;
   }
 }

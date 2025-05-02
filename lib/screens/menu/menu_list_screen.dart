@@ -86,7 +86,6 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
       appBar: AppBar(
         title: const Text(
           "Daftar Menu",
@@ -250,7 +249,6 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 }
 
-// Extract menu card into separate widget to prevent rebuild
 class _MenuCard extends StatelessWidget {
   final Menu menu;
 
@@ -278,7 +276,6 @@ class _MenuCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Menu Image
             Expanded(
               child: Hero(
                 tag: "menu-image-${menu.idMenu}",
@@ -337,7 +334,6 @@ class _MenuCard extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  // Price
                   Text(
                     formatter.format(menu.menuPrice),
                     style: const TextStyle(

@@ -14,15 +14,12 @@ class TopSellingProducts extends StatelessWidget {
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         if (state is TransactionLoaded) {
-          // Get transactions from the current month
           final now = DateTime.now();
           final currentMonth = DateTime(now.year, now.month);
 
-          // Create a map to count item occurrences
           final Map<String, int> productCounts = {};
           final Map<String, String> productNames = {};
 
-          // Count item occurrences in transactions
           for (var transaction in state.transactions) {
             final transactionDate = DateTime.parse(transaction.timestamp);
             if (transactionDate.year == currentMonth.year &&
@@ -35,11 +32,9 @@ class TopSellingProducts extends StatelessWidget {
             }
           }
 
-          // Sort products by quantity sold
           final sortedProducts = productCounts.entries.toList()
             ..sort((a, b) => b.value.compareTo(a.value));
 
-          // Take top 5 products
           final topProducts = sortedProducts.take(5).toList();
 
           return Card(

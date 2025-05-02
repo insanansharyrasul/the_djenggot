@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
 import 'dart:io';
@@ -62,7 +61,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   bool isSearchVisible = false;
 
-  // Formatter instance reused across the widget
   final formatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp',
@@ -75,7 +73,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     _loadInitialData();
   }
 
-  // Extract data loading to a separate method
   void _loadInitialData() {
     context.read<TransactionTypeBloc>().add(LoadTransactionTypes());
     context.read<MenuBloc>().add(LoadMenu());
@@ -83,7 +80,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     searchController.addListener(_onSearchChanged);
   }
 
-  // Debounced search
   void _onSearchChanged() {
     filterMenus();
   }
@@ -172,7 +168,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     }
   }
 
-  // Extract showing snackbar to a separate method
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -216,7 +211,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     }
   }
 
-  // Extract loading dialog to separate method
   void _showLoadingDialog() {
     showDialog(
       barrierDismissible: false,
@@ -234,8 +228,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   Future<void> _processAndSaveTransaction(List<TransactionItem> transactionItems) async {
     final Uint8List imageBytes;
+    final navigator = Navigator.of(context);
 
-    // Only process image if needed, using a more efficient approach
     if (selectedType?.needEvidence ?? true) {
       imageBytes = evidenceImage != null ? await _compressImage(evidenceImage!) : Uint8List(0);
     } else {
@@ -254,12 +248,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           ),
         );
 
-    Navigator.pop(context);
+    navigator.pop(); 
 
     _showSuccessDialog();
   }
 
-  // Extract success dialog to separate method
   void _showSuccessDialog() {
     showDialog(
       barrierDismissible: false,
@@ -274,9 +267,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       ),
     );
 
+    final navigator = Navigator.of(context);
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pop(context);
-      Navigator.pop(context);
+      navigator.pop();
+      navigator.pop();
     });
   }
 
@@ -409,7 +403,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return const Center(child: CircularProgressIndicator());
   }
 
-  // Extract empty menu state to separate widget
   Widget _buildEmptyMenuIndicator() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -428,9 +421,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract menu item to separate widget
   Widget _buildMenuItem(Menu item) {
-    // Check if item is in cart
     final cartItem = cartItems.firstWhere((cartItem) => cartItem.menu.idMenu == item.idMenu,
         orElse: () => CartItem(menu: item, quantity: 0));
     final int quantity = cartItem.quantity;
@@ -494,7 +485,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract cart update logic to a separate method
   void _updateCartItemQuantity(Menu menu, int newQuantity) {
     setState(() {
       if (newQuantity <= 0) {
@@ -576,7 +566,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract navigation to a separate method
   void _navigateToAddMenuType() {
     Navigator.of(context)
         .push(
@@ -589,7 +578,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     });
   }
 
-  // Extract menu type dropdown to separate widget
   Widget _buildMenuTypeDropdown() {
     return BlocBuilder<MenuTypeBloc, MenuTypeState>(
       builder: (context, state) {
@@ -630,7 +618,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Helper method to build dropdown items
   DropdownMenuItem<String> _buildDropdownMenuItem(String value, String text, Icon icon) {
     return DropdownMenuItem<String>(
       value: value,
@@ -650,7 +637,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract payment options to separate widget
   Widget _buildPaymentOptions() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -696,7 +682,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract change display to a separate widget
   Widget _buildChangeDisplay() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -721,7 +706,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Validation function for money received
   String? _validateMoneyReceived(String? value) {
     if (value == null || value.isEmpty) {
       return "Harga tidak boleh kosong";
@@ -766,7 +750,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract navigation to a separate method
   void _navigateToAddTransactionType() {
     Navigator.of(context)
         .push(
@@ -779,7 +762,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     });
   }
 
-  // Extract transaction type list to a separate widget
   Widget _buildTransactionTypeList() {
     return BlocBuilder<TransactionTypeBloc, TransactionTypeState>(
       builder: (context, state) {
@@ -806,7 +788,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract transaction type item to a separate widget
   Widget _buildTransactionTypeItem(TransactionType type) {
     final bool isSelected = selectedType?.idTransactionType == type.idTransactionType;
 
@@ -997,7 +978,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract transaction type info to a separate widget
   Widget _buildTransactionTypeInfo() {
     if (selectedType == null) return const SizedBox.shrink();
 
@@ -1032,7 +1012,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract cart item display to a separate widget
   Widget _buildCartItemDisplay(CartItem item) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
@@ -1096,7 +1075,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract payment details to a separate widget
   Widget _buildPaymentDetails(int moneyReceived, int change) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1125,7 +1103,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Helper method to build payment rows
   Widget _buildPaymentRow(String label, int value, {TextStyle? valueStyle}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1139,7 +1116,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract evidence display to a separate widget
   Widget _buildEvidenceDisplay() {
     if (evidenceImage == null || selectedType?.needEvidence != true) {
       return const SizedBox.shrink();
@@ -1174,7 +1150,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract success indicator to a separate widget
   Widget _buildSuccessIndicator() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -1207,14 +1182,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Only show the cart summary when on the first step and have items
         if (currentStep == 1 && cartItems.isNotEmpty) _buildCartSummary(),
         _buildNavigationButtonsBar(),
       ],
     );
   }
 
-  // Extract cart summary to a separate widget
   Widget _buildCartSummary() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -1247,7 +1220,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // Extract navigation buttons bar to a separate widget
   Widget _buildNavigationButtonsBar() {
     return Container(
       padding: const EdgeInsets.all(16),

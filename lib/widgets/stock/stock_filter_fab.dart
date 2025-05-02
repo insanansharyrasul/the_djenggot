@@ -11,6 +11,8 @@ class StockFilterFab extends StatelessWidget {
   final List<StockType> stockTypes;
   final Function(StockType?) onTypeChanged;
   final Function(String) onSortChanged;
+  final bool showLowStockOnly;
+  final Function(bool) onLowStockFilterChanged;
 
   const StockFilterFab({
     super.key,
@@ -19,6 +21,8 @@ class StockFilterFab extends StatelessWidget {
     required this.stockTypes,
     required this.onTypeChanged,
     required this.onSortChanged,
+    this.showLowStockOnly = false,
+    required this.onLowStockFilterChanged,
   });
 
   @override
@@ -34,6 +38,20 @@ class StockFilterFab extends StatelessWidget {
       overlayColor: Colors.black,
       overlayOpacity: 0.4,
       children: [
+        // Low Stock Filter
+        SpeedDialChild(
+          child: Icon(
+            Iconsax.warning_2,
+            color: showLowStockOnly ? Colors.red : AppTheme.primary,
+          ),
+          backgroundColor: AppTheme.white,
+          labelStyle: AppTheme.subtitle.copyWith(color: AppTheme.darkText),
+          label: showLowStockOnly ? 'Semua Stok' : 'Hanya Stok Rendah',
+          onTap: () {
+            onLowStockFilterChanged(!showLowStockOnly);
+          },
+        ),
+        // Category Filter
         SpeedDialChild(
           child: const Icon(Iconsax.category, color: AppTheme.primary),
           backgroundColor: AppTheme.white,
@@ -43,17 +61,14 @@ class StockFilterFab extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Pilih Kategori',
-                    style: AppTheme.headline.copyWith(fontSize: 18)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                title: Text('Pilih Kategori', style: AppTheme.headline.copyWith(fontSize: 18)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(
-                        title:
-                            const Text('Semua Kategori', style: AppTheme.body1),
+                        title: const Text('Semua Kategori', style: AppTheme.body1),
                         selected: selectedType == null,
                         selectedColor: AppTheme.primary,
                         onTap: () {
@@ -64,10 +79,8 @@ class StockFilterFab extends StatelessWidget {
                       ...stockTypes.map((type) => ListTile(
                             leading: Icon(getIconFromString(type.stockTypeIcon),
                                 color: AppTheme.primary),
-                            title:
-                                Text(type.stockTypeName, style: AppTheme.body1),
-                            selected:
-                                selectedType?.idStockType == type.idStockType,
+                            title: Text(type.stockTypeName, style: AppTheme.body1),
+                            selected: selectedType?.idStockType == type.idStockType,
                             selectedColor: AppTheme.primary,
                             onTap: () {
                               onTypeChanged(type);
@@ -81,6 +94,7 @@ class StockFilterFab extends StatelessWidget {
             );
           },
         ),
+        // Sort Option
         SpeedDialChild(
           child: const Icon(Iconsax.sort, color: AppTheme.primary),
           backgroundColor: AppTheme.white,
@@ -90,10 +104,8 @@ class StockFilterFab extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Urutkan Berdasarkan',
-                    style: AppTheme.headline.copyWith(fontSize: 18)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                title: Text('Urutkan Berdasarkan', style: AppTheme.headline.copyWith(fontSize: 18)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -116,8 +128,7 @@ class StockFilterFab extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: const Text('Kuantitas (Rendah-Tinggi)',
-                          style: AppTheme.body1),
+                      title: const Text('Kuantitas (Rendah-Tinggi)', style: AppTheme.body1),
                       selected: sortBy == 'quantityAsc',
                       selectedColor: AppTheme.primary,
                       onTap: () {
@@ -126,8 +137,7 @@ class StockFilterFab extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: const Text('Kuantitas (Tinggi-Rendah)',
-                          style: AppTheme.body1),
+                      title: const Text('Kuantitas (Tinggi-Rendah)', style: AppTheme.body1),
                       selected: sortBy == 'quantityDesc',
                       selectedColor: AppTheme.primary,
                       onTap: () {

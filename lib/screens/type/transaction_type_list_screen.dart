@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,8 +15,7 @@ class TransactionTypeListScreen extends StatefulWidget {
   const TransactionTypeListScreen({super.key});
 
   @override
-  State<TransactionTypeListScreen> createState() =>
-      _TransactionTypeListScreenState();
+  State<TransactionTypeListScreen> createState() => _TransactionTypeListScreenState();
 }
 
 class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
@@ -88,8 +86,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
     );
   }
 
-  Widget _buildTransactionTypeCard(
-      BuildContext context, TransactionType transactionType) {
+  Widget _buildTransactionTypeCard(BuildContext context, TransactionType transactionType) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
@@ -105,8 +102,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
         ),
         title: Text(
           transactionType.transactionTypeName,
-          style: AppTheme.headline
-              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.headline.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -114,8 +110,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
             IconButton(
               icon: const Icon(Iconsax.edit, color: AppTheme.primary),
               onPressed: () {
-                context.push(
-                    '/edit-transaction-type/${transactionType.idTransactionType}');
+                context.push('/edit-transaction-type/${transactionType.idTransactionType}');
               },
             ),
             IconButton(
@@ -130,8 +125,7 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
     );
   }
 
-  void _showDeleteConfirmation(
-      BuildContext context, TransactionType transactionType) {
+  void _showDeleteConfirmation(BuildContext context, TransactionType transactionType) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) => AppDialog(
@@ -174,8 +168,9 @@ class _TransactionTypeListScreenState extends State<TransactionTypeListScreen> {
             ),
           );
 
+          final navigator = Navigator.of(context);
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
+            navigator.pop();
           });
         },
       ),

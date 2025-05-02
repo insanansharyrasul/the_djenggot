@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -308,7 +307,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
           context.read<TransactionBloc>().add(DeleteTransactionEvent(widget.id));
 
-          Navigator.pop(context);
+          final navigator = Navigator.of(context);
+          navigator.pop(); 
 
           showDialog(
             barrierDismissible: false,
@@ -324,8 +324,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           );
 
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
-            Navigator.pop(context);
+            navigator.pop();
+            navigator.pop();
           });
         },
       ),
