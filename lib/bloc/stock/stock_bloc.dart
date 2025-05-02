@@ -9,11 +9,12 @@ part 'stock_state.dart';
 
 class StockBloc extends Bloc<StockEvent, StockState> {
   final StockRepository _stockRepository;
+  List<Stock> _cachedStocks = [];
   StockBloc(this._stockRepository) : super(StockLoading()) {
     on<LoadStock>((event, emit) async {
       emit(StockLoading());
-      final stocks = await _stockRepository.getAllStocks();
-      emit(StockLoaded(stocks));
+      _cachedStocks = await _stockRepository.getAllStocks();
+      emit(StockLoaded(_cachedStocks));
     });
 
     on<AddStock>((event, emit) async {
@@ -27,8 +28,8 @@ class StockBloc extends Bloc<StockEvent, StockState> {
           'stock_threshold': event.threshold,
         },
       );
-      final stocks = await _stockRepository.getAllStocks();
-      emit(StockLoaded(stocks));
+      _cachedStocks = await _stockRepository.getAllStocks();
+      emit(StockLoaded(_cachedStocks));
     });
 
     on<UpdateStock>((event, emit) async {
@@ -41,19 +42,19 @@ class StockBloc extends Bloc<StockEvent, StockState> {
         },
         event.stock.idStock,
       );
-      final stocks = await _stockRepository.getAllStocks();
-      emit(StockLoaded(stocks));
+      _cachedStocks = await _stockRepository.getAllStocks();
+      emit(StockLoaded(_cachedStocks));
     });
 
     on<DeleteStock>((event, emit) async {
       await _stockRepository.deleteStok(event.id);
-      final stocks = await _stockRepository.getAllStocks();
-      emit(StockLoaded(stocks));
+      _cachedStocks = await _stockRepository.getAllStocks();
+      emit(StockLoaded(_cachedStocks));
     });
 
     on<SearchStock>((event, emit) async {
-      final stocks = await _stockRepository.searchStocks(event.query);
-      emit(StockLoaded(stocks));
+      _cachedStocks = await _stockRepository.searchStocks(event.query);
+      emit(StockLoaded(_cachedStocks));
     });
   }
 }

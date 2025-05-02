@@ -25,14 +25,12 @@ class _StockScreenState extends State<StockScreen> {
   String _searchQuery = '';
   String _currentSort = 'nameAsc';
   StockType? _selectedType;
-  List<Stock> _filteredStocks = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<StockBloc>(context).add(LoadStock());
     context.read<StockTypeBloc>().add(LoadStockTypes());
+    context.read<StockBloc>().add(LoadStock());
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -85,11 +83,6 @@ class _StockScreenState extends State<StockScreen> {
     }
 
     return filtered;
-  }
-
-  void _updateFilteredStocks(List<Stock> stocks) {
-    _filteredStocks = _getFilteredStocks(stocks);
-    _isLoading = false;
   }
 
   @override
@@ -158,20 +151,22 @@ class _StockScreenState extends State<StockScreen> {
         },
         child: BlocConsumer<StockBloc, StockState>(
           listener: (context, state) {
+            // Just trigger setState when data is loaded
             if (state is StockLoaded) {
-              _updateFilteredStocks(state.stocks);
+              setState(() {});
             }
           },
           builder: (context, state) {
-            if (state is StockLoading && _isLoading) {
+            if (state is StockLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
             if (state is StockLoaded) {
-              if (_filteredStocks.isEmpty) {
+              final filteredStocks = _getFilteredStocks(state.stocks);
+              if (filteredStocks.isEmpty) {
                 return _buildEmptyState();
               }
-              return _buildStockListView(_filteredStocks);
+              return _buildStockListView(filteredStocks);
             }
 
             return _buildNoStocksState();
@@ -260,41 +255,57 @@ class _StockScreenState extends State<StockScreen> {
               color: AppTheme.primary,
             ),
           ),
-          title: Text(
-            stock.stockName,
-            style: const TextStyle(
-              fontFamily: AppTheme.fontName,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  stock.stockName,
+                  style: AppTheme.headline.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              if (isLowStock)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withAlpha(23),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    "Low Stock",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 4),
               _buildStockInfoRow(
                 Iconsax.category,
                 stock.idStockType.stockTypeName,
                 isLowStock: false,
               ),
-              const SizedBox(height: 4),
               _buildStockInfoRow(
                 Iconsax.chart_1,
                 "Kuantitas: ${stock.stockQuantity}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
                 isLowStock: isLowStock,
               ),
               if (stock.stockThreshold != null && stock.stockThreshold! > 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: _buildStockInfoRow(
-                    Iconsax.warning_2,
-                    "Minimum: ${stock.stockThreshold}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
-                    isLowStock: isLowStock,
-                  ),
+                _buildStockInfoRow(
+                  Iconsax.warning_2,
+                  "Minimum: ${stock.stockThreshold}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
+                  isLowStock: isLowStock,
                 ),
             ],
           ),
-          trailing: Icon(Iconsax.arrow_right_3, color: Colors.grey.shade400),
+          trailing: const Icon(Iconsax.arrow_right_3, color: AppTheme.grey),
           onTap: () {
             context.push('/stock-detail', extra: stock);
           },
@@ -304,22 +315,33 @@ class _StockScreenState extends State<StockScreen> {
   }
 
   Widget _buildStockInfoRow(IconData icon, String text, {required bool isLowStock}) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 14,
-          color: isLowStock ? Colors.red : Colors.grey,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          text,
-          style: AppTheme.stockDetail.copyWith(
-            color: isLowStock ? Colors.red : Colors.grey,
-            fontWeight: isLowStock ? FontWeight.bold : FontWeight.normal,
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: isLowStock ? Colors.red.withAlpha(23) : AppTheme.primary.withAlpha(23),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(
+              icon,
+              size: 12,
+              color: isLowStock ? Colors.red : AppTheme.primary,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: AppTheme.stockDetail.copyWith(
+              color: isLowStock ? Colors.red : Colors.grey.shade700,
+              fontWeight: isLowStock ? FontWeight.bold : FontWeight.normal,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -337,17 +359,11 @@ class _StockScreenState extends State<StockScreen> {
                 onTypeChanged: (type) {
                   setState(() {
                     _selectedType = type;
-                    if (state is StockLoaded) {
-                      _updateFilteredStocks((state as StockLoaded).stocks);
-                    }
                   });
                 },
                 onSortChanged: (sort) {
                   setState(() {
                     _currentSort = sort;
-                    if (state is StockLoaded) {
-                      _updateFilteredStocks((state as StockLoaded).stocks);
-                    }
                   });
                 },
               ),

@@ -197,10 +197,18 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Icon(
-          getIconFromString(transaction.transactionType.transactionTypeIcon),
-          color: AppTheme.primary,
-          size: 28,
+        leading: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: AppTheme.primary.withAlpha(23),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            getIconFromString(transaction.transactionType.transactionTypeIcon),
+            color: AppTheme.primary,
+            size: 28,
+          ),
         ),
         title: Text(
           transaction.transactionType.transactionTypeName,
@@ -228,7 +236,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           ],
         ),
         trailing: IconButton(
-          icon: const Icon(Iconsax.eye, color: AppTheme.primary),
+          icon: const Icon(Iconsax.arrow_right_3, color: AppTheme.grey),
           onPressed: () {
             context.push('/transaction-detail/${transaction.idTransactionHistory}').then(
               (_) async {
