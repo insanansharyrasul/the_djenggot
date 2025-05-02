@@ -19,6 +19,7 @@ import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
+import 'package:the_djenggot/screens/stock/stock_analytics_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_detail_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_history_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
@@ -126,6 +127,10 @@ class AppRouter {
             builder: (context, state) => StockDetailScreen(
               stock: state.extra as Stock,
             ),
+          ),
+          GoRoute(
+            path: '/stock-analytics',
+            builder: (context, state) => const StockAnalyticsScreen(),
           ),
 
           // ==========================================
