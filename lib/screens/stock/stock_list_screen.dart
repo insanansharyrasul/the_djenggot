@@ -25,6 +25,7 @@ class _StockScreenState extends State<StockScreen> {
   String _searchQuery = '';
   String _currentSort = 'nameAsc';
   StockType? _selectedType;
+  bool _showLowStockOnly = false;
 
   @override
   void initState() {
@@ -55,12 +56,22 @@ class _StockScreenState extends State<StockScreen> {
   List<Stock> _getFilteredStocks(List<Stock> stocks) {
     var filtered = stocks;
 
+    // Apply category filter
     if (_selectedType != null) {
       filtered = filtered
           .where((stock) => stock.idStockType.idStockType == _selectedType!.idStockType)
           .toList();
     }
 
+    // Apply low stock filter
+    if (_showLowStockOnly) {
+      filtered = filtered
+          .where((stock) =>
+              stock.stockThreshold != null && stock.stockQuantity <= stock.stockThreshold!)
+          .toList();
+    }
+
+    // Apply sorting
     switch (_currentSort) {
       case 'nameAsc':
         filtered.sort((a, b) => a.stockName.compareTo(b.stockName));
@@ -356,6 +367,7 @@ class _StockScreenState extends State<StockScreen> {
                 selectedType: _selectedType,
                 sortBy: _currentSort,
                 stockTypes: state.stockTypes,
+                showLowStockOnly: _showLowStockOnly,
                 onTypeChanged: (type) {
                   setState(() {
                     _selectedType = type;
@@ -364,6 +376,11 @@ class _StockScreenState extends State<StockScreen> {
                 onSortChanged: (sort) {
                   setState(() {
                     _currentSort = sort;
+                  });
+                },
+                onLowStockFilterChanged: (value) {
+                  setState(() {
+                    _showLowStockOnly = value;
                   });
                 },
               ),
