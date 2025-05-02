@@ -40,7 +40,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.background,
         appBar: AppBar(
           title: const Text(
             'Detail Menu',

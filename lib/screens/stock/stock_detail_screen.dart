@@ -18,20 +18,208 @@ class StockDetailScreen extends StatefulWidget {
 }
 
 class _StockDetailScreenState extends State<StockDetailScreen> {
+  final TextEditingController _quantityController = TextEditingController();
+  bool _isMenuOpen = false;
+
   @override
   void initState() {
     super.initState();
     refresh();
   }
 
+  @override
+  void dispose() {
+    _quantityController.dispose();
+    super.dispose();
+  }
+
   void refresh() {
     context.read<StockBloc>().add(LoadStock());
+  }
+
+  void _showTakeStockDialog(Stock stock) {
+    _quantityController.text = "1"; // Default quantity
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Ambil Stok"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Jumlah stok saat ini: ${stock.stockQuantity} ${stock.idStockType.stockUnit}",
+                style: AppTheme.body1,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _quantityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Jumlah ${stock.idStockType.stockUnit}",
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Iconsax.calculator),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text("Ambil"),
+              onPressed: () {
+                int quantity = int.tryParse(_quantityController.text) ?? 0;
+                if (quantity <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Jumlah harus lebih besar dari 0"),
+                      backgroundColor: AppTheme.danger,
+                    ),
+                  );
+                  return;
+                }
+
+                if (quantity > stock.stockQuantity) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Jumlah melebihi stok yang tersedia"),
+                      backgroundColor: AppTheme.danger,
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.of(context).pop();
+                _updateStockQuantity(stock, -quantity);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAddStockDialog(Stock stock) {
+    _quantityController.text = "1"; // Default quantity
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Tambah Stok"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Jumlah stok saat ini: ${stock.stockQuantity} ${stock.idStockType.stockUnit}",
+                style: AppTheme.body1,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _quantityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Jumlah ${stock.idStockType.stockUnit}",
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Iconsax.calculator),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text("Tambah"),
+              onPressed: () {
+                int quantity = int.tryParse(_quantityController.text) ?? 0;
+                if (quantity <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Jumlah harus lebih besar dari 0"),
+                      backgroundColor: AppTheme.danger,
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.of(context).pop();
+                _updateStockQuantity(stock, quantity);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _updateStockQuantity(Stock stock, int change) {
+    int newQuantity = stock.stockQuantity + change;
+    if (newQuantity < 0) newQuantity = 0;
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext dialogContext) => AppDialog(
+        type: "loading",
+        title: "Memproses",
+        message: "Mohon tunggu...",
+        onOkPress: () {},
+      ),
+    );
+
+    context.read<StockBloc>().add(
+          UpdateStock(
+            stock,
+            stock.stockName,
+            newQuantity.toString(),
+            stock.idStockType.idStockType,
+            stock.stockThreshold!,
+          ),
+        );
+
+    Navigator.pop(context);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) => AppDialog(
+        type: "success",
+        title: "Berhasil",
+        message: change < 0 ? "Stok berhasil diambil" : "Stok berhasil ditambah",
+        onOkPress: () {
+          Navigator.pop(dialogContext);
+        },
+        okTitle: "Tutup",
+      ),
+    );
+
+    final navigator = Navigator.of(context);
+    Future.delayed(const Duration(seconds: 1), () {
+      navigator.pop();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
       appBar: AppBar(
         title: const Text(
           "Detail Stok",
@@ -67,7 +255,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       BlocProvider.of<StockBloc>(context).add(
                         DeleteStock(widget.stock.idStock),
                       );
-                      context.pop(); 
+                      context.pop();
                     },
                   );
                 },
@@ -108,8 +296,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Icon(
-                                  getIconFromString(
-                                      stock.idStockType.stockTypeIcon),
+                                  getIconFromString(stock.idStockType.stockTypeIcon),
                                   color: AppTheme.primary,
                                   size: 40,
                                 ),
@@ -126,8 +313,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                               ),
                               const SizedBox(height: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                   color: AppTheme.primary.withAlpha(26),
                                   borderRadius: BorderRadius.circular(20),
@@ -166,8 +352,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                                   "${stock.stockQuantity}${stock.idStockType.stockUnit.isNotEmpty ? ' ${stock.idStockType.stockUnit}' : ''}",
                                   icon: Iconsax.chart_1,
                                   isLowStock: stock.stockThreshold != null &&
-                                      stock.stockQuantity <=
-                                          stock.stockThreshold!),
+                                      stock.stockQuantity <= stock.stockThreshold!),
                               if (stock.stockThreshold != null)
                                 _buildInfoRow(
                                   "Batas Minimum",
@@ -187,26 +372,83 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           },
         ),
       ),
+      floatingActionButton: BlocBuilder<StockBloc, StockState>(
+        builder: (context, state) {
+          Stock currentStock = widget.stock;
+          if (state is StockLoaded) {
+            currentStock = state.stocks.firstWhere(
+              (s) => s.idStock == widget.stock.idStock,
+              orElse: () => widget.stock,
+            );
+          }
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Show these buttons only when menu is open
+              if (_isMenuOpen) ...[
+                FloatingActionButton(
+                  heroTag: "take",
+                  backgroundColor: Colors.redAccent,
+                  mini: true,
+                  onPressed: () {
+                    setState(() {
+                      _isMenuOpen = false;
+                    });
+                    _showTakeStockDialog(currentStock);
+                  },
+                  tooltip: "Ambil Stok",
+                  child: const Icon(Iconsax.minus),
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton(
+                  heroTag: "add",
+                  backgroundColor: Colors.green,
+                  mini: true,
+                  onPressed: () {
+                    setState(() {
+                      _isMenuOpen = false;
+                    });
+                    _showAddStockDialog(currentStock);
+                  },
+                  tooltip: "Tambah Stok",
+                  child: const Icon(Iconsax.add),
+                ),
+                const SizedBox(height: 16),
+              ],
+              // Main FAB that toggles the menu
+              FloatingActionButton(
+                heroTag: "main",
+                backgroundColor: AppTheme.primary,
+                onPressed: () {
+                  setState(() {
+                    _isMenuOpen = !_isMenuOpen;
+                  });
+                },
+                tooltip: _isMenuOpen ? "Tutup" : "Kelola Stok",
+                child: Icon(
+                  _isMenuOpen ? Iconsax.close_circle : Iconsax.box_1,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
   Widget _buildInfoRow(String label, String value,
-      {IconData icon = Iconsax.info_circle,
-      bool isLowStock = false,
-      bool multiLine = false}) {
+      {IconData icon = Iconsax.info_circle, bool isLowStock = false, bool multiLine = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
-        crossAxisAlignment:
-            multiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        crossAxisAlignment: multiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
           Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isLowStock
-                  ? Colors.red.withAlpha(23)
-                  : Colors.grey.withAlpha(23),
+              color: isLowStock ? Colors.red.withAlpha(23) : Colors.grey.withAlpha(23),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(

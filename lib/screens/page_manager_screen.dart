@@ -53,7 +53,7 @@ class _PageManagerScreenState extends State<PageManagerScreen> {
       height: 80,
       decoration: const BoxDecoration(
         color: AppTheme.white,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),

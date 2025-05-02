@@ -91,6 +91,12 @@ class MainApp extends StatelessWidget {
           seedColor: AppTheme.primary,
           primary: AppTheme.primary,
         ),
+        dialogTheme: const DialogTheme(
+          backgroundColor: AppTheme.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
       ),
     );
   }
