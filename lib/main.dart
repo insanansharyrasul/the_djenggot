@@ -52,7 +52,7 @@ class MainApp extends StatelessWidget {
       title: 'TheDjenggot',
       theme: ThemeData(
         fontFamily: AppTheme.fontName,
-        primaryColor: AppTheme.background,
+        primaryColor: AppTheme.white,
         cardTheme: CardTheme(
           color: AppTheme.white,
           elevation: 2,
@@ -60,19 +60,36 @@ class MainApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        scaffoldBackgroundColor: AppTheme.background,
+        scaffoldBackgroundColor: AppTheme.white,
         appBarTheme: const AppBarTheme(
           elevation: 0,
-          foregroundColor: AppTheme.background,
           backgroundColor: AppTheme.white,
           iconTheme: IconThemeData(
             color: AppTheme.nearlyBlack,
           ),
           shadowColor: AppTheme.white,
           surfaceTintColor: AppTheme.white,
-          centerTitle: true,
+          // centerTitle: true,
           titleTextStyle: AppTheme.appBarTitle,
           scrolledUnderElevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16),
+            ),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: AppTheme.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
+        canvasColor: AppTheme.white,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppTheme.primary,
+          primary: AppTheme.primary,
         ),
       ),
     );

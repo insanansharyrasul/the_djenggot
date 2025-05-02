@@ -54,20 +54,20 @@ class SettingScreen extends StatelessWidget {
             onTap: () => _exportDatabase(context),
           ),
           _buildSettingItem(
-            icon: Iconsax.information,
-            title: "Versi Aplikasi",
-            subtitle: "1.0.0",
-            showArrow: false,
-            onTap: () {},
-          ),
-          _buildSettingItem(
             icon: Iconsax.profile_2user,
             title: "Laporkan Masalah",
             subtitle: "Laporkan masalah atau bug yang ditemukan",
             onTap: () {
               _openGmail();
             },
-          )
+          ),
+          _buildSettingItem(
+            icon: Iconsax.information,
+            title: "Versi Aplikasi",
+            subtitle: "1.0.0",
+            showArrow: false,
+            onTap: () {},
+          ),
         ],
       ),
     );
@@ -254,7 +254,6 @@ class SettingScreen extends StatelessWidget {
     bool showArrow = true,
   }) {
     return Card(
-      elevation: 0,
       color: AppTheme.white,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(

@@ -15,8 +15,8 @@ Widget bottomNavItem(GestureTapCallback onTap, IconData icon, int pageIndex, int
             begin: Alignment.topCenter,
             end: const Alignment(0, 0.01),
             colors: [
-              pageIndex == currentPageIndex ? AppTheme.nearlyBlue : AppTheme.background,
-              AppTheme.background,
+              pageIndex == currentPageIndex ? AppTheme.nearlyBlue : AppTheme.white,
+              AppTheme.white,
             ],
           ),
           borderRadius: BorderRadius.circular(8),

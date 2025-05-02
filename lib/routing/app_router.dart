@@ -13,7 +13,7 @@ import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/models/type/transaction_type.dart';
-import 'package:the_djenggot/screens/dashboard_screen.dart';
+import 'package:the_djenggot/screens/page_manager_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
@@ -48,7 +48,7 @@ class AppRouter {
           GoRoute(
             path: '/',
             builder: (context, state) {
-              return const DashboardScreen();
+              return const PageManagerScreen();
             },
           ),
 
@@ -207,8 +207,7 @@ class AppRouter {
               final id = state.pathParameters['id'] ?? '';
 
               if (transactionTypeState is TransactionTypeLoaded) {
-                final transactionType =
-                    transactionTypeState.transactionTypes.firstWhere(
+                final transactionType = transactionTypeState.transactionTypes.firstWhere(
                   (type) => type.idTransactionType == id,
                   orElse: () => const TransactionType(
                     idTransactionType: '',
@@ -217,8 +216,7 @@ class AppRouter {
                   ),
                 );
 
-                return AddEditTransactionTypeScreen(
-                    transactionType: transactionType);
+                return AddEditTransactionTypeScreen(transactionType: transactionType);
               }
 
               return const Center(child: CircularProgressIndicator());
