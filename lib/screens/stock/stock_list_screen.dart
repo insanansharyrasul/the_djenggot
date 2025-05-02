@@ -12,6 +12,7 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/empty_state.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/stock/stock_filter_fab.dart';
+import 'package:the_djenggot/widgets/stock/stock_status_overview.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -99,29 +100,50 @@ class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Daftar Stok",
-          style: AppTheme.appBarTitle,
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Iconsax.receipt_1),
-            tooltip: 'Stock History',
-            onPressed: () {
-              context.push('/stock-history');
-            },
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              title: const Text(
+                "Daftar Stok",
+                style: AppTheme.appBarTitle,
+              ),
+              expandedHeight: 200.0,
+              pinned: true,
+              actions: [
+                IconButton(
+                  icon: const Icon(Iconsax.chart),
+                  tooltip: 'Stock Analytics',
+                  onPressed: () {
+                    context.push('/stock-analytics');
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Iconsax.receipt_1),
+                  tooltip: 'Stock History',
+                  onPressed: () {
+                    context.push('/stock-history');
+                  },
+                ),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.only(top: 70.0, left: 16.0, right: 16.0, bottom: 8),
+                  child: _buildStockStatusOverview(),
+                ),
+              ),
+            ),
+          ];
+        },
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _buildSearchBox(),
+              const SizedBox(height: 16),
+              _buildStockList(),
+            ],
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildSearchBox(),
-            const SizedBox(height: 16),
-            _buildStockList(),
-          ],
         ),
       ),
       floatingActionButton: _buildFloatingActionButtons(),
@@ -160,6 +182,25 @@ class _StockScreenState extends State<StockScreen> {
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),
       ),
+    );
+  }
+
+  Widget _buildStockStatusOverview() {
+    return BlocBuilder<StockBloc, StockState>(
+      builder: (context, state) {
+        if (state is StockLoaded) {
+          final totalValue = state.stocks.fold<double>(
+            0,
+            (sum, stock) => sum + (stock.stockQuantity),
+          );
+
+          return StockStatusOverview(
+            stocks: state.stocks,
+            totalValue: totalValue,
+          );
+        }
+        return const SizedBox(height: 120);
+      },
     );
   }
 
@@ -252,13 +293,18 @@ class _StockScreenState extends State<StockScreen> {
   Widget _buildStockItem(Stock stock) {
     final stockUnit = stock.idStockType.stockUnit;
     final isLowStock = stock.stockThreshold != null && stock.stockQuantity <= stock.stockThreshold!;
+    final isOutOfStock = stock.stockQuantity == 0;
 
     return Card(
       color: AppTheme.white,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: isLowStock ? const BorderSide(color: Colors.red) : BorderSide.none,
+        side: isOutOfStock
+            ? const BorderSide(color: Colors.red)
+            : isLowStock
+                ? const BorderSide(color: Colors.amber)
+                : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -286,7 +332,7 @@ class _StockScreenState extends State<StockScreen> {
                   ),
                 ),
               ),
-              if (isLowStock)
+              if (isOutOfStock)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
@@ -294,9 +340,25 @@ class _StockScreenState extends State<StockScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
-                    "Low Stock",
+                    "Out of Stock",
                     style: TextStyle(
                       color: Colors.red,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              else if (isLowStock)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withAlpha(23),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    "Low Stock",
+                    style: TextStyle(
+                      color: Colors.amber,
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                     ),
@@ -310,18 +372,21 @@ class _StockScreenState extends State<StockScreen> {
               _buildStockInfoRow(
                 Iconsax.category,
                 stock.idStockType.stockTypeName,
-                isLowStock: false,
+                isLowStock: isLowStock,
+                isOutOfStock: isOutOfStock,
               ),
               _buildStockInfoRow(
                 Iconsax.chart_1,
                 "Kuantitas: ${stock.stockQuantity}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
                 isLowStock: isLowStock,
+                isOutOfStock: isOutOfStock,
               ),
               if (stock.stockThreshold != null && stock.stockThreshold! > 0)
                 _buildStockInfoRow(
                   Iconsax.warning_2,
                   "Minimum: ${stock.stockThreshold}${stockUnit.isNotEmpty ? ' $stockUnit' : ''}",
                   isLowStock: isLowStock,
+                  isOutOfStock: isOutOfStock,
                 ),
             ],
           ),
@@ -334,7 +399,25 @@ class _StockScreenState extends State<StockScreen> {
     );
   }
 
-  Widget _buildStockInfoRow(IconData icon, String text, {required bool isLowStock}) {
+  Widget _buildStockInfoRow(IconData icon, String text,
+      {required bool isLowStock, bool isOutOfStock = false}) {
+    Color iconColor = AppTheme.primary;
+    Color textColor = Colors.grey.shade700;
+    Color bgColor = AppTheme.primary.withAlpha(23);
+    FontWeight fontWeight = FontWeight.normal;
+
+    if (isOutOfStock) {
+      iconColor = Colors.red;
+      textColor = Colors.red;
+      bgColor = Colors.red.withAlpha(23);
+      fontWeight = FontWeight.bold;
+    } else if (isLowStock) {
+      iconColor = Colors.amber;
+      textColor = Colors.amber;
+      bgColor = Colors.amber.withAlpha(23);
+      fontWeight = FontWeight.bold;
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: Row(
@@ -342,21 +425,21 @@ class _StockScreenState extends State<StockScreen> {
           Container(
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: isLowStock ? Colors.red.withAlpha(23) : AppTheme.primary.withAlpha(23),
+              color: bgColor,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Icon(
               icon,
               size: 12,
-              color: isLowStock ? Colors.red : AppTheme.primary,
+              color: iconColor,
             ),
           ),
           const SizedBox(width: 6),
           Text(
             text,
             style: AppTheme.stockDetail.copyWith(
-              color: isLowStock ? Colors.red : Colors.grey.shade700,
-              fontWeight: isLowStock ? FontWeight.bold : FontWeight.normal,
+              color: textColor,
+              fontWeight: fontWeight,
               fontSize: 13,
             ),
           ),
