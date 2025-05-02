@@ -86,15 +86,16 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             });
 
             if (transactions.isEmpty) {
-              return const Expanded(
-                child: EmptyState(
-                  icon: Iconsax.receipt,
-                  title: "Belum ada transaksi",
-                  subtitle:
-                      "Tambahkan transaksi baru dengan menekan tombol '+' di pojok kanan bawah.",
-                ),
+              return const EmptyState(
+                icon: Iconsax.receipt,
+                title: "Belum ada transaksi",
+                subtitle:
+                    "Tambahkan transaksi baru dengan menekan tombol '+' di pojok kanan bawah.",
               );
             }
+
+            // Group transactions by date
+            final groupedTransactions = _groupTransactionsByDate(transactions);
 
             return Column(
               children: [
@@ -105,10 +106,30 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     },
                     child: ListView.builder(
                       padding: const EdgeInsets.all(16),
-                      itemCount: transactions.length,
+                      itemCount: groupedTransactions.length,
                       itemBuilder: (context, index) {
-                        final transaction = transactions[index];
-                        return _buildTransactionCard(context, transaction);
+                        final dateKey = groupedTransactions.keys.elementAt(index);
+                        final dateTransactions = groupedTransactions[dateKey]!;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                dateKey,
+                                style: AppTheme.headline.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.darkText,
+                                ),
+                              ),
+                            ),
+                            ...dateTransactions
+                                .map((transaction) => _buildTransactionCard(context, transaction)),
+                            const SizedBox(height: 8),
+                          ],
+                        );
                       },
                     ),
                   ),
@@ -230,5 +251,21 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
 
   void _reloadTransactions() {
     context.read<TransactionBloc>().add(LoadTransactions());
+  }
+
+  Map<String, List<TransactionHistory>> _groupTransactionsByDate(
+      List<TransactionHistory> transactions) {
+    final Map<String, List<TransactionHistory>> groupedTransactions = {};
+
+    for (var transaction in transactions) {
+      final date = DateFormat('dd MMM yyyy').format(DateTime.parse(transaction.timestamp));
+      if (groupedTransactions.containsKey(date)) {
+        groupedTransactions[date]!.add(transaction);
+      } else {
+        groupedTransactions[date] = [transaction];
+      }
+    }
+
+    return groupedTransactions;
   }
 }

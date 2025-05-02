@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:the_djenggot/database/database.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -45,6 +48,12 @@ class SettingScreen extends StatelessWidget {
           const SizedBox(height: 24),
           _buildSectionHeader("Aplikasi"),
           _buildSettingItem(
+            icon: Iconsax.export,
+            title: "Ekspor Database",
+            subtitle: "Simpan database ke folder Download",
+            onTap: () => _exportDatabase(context),
+          ),
+          _buildSettingItem(
             icon: Iconsax.information,
             title: "Versi Aplikasi",
             subtitle: "1.0.0",
@@ -62,6 +71,154 @@ class SettingScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _exportDatabase(BuildContext context) async {
+    // Check for both storage permissions
+    bool hasPermission = false;
+
+    // Check regular storage permission
+    final storageStatus = await Permission.storage.status;
+    if (!storageStatus.isGranted) {
+      final requestResult = await Permission.storage.request();
+      if (requestResult.isGranted) {
+        hasPermission = true;
+      }
+    } else {
+      hasPermission = true;
+    }
+
+    // Check manage external storage permission for Android 11+
+    final manageStatus = await Permission.manageExternalStorage.status;
+    if (!manageStatus.isGranted) {
+      final requestResult = await Permission.manageExternalStorage.request();
+      if (requestResult.isGranted) {
+        hasPermission = true;
+      }
+    } else {
+      hasPermission = true;
+    }
+
+    // If permissions are denied after requests
+    if (!hasPermission) {
+      // If permanently denied, show dialog to open settings
+      if (await Permission.storage.isPermanentlyDenied ||
+          await Permission.manageExternalStorage.isPermanentlyDenied) {
+        _showPermissionDeniedDialog(context);
+        return;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Izin penyimpanan diperlukan untuk ekspor database')),
+        );
+        return;
+      }
+    }
+
+    // Permission is granted, continue with export
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      // Perform export
+      final result = await DatabaseHelper.instance.exportDatabase();
+
+      // Hide loading dialog
+      Navigator.pop(context);
+
+      if (result != null) {
+        // Show success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+              title: const Text('Database Berhasil Diekspor'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Database telah tersimpan di folder:'),
+                  const SizedBox(height: 8),
+                  Text(
+                    result,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Bagikan'),
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    Share.shareXFiles(
+                      [XFile(result)],
+                      subject: 'Database Backup The Djenggot',
+                    );
+                  },
+                ),
+                TextButton(
+                  child: const Text('Tutup'),
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Show error dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+              title: const Text('Ekspor Gagal'),
+              content: const Text('Terjadi kesalahan saat mengekspor database.'),
+              actions: [
+                TextButton(
+                  child: const Text('Tutup'),
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      // Hide loading dialog
+      Navigator.pop(context);
+
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            title: const Text('Terjadi Kesalahan'),
+            content: Text('Error: ${e.toString()}'),
+            actions: [
+              TextButton(
+                child: const Text('Tutup'),
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> _openGmail() async {
@@ -160,5 +317,26 @@ class SettingScreen extends StatelessWidget {
         context.push('/transaction-types');
         break;
     }
+  }
+
+  void _showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Izin Ditolak'),
+          content: const Text(
+              'Izin penyimpanan diperlukan untuk ekspor database. Silakan izinkan akses penyimpanan di pengaturan.'),
+          actions: [
+            TextButton(
+              child: const Text('Tutup'),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
@@ -118,8 +122,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> countQuery(
-      String tableName, String where, List<dynamic> whereArgs) async {
+  Future<int> countQuery(String tableName, String where, List<dynamic> whereArgs) async {
     Database db = await instance.db;
     final result = await db.query(
       tableName,
@@ -141,5 +144,89 @@ class DatabaseHelper {
   Future<int> truncateQuery(String tableName) async {
     Database db = await instance.db;
     return await db.delete(tableName);
+  }
+
+  Future<String?> exportDatabase() async {
+    try {
+      // Check if we have storage permission
+      if (!await _requestPermissions()) {
+        return 'Storage permission denied';
+      }
+
+      // Close the database connection first to ensure all writes are flushed
+      if (_database != null && _database!.isOpen) {
+        await _database!.close();
+        _database = null;
+      }
+
+      // Get the database path
+      final dbPath = await getDatabasesPath();
+      final dbFile = join(dbPath, 'djenggot.db');
+
+      // Get the downloads directory
+      Directory? directory;
+      if (Platform.isAndroid) {
+        // This path works for Android's Download folder
+        directory = Directory('/storage/emulated/0/Download');
+        if (!await directory.exists()) {
+          // Fallback to external storage
+          directory = await getExternalStorageDirectory();
+        }
+      } else {
+        // For iOS, use documents directory
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory == null) {
+        throw Exception('Could not access storage directory');
+      }
+
+      // Create a directory for exports if it doesn't exist
+      final exportDir = Directory('${directory.path}/DjenggotBackups');
+      if (!await exportDir.exists()) {
+        await exportDir.create(recursive: true);
+      }
+
+      // Generate export file with timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final exportPath = '${exportDir.path}/djenggot_db_$timestamp.db';
+
+      // Copy the database file
+      await File(dbFile).copy(exportPath);
+
+      // Reopen the database connection
+      _database = await initDb();
+
+      return exportPath;
+    } catch (e) {
+      print('Database export error: $e');
+
+      // Make sure database is reopened even if export fails
+      if (_database == null || !_database!.isOpen) {
+        _database = await initDb();
+      }
+
+      return null;
+    }
+  }
+
+  Future<bool> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      // First check and request regular storage permission
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+      }
+
+      // For Android 11+ (API 30+), also need MANAGE_EXTERNAL_STORAGE
+      var manageStatus = await Permission.manageExternalStorage.status;
+      if (!manageStatus.isGranted) {
+        manageStatus = await Permission.manageExternalStorage.request();
+      }
+
+      // Return true if either of the permissions are granted
+      return status.isGranted || manageStatus.isGranted;
+    }
+    return true; // iOS handles permissions differently
   }
 }
