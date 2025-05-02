@@ -104,6 +104,15 @@ class _StockScreenState extends State<StockScreen> {
           "Daftar Stok",
           style: AppTheme.appBarTitle,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Iconsax.receipt_1),
+            tooltip: 'Stock History',
+            onPressed: () {
+              context.push('/stock-history');
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

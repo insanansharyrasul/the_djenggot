@@ -95,6 +95,17 @@ class DatabaseHelper {
       ''');
 
       await txn.execute('''
+        CREATE TABLE STOCK_HISTORY (
+          stock_history_id TEXT PRIMARY KEY NOT NULL,
+          timestamp TEXT NOT NULL,
+          id_stock TEXT NOT NULL,
+          amount INTEGER NOT NULL,
+          action_type TEXT NOT NULL,
+          FOREIGN KEY (id_stock) REFERENCES STOCK(id_stock) ON DELETE CASCADE ON UPDATE CASCADE
+        )
+      ''');
+
+      await txn.execute('''
         CREATE TABLE MENU (
           id_menu TEXT PRIMARY KEY NOT NULL,
           menu_name TEXT NOT NULL,

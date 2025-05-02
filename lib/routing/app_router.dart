@@ -20,6 +20,7 @@ import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_detail_screen.dart';
+import 'package:the_djenggot/screens/stock/stock_history_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_transaction_screen.dart';
 import 'package:the_djenggot/screens/transaction/transaction_detail_screen.dart';
@@ -89,6 +90,13 @@ class AppRouter {
           // ==========================================
           // STOCK ROUTES
           // ==========================================
+          GoRoute(
+            path: '/stock-history',
+            builder: (context, state) {
+              return const StockHistoryScreen();
+            },
+          ),
+
           GoRoute(
             path: '/add-edit-stock',
             builder: (context, state) {
