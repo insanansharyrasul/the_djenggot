@@ -224,7 +224,6 @@ class _StockScreenState extends State<StockScreen> {
     return ListView.builder(
       itemCount: stocks.length,
       itemBuilder: (context, index) {
-        // Using ListView.builder with optimized item spacing
         if (index > 0) {
           return Padding(
             padding: const EdgeInsets.only(top: 8.0),
@@ -240,7 +239,6 @@ class _StockScreenState extends State<StockScreen> {
     final stockUnit = stock.idStockType.stockUnit;
     final isLowStock = stock.stockThreshold != null && stock.stockQuantity <= stock.stockThreshold!;
 
-    // Using const constructors for static widgets
     return Card(
       color: AppTheme.white,
       elevation: 2,
@@ -340,7 +338,6 @@ class _StockScreenState extends State<StockScreen> {
                 onTypeChanged: (type) {
                   setState(() {
                     _selectedType = type;
-                    // Update filtered stocks immediately when type changes
                     if (state is StockLoaded) {
                       _updateFilteredStocks((state as StockLoaded).stocks);
                     }
@@ -349,7 +346,6 @@ class _StockScreenState extends State<StockScreen> {
                 onSortChanged: (sort) {
                   setState(() {
                     _currentSort = sort;
-                    // Update filtered stocks immediately when sorting changes
                     if (state is StockLoaded) {
                       _updateFilteredStocks((state as StockLoaded).stocks);
                     }

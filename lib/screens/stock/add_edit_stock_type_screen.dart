@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -151,8 +150,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                         style: AppTheme.buttonStyleSecond,
                         onPressed: () async {
                           if (iconController.text.isEmpty) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text("Icon tidak boleh kosong"),
                               backgroundColor: AppTheme.danger,
                             ));
@@ -163,8 +161,7 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
+                              builder: (BuildContext dialogContext) => AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -191,13 +188,13 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                                   );
                             }
 
-                            Navigator.pop(context);
+                            final navigator = Navigator.of(context);
+                            navigator.pop(); 
 
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
+                              builder: (BuildContext dialogContext) => AppDialog(
                                 type: "success",
                                 title: "Pengajuan Berhasil",
                                 message: "Kembali ke dashboard...",
@@ -205,8 +202,8 @@ class _AddEditStockTypeScreenState extends State<AddEditStockTypeScreen> {
                               ),
                             );
                             Future.delayed(const Duration(seconds: 1), () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              navigator.pop();
+                              navigator.pop();
                             });
                           }
                         },

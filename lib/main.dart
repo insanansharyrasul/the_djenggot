@@ -12,8 +12,6 @@ import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Request storage permissions at app startup
   await _requestPermissions();
 
   runApp(MultiBlocProvider(
@@ -23,17 +21,11 @@ void main() async {
 }
 
 Future<void> _requestPermissions() async {
-  // For Android 13+ (API 33+), request the new granular permissions
   if (Platform.isAndroid) {
-    // Force request these permissions to ensure the dialog appears
     await Permission.storage.request();
-
-    // For Android 11+ (API 30+), need special permission for managing all files
     if (await Permission.manageExternalStorage.isPermanentlyDenied) {
-      // Permission has been permanently denied, direct user to settings
       openAppSettings();
     } else {
-      // Request the permission
       await Permission.manageExternalStorage.request();
     }
   }
@@ -70,8 +62,8 @@ class MainApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: AppTheme.background,
         appBarTheme: const AppBarTheme(
-          elevation: 5,
-          foregroundColor: AppTheme.white,
+          elevation: 0,
+          foregroundColor: AppTheme.background,
           backgroundColor: AppTheme.white,
           iconTheme: IconThemeData(
             color: AppTheme.nearlyBlack,

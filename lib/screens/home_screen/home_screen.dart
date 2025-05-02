@@ -13,7 +13,6 @@ import 'package:the_djenggot/bloc/type/stock_type/stock_type_event.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/transaction/daily_sales_card.dart';
 
-// Import modular components
 import 'widgets/stats_grid.dart';
 import 'widgets/daily_sales_chart.dart';
 import 'widgets/top_selling_products.dart';
@@ -64,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // Daily sales card
               BlocBuilder<TransactionBloc, TransactionState>(
                 builder: (context, state) {
                   if (state is TransactionLoaded) {
@@ -87,27 +85,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 32),
 
-              // Stats grid with 4 cards
               const StatsGrid(),
 
               const SizedBox(height: 32),
 
-              // Daily sales chart
               const DailySalesChart(),
 
               const SizedBox(height: 32),
 
-              // Top selling products
               const TopSellingProducts(),
 
               const SizedBox(height: 32),
 
-              // Sales by category
               const SalesByCategory(),
 
               const SizedBox(height: 32),
 
-              // Recent transactions
               RecentTransactions(
                 pageController: widget.pageController,
                 onRefresh: refresh,

@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -14,13 +13,11 @@ class AddEditMenuTypeScreen extends StatefulWidget {
   final MenuType? menuType;
   const AddEditMenuTypeScreen({super.key, this.menuType});
 
-  // Use key in createState to improve performance when reusing widgets
   @override
   State<AddEditMenuTypeScreen> createState() => _AddEditMenuTypeScreenState();
 }
 
 class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
-  // Make controllers and formKey instance variables to prevent recreation on rebuild
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
@@ -69,7 +66,7 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                     const SizedBox(height: 16),
                     InputField(
                       controller: name,
-                      hintText: "contoh: Minuman", // Change from "Tipe Menu"
+                      hintText: "contoh: Minuman", 
                       prefixIcon: const Icon(Iconsax.category),
                       keyboardType: TextInputType.text,
                       validator: (value) {
@@ -177,7 +174,8 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                                   );
                             }
 
-                            Navigator.pop(context);
+                            final navigator = Navigator.of(context);
+                            navigator.pop(); 
 
                             showDialog(
                               barrierDismissible: false,
@@ -190,8 +188,8 @@ class _AddEditMenuTypeScreenState extends State<AddEditMenuTypeScreen> {
                               ),
                             );
                             Future.delayed(const Duration(seconds: 1), () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              navigator.pop();
+                              navigator.pop();
                             });
                           }
                         },

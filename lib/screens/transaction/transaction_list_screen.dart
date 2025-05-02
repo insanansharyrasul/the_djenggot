@@ -94,7 +94,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               );
             }
 
-            // Group transactions by date
             final groupedTransactions = _groupTransactionsByDate(transactions);
 
             return Column(

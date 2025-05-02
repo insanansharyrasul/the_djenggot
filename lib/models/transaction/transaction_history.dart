@@ -22,7 +22,6 @@ class TransactionHistory extends Equatable {
     this.items,
   });
 
-  // Update fromMap method
   factory TransactionHistory.fromMap(Map<String, dynamic> map,
       {TransactionType? type, List<TransactionItem>? items}) {
     return TransactionHistory(
@@ -36,7 +35,6 @@ class TransactionHistory extends Equatable {
     );
   }
 
-  // Update toMap method
   Map<String, dynamic> toMap() {
     return {
       'id_transaction_history': idTransactionHistory,

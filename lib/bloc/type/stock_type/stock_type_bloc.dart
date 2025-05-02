@@ -31,7 +31,6 @@ class StockTypeBloc extends Bloc<StockTypeEvent, StockTypeState> {
       AddStockType event, Emitter<StockTypeState> emit) async {
     final currentState = state;
     try {
-      // final stockTypeId = const Uuid().v4();
       final stockTypeId = "stockType-${const Uuid().v4()}";
       final stockType = StockType(
         idStockType: stockTypeId,

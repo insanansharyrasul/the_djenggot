@@ -67,7 +67,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       BlocProvider.of<StockBloc>(context).add(
                         DeleteStock(widget.stock.idStock),
                       );
-                      context.pop(); // Return to stock list
+                      context.pop(); 
                     },
                   );
                 },

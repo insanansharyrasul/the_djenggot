@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -15,12 +14,10 @@ class AddEditTransactionTypeScreen extends StatefulWidget {
   const AddEditTransactionTypeScreen({super.key, this.transactionType});
 
   @override
-  State<AddEditTransactionTypeScreen> createState() =>
-      _AddEditTransactionTypeScreenState();
+  State<AddEditTransactionTypeScreen> createState() => _AddEditTransactionTypeScreenState();
 }
 
-class _AddEditTransactionTypeScreenState
-    extends State<AddEditTransactionTypeScreen> {
+class _AddEditTransactionTypeScreenState extends State<AddEditTransactionTypeScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController name = TextEditingController();
   final TextEditingController iconController = TextEditingController();
@@ -41,9 +38,7 @@ class _AddEditTransactionTypeScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.transactionType == null
-              ? "Tambah Tipe Transaksi"
-              : "Update Tipe Transaksi",
+          widget.transactionType == null ? "Tambah Tipe Transaksi" : "Update Tipe Transaksi",
           style: AppTheme.appBarTitle,
         ),
         leading: IconButton(
@@ -68,8 +63,7 @@ class _AddEditTransactionTypeScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Nama Tipe Transaksi",
-                        style: AppTheme.textField),
+                    const Text("Nama Tipe Transaksi", style: AppTheme.textField),
                     const SizedBox(height: 16),
                     InputField(
                       controller: name,
@@ -164,8 +158,7 @@ class _AddEditTransactionTypeScreenState
                             if (iconController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content:
-                                      Text("Pilih icon untuk tipe transaksi"),
+                                  content: Text("Pilih icon untuk tipe transaksi"),
                                   backgroundColor: AppTheme.danger,
                                 ),
                               );
@@ -176,8 +169,7 @@ class _AddEditTransactionTypeScreenState
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
+                              builder: (BuildContext dialogContext) => AppDialog(
                                 type: "loading",
                                 title: "Memproses",
                                 message: "Mohon tunggu...",
@@ -204,22 +196,23 @@ class _AddEditTransactionTypeScreenState
                                   );
                             }
 
-                            Navigator.pop(context);
+                            final navigator = Navigator.of(context);
+                            navigator.pop(); 
 
                             showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (BuildContext dialogContext) =>
-                                  AppDialog(
+                              builder: (BuildContext dialogContext) => AppDialog(
                                 type: "success",
                                 title: "Pengajuan Berhasil",
                                 message: "Kembali ke dashboard...",
                                 onOkPress: () {},
                               ),
                             );
+
                             Future.delayed(const Duration(seconds: 1), () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              navigator.pop();
+                              navigator.pop();
                             });
                           }
                         },

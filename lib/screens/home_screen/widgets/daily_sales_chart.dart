@@ -15,17 +15,14 @@ class DailySalesChart extends StatelessWidget {
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         if (state is TransactionLoaded) {
-          // Calculate daily sales for the last 7 days
           final now = DateTime.now();
           final List<double> dailyValues = List.filled(7, 0.0);
           final List<String> dayLabels = [];
 
-          // Generate labels for the last 7 days
           for (int i = 6; i >= 0; i--) {
             final day = now.subtract(Duration(days: i));
-            dayLabels.add(DateFormat('E').format(day)); // Short day name
+            dayLabels.add(DateFormat('E').format(day)); 
 
-            // Calculate sales for each day
             for (var transaction in state.transactions) {
               final transactionDate = DateTime.parse(transaction.timestamp);
               if (transactionDate.year == day.year &&
@@ -36,7 +33,6 @@ class DailySalesChart extends StatelessWidget {
             }
           }
 
-          // Find the maximum value for scaling
           final maxValue = dailyValues.isNotEmpty
               ? dailyValues.reduce((max, value) => value > max ? value : max)
               : 0.0;

@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,13 +43,12 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     if (widget.menu != null) {
       name.text = widget.menu!.menuName;
       price.text = widget.menu!.menuPrice.toString();
-      // Load menu types only once in initState
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     } else {
       context.read<MenuTypeBloc>().add(LoadMenuTypes());
     }
   }
-  
+
   @override
   void dispose() {
     name.dispose();
@@ -58,13 +56,11 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     super.dispose();
   }
 
-  // Compress image to reduce memory usage
   Future<Uint8List> compressImage(File imageFile) async {
     final bytes = await imageFile.readAsBytes();
     final image = img.decodeImage(Uint8List.fromList(bytes));
     if (image == null) return bytes;
-    
-    // Resize if too large (keeping aspect ratio)
+
     img.Image resized;
     if (image.width > 1024 || image.height > 1024) {
       int targetWidth, targetHeight;
@@ -79,12 +75,10 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     } else {
       resized = image;
     }
-    
-    // Compress quality
+
     return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
   }
 
-  // Extract menu form validators to avoid rebuilding them
   String? validateMenuName(String? value) {
     if (value == null || value.isEmpty) {
       return "Menu tidak boleh kosong";
@@ -99,7 +93,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     return null;
   }
 
-  // Extract image widget to prevent unnecessary rebuilds
   Widget _buildImageWidget() {
     if (widget.menu?.menuImage != null && image == null) {
       return Container(
@@ -188,7 +181,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image Section
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.grey.shade50,
@@ -200,8 +192,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                         children: [
                           Text(
                             "Gambar Menu",
-                            style: AppTheme.textField
-                                .copyWith(fontWeight: FontWeight.bold),
+                            style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 12),
                           GestureDetector(
@@ -216,11 +207,9 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const Divider(),
                     const SizedBox(height: 16),
 
-                    // Form Fields
                     Text(
                       "Nama Menu",
-                      style: AppTheme.textField
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     InputField(
@@ -234,8 +223,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Harga",
-                      style: AppTheme.textField
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     InputField(
@@ -250,19 +238,16 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Kategori Menu",
-                      style: AppTheme.textField
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
 
-                    // Menu Type Dropdown - using const for static parts
                     _buildMenuTypeDropdown(),
 
                     const SizedBox(height: 32),
                     const Divider(),
                     const SizedBox(height: 24),
 
-                    // Submit Button
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -273,8 +258,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        icon: const Icon(Iconsax.tick_square,
-                            color: Colors.white),
+                        icon: const Icon(Iconsax.tick_square, color: Colors.white),
                         label: Text(
                           _isProcessing ? "Memproses..." : "Simpan Menu",
                           style: AppTheme.buttonText.copyWith(
@@ -295,7 +279,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     );
   }
 
-  // Extract menu type dropdown to prevent unnecessary rebuilds
   Widget _buildMenuTypeDropdown() {
     return BlocBuilder<MenuTypeBloc, MenuTypeState>(
       builder: (context, state) {
@@ -306,17 +289,14 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
         } else if (state is MenuTypeLoaded) {
           final menuTypes = state.menuTypes;
 
-          // If menu is being edited, try to find its menu type in the list
           if (widget.menu != null && selectedMenuType == null) {
             for (var type in menuTypes) {
-              if (type.idMenuType ==
-                  widget.menu!.idMenuType.idMenuType) {
+              if (type.idMenuType == widget.menu!.idMenuType.idMenuType) {
                 selectedMenuType = type;
                 break;
               }
             }
           }
-          // Check if menu types list is empty
           if (menuTypes.isEmpty) {
             return _buildEmptyMenuTypesWidget();
           }
@@ -332,9 +312,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    context
-                        .read<MenuTypeBloc>()
-                        .add(LoadMenuTypes());
+                    context.read<MenuTypeBloc>().add(LoadMenuTypes());
                   },
                   child: const Text("Retry"),
                 ),
@@ -342,7 +320,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
             ),
           );
         }
-        return Container(); // Fallback
+        return Container(); 
       },
     );
   }
@@ -391,7 +369,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 ),
                 onPressed: () {
                   context.push('/add-edit-menu-type').then((_) {
-                    // Reload menu types when returning from add screen
                     context.read<MenuTypeBloc>().add(LoadMenuTypes());
                   });
                 },
@@ -432,8 +409,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                       color: AppTheme.primary,
                       size: 18,
                     ),
-                  if (type.menuTypeIcon.isNotEmpty)
-                    const SizedBox(width: 12),
+                  if (type.menuTypeIcon.isNotEmpty) const SizedBox(width: 12),
                   Text(type.menuTypeName),
                 ],
               ),
@@ -459,7 +435,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
             ),
             onPressed: () {
               context.push('/add-edit-menu-type').then((_) {
-                // Reload menu types when returning from add screen
                 context.read<MenuTypeBloc>().add(LoadMenuTypes());
               });
             },
@@ -478,7 +453,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
     }
   }
 
-  // Extract save menu logic from the build method
   Future<void> _saveMenu() async {
     if (_isProcessing) return;
 
@@ -505,6 +479,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
 
       final int numericPrice = CurrencyInputFormatter.getNumericalValue(price.text);
 
+      final navigator = Navigator.of(context);
       try {
         showDialog(
           barrierDismissible: false,
@@ -518,14 +493,13 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
         );
 
         if (widget.menu != null) {
-          // Update existing menu
           Uint8List imageBytes;
           if (image != null) {
             imageBytes = await compressImage(image!);
           } else {
             imageBytes = widget.menu!.menuImage;
           }
-          
+
           context.read<MenuBloc>().add(
                 UpdateMenu(
                   widget.menu!,
@@ -536,7 +510,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 ),
               );
         } else {
-          // Add new menu
           Uint8List imageBytes = await compressImage(image!);
           context.read<MenuBloc>().add(
                 AddMenu(
@@ -547,8 +520,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 ),
               );
         }
-        
-        Navigator.pop(context); // Close loading dialog
+        navigator.pop(); 
 
         showDialog(
           barrierDismissible: false,
@@ -556,19 +528,17 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
           builder: (BuildContext dialogContext) => AppDialog(
             type: "success",
             title: "Berhasil",
-            message: widget.menu == null
-                ? "Menu berhasil ditambahkan"
-                : "Menu berhasil diperbarui",
+            message: widget.menu == null ? "Menu berhasil ditambahkan" : "Menu berhasil diperbarui",
             onOkPress: () {},
           ),
         );
 
         Future.delayed(const Duration(milliseconds: 500), () {
-          Navigator.pop(context); // Close success dialog
-          Navigator.pop(context); // Return to previous screen
+          navigator.pop();
+          navigator.pop();
         });
       } catch (e) {
-        Navigator.pop(context); // Close loading dialog
+        navigator.pop(); 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Error: ${e.toString()}"),
           backgroundColor: Colors.red,

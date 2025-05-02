@@ -74,10 +74,9 @@ class SettingScreen extends StatelessWidget {
   }
 
   Future<void> _exportDatabase(BuildContext context) async {
-    // Check for both storage permissions
     bool hasPermission = false;
+    final navigator = Navigator.of(context);
 
-    // Check regular storage permission
     final storageStatus = await Permission.storage.status;
     if (!storageStatus.isGranted) {
       final requestResult = await Permission.storage.request();
@@ -88,7 +87,6 @@ class SettingScreen extends StatelessWidget {
       hasPermission = true;
     }
 
-    // Check manage external storage permission for Android 11+
     final manageStatus = await Permission.manageExternalStorage.status;
     if (!manageStatus.isGranted) {
       final requestResult = await Permission.manageExternalStorage.request();
@@ -99,9 +97,7 @@ class SettingScreen extends StatelessWidget {
       hasPermission = true;
     }
 
-    // If permissions are denied after requests
     if (!hasPermission) {
-      // If permanently denied, show dialog to open settings
       if (await Permission.storage.isPermanentlyDenied ||
           await Permission.manageExternalStorage.isPermanentlyDenied) {
         _showPermissionDeniedDialog(context);
@@ -114,8 +110,6 @@ class SettingScreen extends StatelessWidget {
       }
     }
 
-    // Permission is granted, continue with export
-    // Show loading indicator
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -127,14 +121,11 @@ class SettingScreen extends StatelessWidget {
     );
 
     try {
-      // Perform export
       final result = await DatabaseHelper.instance.exportDatabase();
 
-      // Hide loading dialog
-      Navigator.pop(context);
+      navigator.pop();
 
       if (result != null) {
-        // Show success dialog
         showDialog(
           context: context,
           builder: (BuildContext dialogContext) {
@@ -177,7 +168,6 @@ class SettingScreen extends StatelessWidget {
           },
         );
       } else {
-        // Show error dialog
         showDialog(
           context: context,
           builder: (BuildContext dialogContext) {
@@ -197,10 +187,8 @@ class SettingScreen extends StatelessWidget {
         );
       }
     } catch (e) {
-      // Hide loading dialog
-      Navigator.pop(context);
+      navigator.pop();
 
-      // Show error dialog
       showDialog(
         context: context,
         builder: (BuildContext dialogContext) {

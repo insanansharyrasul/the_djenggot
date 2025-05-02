@@ -28,7 +28,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
           'id_menu_type': event.menuType
         },
       );
-      // Only fetch new data when necessary
+
       _cachedMenus = await _menuRepository.getMenusWithTypeObjects();
       emit(MenuLoaded(_cachedMenus));
     });
@@ -46,24 +46,20 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         event.menu.idMenu,
       );
 
-      // Update the cached list directly instead of fetching everything again
       final index = _cachedMenus.indexWhere((menu) => menu.idMenu == event.menu.idMenu);
       if (index != -1) {
-        // Create a new menu object with updated values
         final updatedMenu = Menu(
           idMenu: event.menu.idMenu,
           menuName: event.newName,
           menuPrice: event.newPrice,
           menuImage: event.newMenuImage!,
-          idMenuType: event.menu.idMenuType, // Preserve the original menu type object
+          idMenuType: event.menu.idMenuType,
         );
 
-        // Create a new list to trigger state change
         _cachedMenus = List.from(_cachedMenus);
         _cachedMenus[index] = updatedMenu;
         emit(MenuLoaded(_cachedMenus));
       } else {
-        // If not found in cache, reload everything
         _cachedMenus = await _menuRepository.getMenusWithTypeObjects();
         emit(MenuLoaded(_cachedMenus));
       }
@@ -73,7 +69,6 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
       emit(MenuLoading());
       await _menuRepository.deleteMenu(event.id);
 
-      // Remove the item from the cached list instead of fetching everything
       _cachedMenus = _cachedMenus.where((menu) => menu.idMenu != event.id).toList();
       emit(MenuLoaded(_cachedMenus));
     });
