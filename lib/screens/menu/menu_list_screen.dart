@@ -91,6 +91,15 @@ class _MenuScreenState extends State<MenuScreen> {
           "Daftar Menu",
           style: AppTheme.appBarTitle,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Iconsax.chart),
+            tooltip: 'Menu Analytics',
+            onPressed: () {
+              context.push('/menu-analytics');
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -290,7 +299,6 @@ class _MenuCard extends StatelessWidget {
                 ),
               ),
             ),
-
             Container(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -307,9 +315,7 @@ class _MenuCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-
                   const SizedBox(height: 4),
-
                   Row(
                     children: [
                       Icon(
@@ -331,9 +337,7 @@ class _MenuCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 8),
-
                   Text(
                     formatter.format(menu.menuPrice),
                     style: const TextStyle(

@@ -1,5 +1,8 @@
 name: the_djenggot
-description: "A new Flutter project."
+description:
+  "The djenggot is a mobile application that helps people to manage their finances
+  and track their expenses. It provides a user-friendly interface and various features to make
+  financial management easier."
 publish_to: "none"
 version: 0.1.0
 
@@ -30,9 +33,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.10
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
 
   fonts:
     - family: Lexend
@@ -53,3 +61,24 @@ flutter:
           weight: 200
         - asset: assets/fonts/Lexend-Thin.ttf
           weight: 100
+
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/images/app_icon3.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/app_icon3.png"
+
+# Splash Screen Configuration
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/app_icon3.png
+  branding: assets/images/app_icon3.png
+  branding_dark: assets/images/app_icon3.png
+
+  android_12:
+    image: assets/images/app_icon3.png
+    icon_background_color: "#FFFFFF"
+
+  web: false

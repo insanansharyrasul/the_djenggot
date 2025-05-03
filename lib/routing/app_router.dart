@@ -16,6 +16,7 @@ import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/screens/page_manager_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
+import 'package:the_djenggot/screens/menu/menu_analytics_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
@@ -86,6 +87,10 @@ class AppRouter {
               final menu = state.extra as Menu;
               return AddEditMenuScreen(menu: menu);
             },
+          ),
+          GoRoute(
+            path: '/menu-analytics',
+            builder: (context, state) => const MenuAnalyticsScreen(),
           ),
 
           // ==========================================
