@@ -28,6 +28,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   final TextEditingController stockName = TextEditingController();
   final TextEditingController stockQuantity = TextEditingController();
   final TextEditingController stockThreshold = TextEditingController();
+  final TextEditingController stockPrice = TextEditingController();
   StockType? selectedStockType;
 
   @override
@@ -37,6 +38,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
       stockName.text = widget.stock!.stockName;
       stockQuantity.text = widget.stock!.stockQuantity.toString();
       stockThreshold.text = widget.stock!.stockThreshold?.toString() ?? '0';
+      stockPrice.text = widget.stock!.price.toString();
       context.read<StockTypeBloc>().add(LoadStockTypes());
     } else {
       context.read<StockTypeBloc>().add(LoadStockTypes());
@@ -88,7 +90,6 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 20),
                     Text(
                       "Kuantitas",
@@ -133,7 +134,6 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                       ],
                     ),
-
                     const SizedBox(height: 20),
                     Text(
                       "Batas Minimum",
@@ -145,7 +145,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         Expanded(
                           child: InputField(
                             controller: stockThreshold,
-                            hintText: "contoh: 15", 
+                            hintText: "contoh: 15",
                             keyboardType: TextInputType.number,
                             prefixIcon: const Icon(Iconsax.warning_2),
                             validator: (value) {
@@ -178,14 +178,33 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                           ),
                       ],
                     ),
-
+                    const SizedBox(height: 20),
+                    Text(
+                      "Harga Satuan (Rp)",
+                      style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    InputField(
+                      controller: stockPrice,
+                      hintText: "contoh: 15000",
+                      keyboardType: TextInputType.number,
+                      prefixIcon: const Icon(Iconsax.money),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Harga tidak boleh kosong";
+                        }
+                        if (int.tryParse(value) == null) {
+                          return "Harga harus berupa angka";
+                        }
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 20),
                     Text(
                       "Kategori Stok",
                       style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-
                     BlocBuilder<StockTypeBloc, StockTypeState>(
                       builder: (context, state) {
                         if (state is StockTypeLoading) {
@@ -337,14 +356,12 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             ),
                           );
                         }
-                        return Container(); 
+                        return Container();
                       },
                     ),
-
                     const SizedBox(height: 32),
                     const Divider(),
                     const SizedBox(height: 24),
-
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -377,6 +394,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             );
 
                             final int threshold = int.tryParse(stockThreshold.text) ?? 0;
+                            final int price = int.tryParse(stockPrice.text) ?? 0;
 
                             if (widget.stock != null) {
                               context.read<StockBloc>().add(
@@ -386,6 +404,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       stockQuantity.text,
                                       selectedStockType!.idStockType,
                                       threshold,
+                                      price,
                                     ),
                                   );
                             } else {
@@ -395,12 +414,13 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       stockQuantity: int.parse(stockQuantity.text),
                                       stockType: selectedStockType,
                                       threshold: threshold,
+                                      price: price,
                                     ),
                                   );
                             }
 
                             final navigator = Navigator.of(context);
-                            navigator.pop(); 
+                            navigator.pop();
 
                             showDialog(
                               barrierDismissible: false,

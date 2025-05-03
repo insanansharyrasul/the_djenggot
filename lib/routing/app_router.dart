@@ -18,6 +18,7 @@ import 'package:the_djenggot/screens/menu/add_edit_menu_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_analytics_screen.dart';
 import 'package:the_djenggot/screens/menu/menu_detail_screen.dart';
+import 'package:the_djenggot/screens/profit_loss/profit_loss_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_screen.dart';
 import 'package:the_djenggot/screens/stock/add_edit_stock_type_screen.dart';
 import 'package:the_djenggot/screens/stock/stock_analytics_screen.dart';
@@ -261,6 +262,16 @@ class AppRouter {
             builder: (BuildContext context, GoRouterState state) {
               final id = state.pathParameters['id']!;
               return TransactionDetailScreen(id: id);
+            },
+          ),
+
+          // ==========================================
+          // PROFIT AND LOSS ROUTES
+          // ==========================================
+          GoRoute(
+            path: '/profit-loss',
+            builder: (BuildContext context, GoRouterState state) {
+              return const ProfitLossScreen();
             },
           ),
         ],

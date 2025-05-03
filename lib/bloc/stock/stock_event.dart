@@ -9,11 +9,13 @@ class AddStock extends StockEvent {
   final int stockQuantity;
   final StockType? stockType;
   final int threshold;
+  final int price;
   AddStock({
     required this.stockName,
     required this.stockQuantity,
     required this.stockType,
     required this.threshold,
+    required this.price,
   });
 }
 
@@ -23,12 +25,14 @@ class UpdateStock extends StockEvent {
   final String newQuantity;
   final String newStockType;
   final int threshold;
+  final int price;
   UpdateStock(
     this.stock,
     this.newName,
     this.newQuantity,
     this.newStockType,
     this.threshold,
+    this.price,
   );
 }
 

@@ -6,6 +6,7 @@ class Stock {
   final int stockQuantity;
   final StockType idStockType;
   final int? stockThreshold;
+  final int price; // Price of the stock item (in Rupiah)
 
   Stock({
     required this.idStock,
@@ -13,6 +14,7 @@ class Stock {
     required this.stockQuantity,
     required this.idStockType,
     this.stockThreshold,
+    this.price = 0, // Default value is 0
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class Stock {
       'stock_quantity': stockQuantity,
       'id_stock_type': idStockType.idStockType,
       'stock_threshold': stockThreshold ?? 0,
+      'price': price,
     };
   }
 
@@ -31,9 +34,9 @@ class Stock {
       stockName: map['stock_name'],
       stockQuantity: int.parse(map['stock_quantity'].toString()),
       idStockType: StockType.fromMap(map['id_stock_type']),
-      stockThreshold: map['stock_threshold'] != null
-          ? int.parse(map['stock_threshold'].toString())
-          : 0,
+      stockThreshold:
+          map['stock_threshold'] != null ? int.parse(map['stock_threshold'].toString()) : 0,
+      price: map['price'] != null ? int.parse(map['price'].toString()) : 0,
     );
   }
 }

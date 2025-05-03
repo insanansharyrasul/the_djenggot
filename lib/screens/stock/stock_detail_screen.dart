@@ -193,6 +193,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
             newQuantity.toString(),
             stock.idStockType.idStockType,
             stock.stockThreshold!,
+            stock.price,
           ),
         );
 

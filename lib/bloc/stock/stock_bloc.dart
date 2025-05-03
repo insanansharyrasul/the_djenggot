@@ -26,6 +26,7 @@ class StockBloc extends Bloc<StockEvent, StockState> {
           'stock_quantity': event.stockQuantity,
           'id_stock_type': event.stockType!.idStockType,
           'stock_threshold': event.threshold,
+          'price': event.price,
         },
       );
       _cachedStocks = await _stockRepository.getAllStocks();
@@ -39,6 +40,7 @@ class StockBloc extends Bloc<StockEvent, StockState> {
           'stock_quantity': event.newQuantity,
           'id_stock_type': event.newStockType,
           'stock_threshold': event.threshold,
+          'price': event.price,
         },
         event.stock.idStock,
       );

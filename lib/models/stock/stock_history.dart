@@ -6,7 +6,8 @@ class StockHistory {
   final String idStock;
   final int amount;
   final String actionType;
-  
+  final int totalPrice; // Total price for this stock history entry
+
   // Optional property to hold the related stock object when needed
   final Stock? stock;
 
@@ -16,6 +17,7 @@ class StockHistory {
     required this.idStock,
     required this.amount,
     required this.actionType,
+    this.totalPrice = 0,
     this.stock,
   });
 
@@ -26,6 +28,7 @@ class StockHistory {
       'id_stock': idStock,
       'amount': amount,
       'action_type': actionType,
+      'total_price': totalPrice,
     };
   }
 
@@ -36,6 +39,7 @@ class StockHistory {
       idStock: map['id_stock'],
       amount: int.parse(map['amount'].toString()),
       actionType: map['action_type'],
+      totalPrice: map['total_price'] != null ? int.parse(map['total_price'].toString()) : 0,
     );
   }
 }
