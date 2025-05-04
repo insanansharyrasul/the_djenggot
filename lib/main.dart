@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
+import 'package:the_djenggot/database/dummy_generator.dart';
 import 'package:the_djenggot/routing/app_router.dart';
 import 'package:the_djenggot/bloc/providers.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
@@ -11,13 +13,27 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'dart:io';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await _requestPermissions();
+  if (kReleaseMode) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await _requestPermissions();
 
-  runApp(MultiBlocProvider(
-    providers: getTypeProviders(),
-    child: const MainApp(),
-  ));
+    runApp(MultiBlocProvider(
+      providers: getTypeProviders(),
+      child: const MainApp(),
+    ));
+  } else {
+    print('Running in debug mode');
+    WidgetsFlutterBinding.ensureInitialized();
+    await _requestPermissions();
+
+    final dummyDataGenerator = DummyDataGenerator();
+    await dummyDataGenerator.generateDummyData();
+
+    runApp(MultiBlocProvider(
+      providers: getTypeProviders(),
+      child: const MainApp(),
+    ));
+  }
 }
 
 Future<void> _requestPermissions() async {

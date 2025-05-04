@@ -41,6 +41,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/dummy_images/
 
   fonts:
     - family: Lexend

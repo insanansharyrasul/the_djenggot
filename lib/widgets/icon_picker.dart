@@ -26,8 +26,8 @@ class _IconPickerState extends State<IconPicker> {
     // Filter icons based on search query
     final filteredIcons = searchQuery.isEmpty
         ? iconsaxIcons
-        : Map.fromEntries(iconsaxIcons.entries.where((entry) =>
-            entry.key.toLowerCase().contains(searchQuery.toLowerCase())));
+        : Map.fromEntries(iconsaxIcons.entries
+            .where((entry) => entry.key.toLowerCase().contains(searchQuery.toLowerCase())));
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
@@ -88,14 +88,12 @@ class _IconPickerState extends State<IconPicker> {
                           ? Colors.blue.withValues(alpha: 0.2)
                           : Colors.grey.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border:
-                          isSelected ? Border.all(color: Colors.blue) : null,
+                      border: isSelected ? Border.all(color: Colors.blue) : null,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(entry.value,
-                            size: 28, color: isSelected ? Colors.blue : null),
+                        Icon(entry.value, size: 28, color: isSelected ? Colors.blue : null),
                         const SizedBox(height: 4),
                         Text(
                           entry.key,
@@ -137,7 +135,7 @@ class _IconPickerState extends State<IconPicker> {
       'apple': Icons.apple,
       'bread': Icons.bakery_dining,
       'fish': Icons.set_meal,
-      'chicken': Icons.food_bank,
+      'chicken': Icons.lunch_dining,
       'herbs': Icons.grass,
       'juice': Icons.local_drink,
       'fast_food': Icons.fastfood,
@@ -147,14 +145,15 @@ class _IconPickerState extends State<IconPicker> {
       'ice_cream': Icons.icecream,
       'pizza': Icons.local_pizza,
 
+
       // Payment-related icons
       'wallet': Icons.account_balance_wallet,
       'card': Icons.credit_card,
       'card_pos': Icons.point_of_sale,
       'card_add': Icons.add_card,
       'card_tick': Icons.credit_score,
-      'money': Icons.attach_money,
-      'money_add': Icons.money_off_csred,
+      'money': Icons.payments,
+      'money_add': Icons.add_card,
       'money_remove': Icons.money_off,
       'receipt': Icons.receipt_long,
       'receipt_2': Icons.receipt,
@@ -164,10 +163,10 @@ class _IconPickerState extends State<IconPicker> {
       'dollar_circle': Icons.monetization_on,
       'coin': Icons.savings,
       'money_send': Icons.send_to_mobile,
-      'money_receive': Icons.savings,
+      'money_receive': Icons.money,
       'transaction': Icons.sync_alt,
-      'wallet_add': Icons.add_card,
-      'wallet_check': Icons.credit_score,
+      'wallet_add': Icons.account_balance_wallet,
+      'wallet_check': Icons.account_balance_wallet_outlined,
       'bank': Icons.account_balance,
       'bill': Icons.receipt,
       'qris': Icons.qr_code,
@@ -183,12 +182,12 @@ class _IconPickerState extends State<IconPicker> {
       'box_remove': Icons.indeterminate_check_box,
       'box_tick': Icons.check_box,
       'box_time': Icons.pending_actions,
-      'box_search': Icons.pageview,
+      'box_search': Icons.search,
       'archive': Icons.archive,
-      'archive_add': Icons.archive,
+      'archive_add': Icons.add_to_photos,
       'archive_tick': Icons.inventory,
       'clipboard': Icons.assignment,
-      'clipboard_text': Icons.assignment,
+      'clipboard_text': Icons.description,
       'clipboard_tick': Icons.assignment_turned_in,
       'clipboard_export': Icons.assignment_return,
       'clipboard_import': Icons.assignment_returned,
@@ -196,7 +195,7 @@ class _IconPickerState extends State<IconPicker> {
       'chart_square': Icons.insert_chart,
       'trend_up': Icons.trending_up,
       'trend_down': Icons.trending_down,
-      'status_up': Icons.upload,
+      'status_up': Icons.arrow_upward,
       'barcode': Icons.qr_code_scanner,
       'scanner': Icons.document_scanner,
       'tag': Icons.local_offer,
@@ -211,6 +210,18 @@ class _IconPickerState extends State<IconPicker> {
       'supplies': Icons.home_repair_service,
       'boxes': Icons.all_inbox,
       'moving': Icons.move_to_inbox,
+
+      // Shopping related icons
+      'shopping_bag': Icons.shopping_bag,
+      'shopping_cart': Icons.shopping_cart,
+      'shop': Icons.shopping_basket,
+      'store': Icons.store,
+
+      // Document related icons
+      'document': Icons.description,
+      'file': Icons.insert_drive_file,
+      'folder': Icons.folder,
+      'note': Icons.note,
     };
   }
 }
