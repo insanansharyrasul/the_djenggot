@@ -41,6 +41,7 @@ flutter:
 
   assets:
     - assets/images/
+    # Only uncomment this if you want to debug
     - assets/dummy_images/
 
   fonts:

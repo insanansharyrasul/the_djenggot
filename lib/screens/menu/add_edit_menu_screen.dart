@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +58,30 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
   }
 
   Future<Uint8List> compressImage(File imageFile) async {
+    final bytes = await imageFile.readAsBytes();
+    final image = img.decodeImage(Uint8List.fromList(bytes));
+    if (image == null) return bytes;
+
+    img.Image resized;
+    if (image.width > 1024 || image.height > 1024) {
+      int targetWidth, targetHeight;
+      if (image.width > image.height) {
+        targetWidth = 1024;
+        targetHeight = (1024 * image.height / image.width).round();
+      } else {
+        targetHeight = 1024;
+        targetWidth = (1024 * image.width / image.height).round();
+      }
+      resized = img.copyResize(image, width: targetWidth, height: targetHeight);
+    } else {
+      resized = image;
+    }
+
+    return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
+  }
+
+  static Future<Uint8List> _compressImageIsolate(String imagePath) async {
+    final imageFile = File(imagePath);
     final bytes = await imageFile.readAsBytes();
     final image = img.decodeImage(Uint8List.fromList(bytes));
     if (image == null) return bytes;
@@ -202,11 +227,9 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 24),
                     const Divider(),
                     const SizedBox(height: 16),
-
                     Text(
                       "Nama Menu",
                       style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
@@ -219,7 +242,6 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                       prefixIcon: const Icon(Iconsax.coffee),
                       validator: validateMenuName,
                     ),
-
                     const SizedBox(height: 20),
                     Text(
                       "Harga",
@@ -234,20 +256,16 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                       enableCommaSeparator: true,
                       validator: validatePrice,
                     ),
-
                     const SizedBox(height: 20),
                     Text(
                       "Kategori Menu",
                       style: AppTheme.textField.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-
                     _buildMenuTypeDropdown(),
-
                     const SizedBox(height: 32),
                     const Divider(),
                     const SizedBox(height: 24),
-
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -320,7 +338,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
             ),
           );
         }
-        return Container(); 
+        return Container();
       },
     );
   }
@@ -487,7 +505,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
           builder: (BuildContext dialogContext) => AppDialog(
             type: "loading",
             title: "Memproses",
-            message: "Mohon tunggu...",
+            message: "Mohon tunggu, sedang mengolah gambar...",
             onOkPress: () {},
           ),
         );
@@ -495,7 +513,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
         if (widget.menu != null) {
           Uint8List imageBytes;
           if (image != null) {
-            imageBytes = await compressImage(image!);
+            imageBytes = await compute(_compressImageIsolate, image!.path);
           } else {
             imageBytes = widget.menu!.menuImage;
           }
@@ -510,7 +528,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 ),
               );
         } else {
-          Uint8List imageBytes = await compressImage(image!);
+          Uint8List imageBytes = await compute(_compressImageIsolate, image!.path);
           context.read<MenuBloc>().add(
                 AddMenu(
                   menuName: name.text,
@@ -520,7 +538,8 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
                 ),
               );
         }
-        navigator.pop(); 
+
+        navigator.pop();
 
         showDialog(
           barrierDismissible: false,
@@ -538,7 +557,7 @@ class _AddEditMenuScreenState extends State<AddEditMenuScreen> {
           navigator.pop();
         });
       } catch (e) {
-        navigator.pop(); 
+        navigator.pop();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Error: ${e.toString()}"),
           backgroundColor: Colors.red,
