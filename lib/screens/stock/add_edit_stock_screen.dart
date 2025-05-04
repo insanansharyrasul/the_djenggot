@@ -9,6 +9,7 @@ import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/utils/theme/text_style.dart';
+import 'package:the_djenggot/widgets/currency_input_formatter.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/dropdown_category.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
@@ -186,15 +187,13 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                     const SizedBox(height: 8),
                     InputField(
                       controller: stockPrice,
-                      hintText: "contoh: 15000",
+                      hintText: "contoh: Rp.15.000",
                       keyboardType: TextInputType.number,
                       prefixIcon: const Icon(Iconsax.money),
+                      enableCommaSeparator: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Harga tidak boleh kosong";
-                        }
-                        if (int.tryParse(value) == null) {
-                          return "Harga harus berupa angka";
                         }
                         return null;
                       },
@@ -393,8 +392,10 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               ),
                             );
 
+                            final int numericPrice =
+                                CurrencyInputFormatter.getNumericalValue(stockPrice.text);
                             final int threshold = int.tryParse(stockThreshold.text) ?? 0;
-                            final int price = int.tryParse(stockPrice.text) ?? 0;
+                            // final int price = int.tryParse(stockPrice.text) ?? 0;
 
                             if (widget.stock != null) {
                               context.read<StockBloc>().add(
@@ -404,7 +405,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       stockQuantity.text,
                                       selectedStockType!.idStockType,
                                       threshold,
-                                      price,
+                                      numericPrice,
                                     ),
                                   );
                             } else {
@@ -414,7 +415,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                                       stockQuantity: int.parse(stockQuantity.text),
                                       stockType: selectedStockType,
                                       threshold: threshold,
-                                      price: price,
+                                      price: numericPrice,
                                     ),
                                   );
                             }

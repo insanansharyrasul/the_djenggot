@@ -1,9 +1,11 @@
+// TODO: Colors for low, out of stock and normal stock
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
 import 'package:the_djenggot/models/stock.dart';
+import 'package:the_djenggot/utils/currency_formatter_util.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/icon_picker.dart';
@@ -352,14 +354,24 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                               _buildInfoRow("Kuantitas",
                                   "${stock.stockQuantity}${stock.idStockType.stockUnit.isNotEmpty ? ' ${stock.idStockType.stockUnit}' : ''}",
                                   icon: Iconsax.chart_1,
-                                  isLowStock: stock.stockThreshold != null &&
-                                      stock.stockQuantity <= stock.stockThreshold!),
+                                  stockStatus: stock.stockQuantity == 0
+                                      ? "outOfStock"
+                                      : (stock.stockThreshold != null &&
+                                              stock.stockQuantity <= stock.stockThreshold!)
+                                          ? "lowStock"
+                                          : "normal"),
                               if (stock.stockThreshold != null)
                                 _buildInfoRow(
                                   "Batas Minimum",
                                   "${stock.stockThreshold}${stock.idStockType.stockUnit.isNotEmpty ? ' ${widget.stock.idStockType.stockUnit}' : ''}",
                                   icon: Iconsax.warning_2,
                                 ),
+                              _buildInfoRow(
+                                "Harga per unit",
+                                CurrencyFormatterUtil.format(stock.price,
+                                    useCompactForLargeValues: false),
+                                icon: Iconsax.money,
+                              ),
                             ],
                           ),
                         ),
@@ -439,7 +451,35 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
   }
 
   Widget _buildInfoRow(String label, String value,
-      {IconData icon = Iconsax.info_circle, bool isLowStock = false, bool multiLine = false}) {
+      {IconData icon = Iconsax.info_circle,
+      String stockStatus = "normal",
+      bool multiLine = false}) {
+    // Determine colors based on stock status
+    Color backgroundColor;
+    Color iconColor;
+    Color textColor;
+    FontWeight textWeight = FontWeight.w500;
+
+    switch (stockStatus) {
+      case "outOfStock":
+        backgroundColor = Colors.red.withAlpha(23);
+        iconColor = Colors.red;
+        textColor = Colors.red;
+        textWeight = FontWeight.bold;
+        break;
+      case "lowStock":
+        backgroundColor = Colors.amber.withAlpha(23);
+        iconColor = Colors.amber;
+        textColor = Colors.amber;
+        textWeight = FontWeight.bold;
+        break;
+      case "normal":
+      default:
+        backgroundColor = Colors.grey.withAlpha(23);
+        iconColor = Colors.grey.shade700;
+        textColor = Colors.black87;
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
@@ -449,12 +489,12 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isLowStock ? Colors.red.withAlpha(23) : Colors.grey.withAlpha(23),
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               icon,
-              color: isLowStock ? Colors.red : Colors.grey.shade700,
+              color: iconColor,
               size: 20,
             ),
           ),
@@ -475,8 +515,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                   value,
                   style: AppTheme.body1.copyWith(
                     fontSize: 16,
-                    fontWeight: isLowStock ? FontWeight.bold : FontWeight.w500,
-                    color: isLowStock ? Colors.red : Colors.black87,
+                    fontWeight: textWeight,
+                    color: textColor,
                   ),
                 ),
               ],

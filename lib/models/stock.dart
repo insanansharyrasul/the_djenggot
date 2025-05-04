@@ -6,7 +6,7 @@ class Stock {
   final int stockQuantity;
   final StockType idStockType;
   final int? stockThreshold;
-  final int price; // Price of the stock item (in Rupiah)
+  final int price; 
 
   Stock({
     required this.idStock,
@@ -14,7 +14,7 @@ class Stock {
     required this.stockQuantity,
     required this.idStockType,
     this.stockThreshold,
-    this.price = 0, // Default value is 0
+    this.price = 0,
   });
 
   Map<String, dynamic> toMap() {

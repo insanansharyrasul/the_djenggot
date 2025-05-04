@@ -135,6 +135,7 @@ class StockRepository {
         stockQuantity: stockData['stock_quantity'] as int,
         stockThreshold: stockData['stock_threshold'] as int?,
         idStockType: stockType,
+        price: stockData['price'] != null ? int.parse(stockData['price'].toString()) : 0,
       );
     }));
   }
