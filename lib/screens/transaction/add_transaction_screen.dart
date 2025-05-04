@@ -1,7 +1,6 @@
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
 import 'package:the_djenggot/screens/transaction/add_edit_transaction_type_screen.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -29,6 +28,7 @@ import 'package:the_djenggot/widgets/icon_picker.dart';
 import 'package:the_djenggot/widgets/image_source_picker.dart';
 import 'package:the_djenggot/widgets/input_field.dart';
 import 'package:image/image.dart' as img;
+import 'package:flutter/foundation.dart'; // Add this import
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -227,30 +227,49 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   Future<void> _processAndSaveTransaction(List<TransactionItem> transactionItems) async {
-    final Uint8List imageBytes;
     final navigator = Navigator.of(context);
+    final Uint8List imageBytes;
 
-    if (selectedType?.needEvidence ?? true) {
-      imageBytes = evidenceImage != null ? await _compressImage(evidenceImage!) : Uint8List(0);
-    } else {
-      imageBytes = Uint8List(0);
+    try {
+      if ((selectedType?.needEvidence ?? true) && evidenceImage != null) {
+        // Use compute to run in a separate isolate
+        imageBytes = await compute(_compressImageIsolate, evidenceImage!.path);
+      } else {
+        imageBytes = Uint8List(0);
+      }
+
+      context.read<TransactionBloc>().add(
+            AddNewTransaction(
+              selectedType!.idTransactionType,
+              totalAmount,
+              isExactChange
+                  ? totalAmount
+                  : int.parse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')),
+              imageBytes,
+              transactionItems,
+            ),
+          );
+
+      navigator.pop(); // Close loading dialog
+      _showSuccessDialog();
+    } catch (e) {
+      navigator.pop(); // Close loading dialog
+      _showSnackBar("Error processing image: ${e.toString()}");
+    }
+  }
+
+  // Static function for isolate to use
+  static Future<Uint8List> _compressImageIsolate(String imagePath) async {
+    final imageFile = File(imagePath);
+    final bytes = await imageFile.readAsBytes();
+    final image = img.decodeImage(bytes);
+
+    if (image == null) {
+      return Uint8List(0);
     }
 
-    context.read<TransactionBloc>().add(
-          AddNewTransaction(
-            selectedType!.idTransactionType,
-            totalAmount,
-            isExactChange
-                ? totalAmount
-                : int.parse(moneyReceivedController.text.replaceAll(RegExp(r'[^0-9]'), '')),
-            imageBytes,
-            transactionItems,
-          ),
-        );
-
-    navigator.pop(); 
-
-    _showSuccessDialog();
+    final compressedImage = img.encodeJpg(image, quality: 70);
+    return Uint8List.fromList(compressedImage);
   }
 
   void _showSuccessDialog() {
@@ -274,14 +293,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     });
   }
 
-  Future<Uint8List> _compressImage(File imageFile) async {
-    final image = img.decodeImage(await imageFile.readAsBytes());
-    if (image == null) {
-      return Uint8List(0);
-    }
-    final compressedImage = img.encodeJpg(image, quality: 70);
-    return Uint8List.fromList(compressedImage);
-  }
 
   @override
   Widget build(BuildContext context) {
