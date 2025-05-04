@@ -45,6 +45,15 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           "Daftar Transaksi",
           style: AppTheme.appBarTitle,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Iconsax.chart),
+            tooltip: 'Profit and Loss',
+            onPressed: () {
+              context.push('/profit-loss');
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {

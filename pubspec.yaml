@@ -41,6 +41,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/dummy_images/
 
   fonts:
     - family: Lexend
@@ -65,20 +66,20 @@ flutter:
 # App Icon Configuration
 flutter_launcher_icons:
   android: true
-  image_path: "assets/images/app_icon3.png"
+  image_path: "assets/images/app_icon.png"
   min_sdk_android: 21
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/images/app_icon3.png"
+  adaptive_icon_foreground: "assets/images/app_icon.png"
 
 # Splash Screen Configuration
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/app_icon3.png
-  branding: assets/images/app_icon3.png
-  branding_dark: assets/images/app_icon3.png
+  image: assets/images/app_icon.png
+  branding: assets/images/app_icon.png
+  branding_dark: assets/images/app_icon.png
 
   android_12:
-    image: assets/images/app_icon3.png
+    image: assets/images/app_icon.png
     icon_background_color: "#FFFFFF"
 
   web: false

@@ -16,6 +16,36 @@ class StockRepository {
     return _historyRepository!;
   }
 
+  // Get a Stock object by its ID
+  Future<Stock?> getStockById(String stockId) async {
+    final db = await _databaseHelper.db;
+    final List<Map<String, dynamic>> result = await db.query(
+      'STOCK',
+      where: 'id_stock = ?',
+      whereArgs: [stockId],
+    );
+
+    if (result.isNotEmpty) {
+      final stockData = result.first;
+      final stockTypeId = stockData['id_stock_type'];
+
+      // Get the complete StockType object using the ID
+      final stockType = await getStockTypeForId(stockTypeId as String);
+
+      return Stock(
+        idStock: stockData['id_stock'] as String,
+        stockName: stockData['stock_name'] as String,
+        stockQuantity: int.parse(stockData['stock_quantity'].toString()),
+        stockThreshold: stockData['stock_threshold'] != null
+            ? int.parse(stockData['stock_threshold'].toString())
+            : 0,
+        price: stockData['price'] != null ? int.parse(stockData['price'].toString()) : 0,
+        idStockType: stockType,
+      );
+    }
+    return null;
+  }
+
   // Get a StockType object by its ID
   Future<StockType> getStockTypeForId(String stockTypeId) async {
     return await _stockTypeRepository.getStockTypeById(stockTypeId);
@@ -105,6 +135,7 @@ class StockRepository {
         stockQuantity: stockData['stock_quantity'] as int,
         stockThreshold: stockData['stock_threshold'] as int?,
         idStockType: stockType,
+        price: stockData['price'] != null ? int.parse(stockData['price'].toString()) : 0,
       );
     }));
   }

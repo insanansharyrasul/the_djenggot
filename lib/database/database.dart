@@ -90,6 +90,7 @@ class DatabaseHelper {
           stock_name TEXT NOT NULL,
           stock_quantity INTEGER NOT NULL,
           stock_threshold INTEGER NOT NULL,
+          price INTEGER NOT NULL DEFAULT 0,
           FOREIGN KEY (id_stock_type) REFERENCES STOCK_TYPE(id_stock_type) ON DELETE CASCADE ON UPDATE CASCADE
         )
       ''');
@@ -101,6 +102,7 @@ class DatabaseHelper {
           id_stock TEXT NOT NULL,
           amount INTEGER NOT NULL,
           action_type TEXT NOT NULL,
+          total_price INTEGER NOT NULL DEFAULT 0,
           FOREIGN KEY (id_stock) REFERENCES STOCK(id_stock) ON DELETE CASCADE ON UPDATE CASCADE
         )
       ''');
