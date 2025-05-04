@@ -1,4 +1,3 @@
-// TODO: Colors for low, out of stock and normal stock
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

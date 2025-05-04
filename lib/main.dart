@@ -22,7 +22,7 @@ void main() async {
       child: const MainApp(),
     ));
   } else {
-    print('Running in debug mode');
+    debugPrint('Running in debug mode');
     WidgetsFlutterBinding.ensureInitialized();
     await _requestPermissions();
 

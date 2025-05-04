@@ -1,3 +1,6 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/services.dart';
 import 'package:the_djenggot/database/database.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
@@ -22,14 +25,14 @@ class DummyDataGenerator {
     }
 
     // Generate menu data
-    await _createDummyMenuTypes();
+    final menuTypes = await _createDummyMenuTypes();
 
     // Generate transaction type data
     await _createDummyTransactionTypes();
 
-    // for (var menuType in menuTypes) {
-    //   await _createDummyMenusForType(menuType);
-    // }
+    for (var menuType in menuTypes) {
+      await _createDummyMenusForType(menuType);
+    }
   }
 
   Future<List<StockType>> _createDummyStockTypes() async {
@@ -179,66 +182,75 @@ class DummyDataGenerator {
     return createdTypes;
   }
 
-  // Future<void> _createDummyMenusForType(MenuType menuType) async {
-  //   final List<Map<String, dynamic>> menusData = [];
+  Future<void> _createDummyMenusForType(MenuType menuType) async {
+    final List<Map<String, dynamic>> menusData = [];
 
-  //   switch (menuType.menuTypeName) {
-  //     case 'Makanan Utama':
-  //       menusData.addAll([
-  //         {'name': 'Spaghetti', 'price': 25000, 'image': 'Spaghetti.jpg'},
-  //         {'name': 'Hamburg Steak', 'price': 30000, 'image': 'Hamburg steak.jpg'},
-  //         {'name': 'Ikan Tongkol Goreng', 'price': 28000, 'image': 'Ikan tongkol goreng.jpg'},
-  //         {'name': 'Ayam Dadu', 'price': 22000, 'image': 'Ayam dadu.jpg'},
-  //       ]);
-  //       break;
-  //     case 'Makanan Ringan':
-  //       menusData.addAll([
-  //         {'name': 'Kentang Goreng', 'price': 15000, 'image': 'Kentang goreng.jpg'},
-  //         {'name': 'Burger', 'price': 20000, 'image': 'Burger.jpg'},
-  //         {'name': 'Makaroni Carbonara', 'price': 22000, 'image': 'Makaroni carbonara.jpg'},
-  //         {'name': 'Telur Balado', 'price': 12000, 'image': 'Telur balado.jpg'},
-  //       ]);
-  //       break;
-  //     case 'Minuman':
-  //       menusData.addAll([
-  //         {'name': 'Air Mineral', 'price': 5000, 'image': 'Air putih.jpg'},
-  //         {'name': 'Jus Jeruk', 'price': 10000, 'image': 'Jus jeruk.jpg'},
-  //         {'name': 'Jus Lemon', 'price': 12000, 'image': 'Jus lemon.jpg'},
-  //         {'name': 'Jack Daniels', 'price': 35000, 'image': 'Jack Daniels.jpg'},
-  //       ]);
-  //       break;
-  //     case 'Dessert':
-  //       menusData.addAll([
-  //         {'name': 'Cheesecake', 'price': 20000, 'image': 'Cheesecake.jpg'},
-  //         {'name': 'Ice Cream', 'price': 15000, 'image': 'Ice cream.jpg'},
-  //         {'name': 'Macaron', 'price': 18000, 'image': 'Macaron.jpg'},
-  //         {'name': 'Strawberry Parfait', 'price': 22000, 'image': 'Strawberry parfait.jpg'},
-  //       ]);
-  //       break;
-  //   }
+    switch (menuType.menuTypeName) {
+      case 'Makanan Utama':
+        menusData.addAll([
+          {'name': 'Spaghetti', 'price': 25000, 'image': 'Spaghetti.jpg'},
+          {'name': 'Hamburg Steak', 'price': 30000, 'image': 'Hamburg steak.jpg'},
+          {'name': 'Ikan Tongkol Goreng', 'price': 28000, 'image': 'Ikan tongkol goreng.jpg'},
+          {'name': 'Ayam Dadu', 'price': 22000, 'image': 'Ayam dadu.jpg'},
+        ]);
+        break;
+      case 'Makanan Ringan':
+        menusData.addAll([
+          {'name': 'Kentang Goreng', 'price': 15000, 'image': 'Kentang goreng.jpg'},
+          {'name': 'Burger', 'price': 20000, 'image': 'Burger.jpg'},
+          {'name': 'Makaroni Carbonara', 'price': 22000, 'image': 'Makaroni carbonara.jpg'},
+          {'name': 'Telur Balado', 'price': 12000, 'image': 'Telur balado.jpg'},
+        ]);
+        break;
+      case 'Minuman':
+        menusData.addAll([
+          {'name': 'Air Mineral', 'price': 5000, 'image': 'Air putih.jpg'},
+          {'name': 'Jus Jeruk', 'price': 10000, 'image': 'Jus jeruk.jpg'},
+          {'name': 'Jus Lemon', 'price': 12000, 'image': 'Jus lemon.jpg'},
+          {'name': 'Jack Daniels', 'price': 35000, 'image': 'Jack Daniels.jpg'},
+        ]);
+        break;
+      case 'Dessert':
+        menusData.addAll([
+          {'name': 'Cheesecake', 'price': 20000, 'image': 'Cheesecake.jpg'},
+          {'name': 'Ice Cream', 'price': 15000, 'image': 'Ice cream.jpg'},
+          {'name': 'Macaron', 'price': 18000, 'image': 'Macaron.jpg'},
+          {'name': 'Strawberry Parfait', 'price': 22000, 'image': 'Strawberry parfait.jpg'},
+        ]);
+        break;
+    }
 
-  //   for (var data in menusData) {
-  //     final Uint8List imageBytes = await _loadDummyImage(data['image']);
+    for (var data in menusData) {
+      final Uint8List imageBytes = await _loadDummyImage(data['image']);
 
-  //     final String menuId = "menu-${const Uuid().v4()}";
-  //     await _databaseHelper.insertQuery('MENU', {
-  //       'id_menu': menuId,
-  //       'menu_name': data['name'],
-  //       'menu_price': data['price'],
-  //       'menu_image': imageBytes,
-  //       'id_menu_type': menuType.idMenuType,
-  //     });
-  //   }
-  // }
+      final String menuId = "menu-${const Uuid().v4()}";
+      await _databaseHelper.insertQuery('MENU', {
+        'id_menu': menuId,
+        'menu_name': data['name'],
+        'menu_price': data['price'],
+        'menu_image': imageBytes,
+        'id_menu_type': menuType.idMenuType,
+      });
+    }
+  }
 
-  // Future<Uint8List> _loadDummyImage(String imageName) async {
-  //   try {
-  //     final ByteData data = await rootBundle.load('assets/dummy_images/$imageName');
-  //     return data.buffer.asUint8List();
-  //   } catch (e) {
-  //     // If image doesn't exist, provide a default placeholder
-  //     final ByteData data = await rootBundle.load('assets/images/app_icon.png');
-  //     return data.buffer.asUint8List();
-  //   }
-  // }
+  Future<Uint8List> _loadDummyImage(String imageName) async {
+    try {
+      final ByteData data = await rootBundle.load('assets/dummy_images/$imageName');
+      final Uint8List imageBytes = data.buffer.asUint8List();
+
+      // Compress the image
+      final ui.Codec codec =
+          await ui.instantiateImageCodec(imageBytes, targetWidth: 100, targetHeight: 100);
+      final ui.FrameInfo frameInfo = await codec.getNextFrame();
+      final ByteData? compressedData =
+          await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+
+      return compressedData!.buffer.asUint8List();
+    } catch (e) {
+      // If image doesn't exist, provide a default placeholder
+      final ByteData data = await rootBundle.load('assets/images/app_icon.png');
+      return data.buffer.asUint8List();
+    }
+  }
 }
