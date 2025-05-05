@@ -41,7 +41,7 @@ flutter:
 
   assets:
     - assets/images/
-    # Only uncomment this if you want to debug
+    # Comment this if you want release mode
     - assets/dummy_images/
 
   fonts:

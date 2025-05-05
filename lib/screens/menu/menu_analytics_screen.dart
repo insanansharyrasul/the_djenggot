@@ -57,15 +57,15 @@ class _MenuAnalyticsScreenState extends State<MenuAnalyticsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Menu Analytics",
+          "Analisis Menu",
           style: AppTheme.appBarTitle,
         ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(text: "Most Ordered"),
-            Tab(text: "Sales Detail"),
-            Tab(text: "Category Sales"),
+            Tab(text: "Sering Dipesan"),
+            Tab(text: "Detail Penjualan"),
+            Tab(text: "Kategori Penjualan"),
           ],
           labelColor: AppTheme.primary,
           unselectedLabelColor: AppTheme.grey,
@@ -350,36 +350,27 @@ class _MenuAnalyticsScreenState extends State<MenuAnalyticsScreen>
                                       ],
                                     ),
                                     const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        _buildDetailChip(
-                                          Iconsax.tag,
-                                          "Kategori: ${menuData['type']}",
-                                          Colors.blue,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        _buildDetailChip(
-                                          Iconsax.money,
-                                          "Harga: ${formatter.format(price)}",
-                                          Colors.purple,
-                                        ),
-                                      ],
+                                    _buildDetailChip(
+                                      Iconsax.tag,
+                                      "Kategori: ${menuData['type']}",
+                                      Colors.blue,
                                     ),
                                     const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        _buildDetailChip(
-                                          Iconsax.shopping_cart,
-                                          "Terjual: $quantity",
-                                          Colors.orange,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        _buildDetailChip(
-                                          Iconsax.percentage_circle,
-                                          "Pendapatan: ${formatter.format(revenue)}",
-                                          Colors.green,
-                                        ),
-                                      ],
+                                    _buildDetailChip(
+                                      Iconsax.money,
+                                      "Harga: ${formatter.format(price)}",
+                                      Colors.purple,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _buildDetailChip(
+                                      Iconsax.percentage_circle,
+                                      "Pendapatan: ${formatter.format(revenue)}",
+                                      Colors.green,
+                                    ),
+                                    _buildDetailChip(
+                                      Iconsax.shopping_cart,
+                                      "Terjual: $quantity",
+                                      Colors.orange,
                                     ),
                                   ],
                                 ),
