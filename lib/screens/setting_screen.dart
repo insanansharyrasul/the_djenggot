@@ -6,6 +6,7 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+// TODO : Add feature to import database
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
