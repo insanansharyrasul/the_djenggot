@@ -112,6 +112,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               if (int.tryParse(value) == null) {
                                 return "Kuantitas harus berupa angka";
                               }
+                              if (int.tryParse(value)! < 0) {
+                                return "Kuantitas tidak boleh negatif";
+                              }
                               return null;
                             },
                           ),
@@ -155,6 +158,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                               }
                               if (int.tryParse(value) == null) {
                                 return "Batas minimum harus berupa angka";
+                              }
+                              if (int.tryParse(value)! < 0) {
+                                return "Batas minimum tidak boleh negatif";
                               }
                               return null;
                             },
