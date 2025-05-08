@@ -70,17 +70,10 @@ dari aplikasi dan mencatatnya di aplikasi.
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/ss1.png" alt="Screenshot 1" width="200"/></td>
-    <td><img src="docs/screenshots/ss2.png" alt="Screenshot 2" width="200"/></td>
-    <td><img src="docs/screenshots/ss3.png" alt="Screenshot 3" width="200"/></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/ss4.png" alt="Screenshot 4" width="200"/></td>
-    <td><img src="docs/screenshots/ss5.png" alt="Screenshot 5" width="200"/></td>
-    <td><img src="docs/screenshots/ss6.png" alt="Screenshot 6" width="200"/></td>
-  </tr>
-  <tr>
-    <td colspan="3" align="center"><img src="docs/screenshots/ss7.png" alt="Screenshot 7" width="200"/></td>
+    <td><img src="docs/screenshots/screenshot3.png" alt="Screenshot 1"/></td>
+    <td><img src="docs/screenshots/screenshot2.png" alt="Screenshot 2"/></td>
+    <td><img src="docs/screenshots/screenshot3.png" alt="Screenshot 3"/></td>
+    <td><img src="docs/screenshots/screenshot4.png" alt="Screenshot 4"/></td>
   </tr>
 </table>
 
