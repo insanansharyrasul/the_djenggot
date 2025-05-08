@@ -70,7 +70,7 @@ dari aplikasi dan mencatatnya di aplikasi.
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/screenshot3.png" alt="Screenshot 1"/></td>
+    <td><img src="docs/screenshots/screenshot1.png" alt="Screenshot 1"/></td>
     <td><img src="docs/screenshots/screenshot2.png" alt="Screenshot 2"/></td>
     <td><img src="docs/screenshots/screenshot3.png" alt="Screenshot 3"/></td>
     <td><img src="docs/screenshots/screenshot4.png" alt="Screenshot 4"/></td>
