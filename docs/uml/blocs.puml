@@ -1,0 +1,107 @@
+@startuml blocs
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam backgroundColor #232323
+skinparam classBackgroundColor #222222
+skinparam classBorderColor #5AEBD0
+skinparam arrowColor #3399FF
+skinparam stereotypeCBackgroundColor #1E88E5
+skinparam stereotypeABackgroundColor #43A047
+skinparam stereotypeIBackgroundColor #FFB74D
+skinparam stereotypeNBackgroundColor #F06292
+
+!define BLOC_COLOR #5AEBD0
+!define EVENT_COLOR #3399FF
+!define STATE_COLOR #5AEBD0
+!define DATA_COLOR #3399FF
+
+package "BLoC Pattern Flow" {
+  class UI #222222
+  class Bloc #222222
+  class Data #222222
+  
+  UI -[#3399FF]-> Bloc : events >
+  Bloc -[#5AEBD0]-> UI : < states
+  
+  Bloc -[#3399FF]-> Data : request >
+  Data -[#5AEBD0]-> Bloc : < response
+}
+
+' Now show the specific implementations
+package "stock" {
+  class "UI Widgets" as stockUI #222222
+  class "StockBloc" as stockBloc #222222 {
+    -StockRepository repository
+    +on<LoadStock>()
+    +on<AddStock>()
+    +on<UpdateStock>()
+    +on<DeleteStock>()
+    +on<SearchStock>()
+  }
+  class "Events" as stockEvents #222222 {
+    LoadStock
+    AddStock
+    UpdateStock
+    DeleteStock
+    SearchStock
+  }
+  class "States" as stockStates #222222 {
+    StockLoading
+    StockLoaded
+  }
+  class "Repository" as stockRepo #222222 {
+    +getAll()
+    +getById()
+    +insert()
+    +update()
+    +delete()
+  }
+  
+  stockUI -[#3399FF]-> stockEvents : triggers >
+  stockEvents -[#3399FF]-> stockBloc : handled by >
+  stockBloc -[#5AEBD0]-> stockStates : emits >
+  stockStates -[#5AEBD0]-> stockUI : updates >
+  
+  stockBloc -[#3399FF]-> stockRepo : requests data >
+  stockRepo -[#5AEBD0]-> stockBloc : provides data >
+}
+
+' Similar structure for transaction
+package "transaction" {
+  class "UI Widgets" as txUI #222222
+  class "TransactionBloc" as txBloc #222222 {
+    -TransactionRepository repository
+    +on<LoadTransactions>()
+    +on<LoadTransactionById>()
+    +on<AddNewTransaction>()
+    +on<DeleteTransactionEvent>()
+  }
+  class "Events" as txEvents #222222 {
+    LoadTransactions
+    LoadTransactionById
+    AddNewTransaction
+    DeleteTransactionEvent
+  }
+  class "States" as txStates #222222 {
+    TransactionLoading
+    TransactionLoaded
+    TransactionDetailLoaded
+    TransactionError
+  }
+  class "Repository" as txRepo #222222 {
+    +getAll()
+    +getById()
+    +insert()
+    +delete()
+  }
+  
+  txUI -[#3399FF]-> txEvents : triggers >
+  txEvents -[#3399FF]-> txBloc : handled by >
+  txBloc -[#5AEBD0]-> txStates : emits >
+  txStates -[#5AEBD0]-> txUI : updates >
+  
+  txBloc -[#3399FF]-> txRepo : requests data >
+  txRepo -[#5AEBD0]-> txBloc : provides data >
+}
+
+@enduml
