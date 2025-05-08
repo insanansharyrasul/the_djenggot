@@ -59,7 +59,7 @@ class _StockAnalyticsScreenState extends State<StockAnalyticsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Stock Analytics",
+          "Analisis Stok",
           style: AppTheme.appBarTitle,
         ),
         bottom: TabBar(

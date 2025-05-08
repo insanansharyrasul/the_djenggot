@@ -1,0 +1,257 @@
+@startuml blocs
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #5AEBD0
+skinparam arrowColor #3399FF
+skinparam stereotypeCBackgroundColor #1E88E5
+skinparam stereotypeABackgroundColor #43A047
+skinparam stereotypeIBackgroundColor #FFB74D
+skinparam stereotypeNBackgroundColor #F06292
+
+!define BLOC_COLOR #5AEBD0
+!define EVENT_COLOR #3399FF
+!define STATE_COLOR #5AEBD0
+!define DATA_COLOR #3399FF
+
+package "BLoC Pattern Flow" {
+  class UI #FFFFFF
+  class Bloc #FFFFFF
+  class Data #FFFFFF
+  
+  UI -[#3399FF]-> Bloc : events >
+  Bloc -[#5AEBD0]-> UI : < states
+  
+  Bloc -[#3399FF]-> Data : request >
+  Data -[#5AEBD0]-> Bloc : < response
+}
+
+' Stock implementation
+package "stock" {
+  class "UI Widgets" as stockUI #FFFFFF
+  class "StockBloc" as stockBloc #FFFFFF {
+    -StockRepository repository
+    +on<LoadStock>()
+    +on<AddStock>()
+    +on<UpdateStock>()
+    +on<DeleteStock>()
+    +on<SearchStock>()
+  }
+  class "Events" as stockEvents #FFFFFF {
+    LoadStock
+    AddStock
+    UpdateStock
+    DeleteStock
+    SearchStock
+  }
+  class "States" as stockStates #FFFFFF {
+    StockLoading
+    StockLoaded
+  }
+  class "Repository" as stockRepo #FFFFFF {
+    +getAll()
+    +getById()
+    +insert()
+    +update()
+    +delete()
+  }
+  
+  stockUI -[#3399FF]-> stockEvents : triggers >
+  stockEvents -[#3399FF]-> stockBloc : handled by >
+  stockBloc -[#5AEBD0]-> stockStates : emits >
+  stockStates -[#5AEBD0]-> stockUI : updates >
+  
+  stockBloc -[#3399FF]-> stockRepo : requests data >
+  stockRepo -[#5AEBD0]-> stockBloc : provides data >
+}
+
+' Transaction implementation
+package "transaction" {
+  class "UI Widgets" as txUI #FFFFFF
+  class "TransactionBloc" as txBloc #FFFFFF {
+    -TransactionRepository _transactionRepository
+    +_onLoadTransactions()
+    +_onLoadTransactionById()
+    +_onAddTransaction()
+    +_onDeleteTransaction()
+  }
+  class "Events" as txEvents #FFFFFF {
+    LoadTransactions
+    LoadTransactionById
+    AddNewTransaction
+    DeleteTransactionEvent
+  }
+  class "States" as txStates #FFFFFF {
+    TransactionLoading
+    TransactionLoaded
+    TransactionDetailLoaded
+    TransactionError
+    TransactionDeleted
+  }
+  class "Repository" as txRepo #FFFFFF {
+    +getAllTransactions()
+    +getTransactionById()
+    +addTransaction()
+    +deleteTransaction()
+  }
+  
+  txUI -[#3399FF]-> txEvents : triggers >
+  txEvents -[#3399FF]-> txBloc : handled by >
+  txBloc -[#5AEBD0]-> txStates : emits >
+  txStates -[#5AEBD0]-> txUI : updates >
+  
+  txBloc -[#3399FF]-> txRepo : requests data >
+  txRepo -[#5AEBD0]-> txBloc : provides data >
+}
+
+' Transaction Type implementation
+package "transaction_type" {
+  class "UI Widgets" as txTypeUI #FFFFFF
+  class "TransactionTypeBloc" as txTypeBloc #FFFFFF {
+    -TransactionTypeRepository _repository
+    +on<LoadTransactionTypes>()
+    +on<AddTransactionType>()
+    +on<UpdateTransactionType>()
+    +on<DeleteTransactionType>()
+    +on<SearchTransactionTypes>()
+  }
+  class "Events" as txTypeEvents #FFFFFF {
+    LoadTransactionTypes
+    AddTransactionType
+    UpdateTransactionType
+    DeleteTransactionType
+    SearchTransactionTypes
+  }
+  class "States" as txTypeStates #FFFFFF {
+    TransactionTypeLoading
+    TransactionTypeLoaded
+    TransactionTypeError
+  }
+  class "Repository" as txTypeRepo #FFFFFF {
+    +getAllTransactionTypes()
+    +addTransactionType()
+    +updateTransactionType()
+    +deleteTransactionType()
+    +searchTransactionTypes()
+  }
+  
+  txTypeUI -[#3399FF]-> txTypeEvents : triggers >
+  txTypeEvents -[#3399FF]-> txTypeBloc : handled by >
+  txTypeBloc -[#5AEBD0]-> txTypeStates : emits >
+  txTypeStates -[#5AEBD0]-> txTypeUI : updates >
+  
+  txTypeBloc -[#3399FF]-> txTypeRepo : requests data >
+  txTypeRepo -[#5AEBD0]-> txTypeBloc : provides data >
+}
+
+' Menu Type implementation
+package "menu_type" {
+  class "UI Widgets" as menuTypeUI #FFFFFF
+  class "MenuTypeBloc" as menuTypeBloc #FFFFFF {
+    -MenuTypeRepository _repository
+    +on<LoadMenuTypes>()
+    +on<AddMenuType>()
+    +on<UpdateMenuType>()
+    +on<DeleteMenuType>()
+    +on<SearchMenuTypes>()
+  }
+  class "Events" as menuTypeEvents #FFFFFF {
+    LoadMenuTypes
+    AddMenuType
+    UpdateMenuType
+    DeleteMenuType
+    SearchMenuTypes
+  }
+  class "States" as menuTypeStates #FFFFFF {
+    MenuTypeLoading
+    MenuTypeLoaded
+    MenuTypeError
+  }
+  class "Repository" as menuTypeRepo #FFFFFF {
+    +getAllMenuTypes()
+    +addMenuType()
+    +updateMenuType()
+    +deleteMenuType()
+    +searchMenuTypes()
+  }
+  
+  menuTypeUI -[#3399FF]-> menuTypeEvents : triggers >
+  menuTypeEvents -[#3399FF]-> menuTypeBloc : handled by >
+  menuTypeBloc -[#5AEBD0]-> menuTypeStates : emits >
+  menuTypeStates -[#5AEBD0]-> menuTypeUI : updates >
+  
+  menuTypeBloc -[#3399FF]-> menuTypeRepo : requests data >
+  menuTypeRepo -[#5AEBD0]-> menuTypeBloc : provides data >
+}
+
+' Stock Type implementation
+package "stock_type" {
+  class "UI Widgets" as stockTypeUI #FFFFFF
+  class "StockTypeBloc" as stockTypeBloc #FFFFFF {
+    -StockTypeRepository stockTypeRepository
+    +_onLoadStockTypes()
+    +_onAddStockType()
+    +_onUpdateStockType()
+    +_onDeleteStockType()
+  }
+  class "Events" as stockTypeEvents #FFFFFF {
+    LoadStockTypes
+    AddStockType
+    UpdateStockType
+    DeleteStockType
+  }
+  class "States" as stockTypeStates #FFFFFF {
+    StockTypeInitial
+    StockTypeLoading
+    StockTypeLoaded
+    StockTypeError
+  }
+  class "Repository" as stockTypeRepo #FFFFFF {
+    +getAllStockTypes()
+    +addStockType()
+    +updateStockType()
+    +deleteStockType()
+  }
+  
+  stockTypeUI -[#3399FF]-> stockTypeEvents : triggers >
+  stockTypeEvents -[#3399FF]-> stockTypeBloc : handled by >
+  stockTypeBloc -[#5AEBD0]-> stockTypeStates : emits >
+  stockTypeStates -[#5AEBD0]-> stockTypeUI : updates >
+  
+  stockTypeBloc -[#3399FF]-> stockTypeRepo : requests data >
+  stockTypeRepo -[#5AEBD0]-> stockTypeBloc : provides data >
+}
+
+' Profit Loss implementation
+package "profit_loss" {
+  class "UI Widgets" as profitLossUI #FFFFFF
+  class "ProfitLossBloc" as profitLossBloc #FFFFFF {
+    -ProfitLossRepository _profitLossRepository
+    +_onLoadProfitLossData()
+    +_onChangeProfitLossDateRange()
+  }
+  class "Events" as profitLossEvents #FFFFFF {
+    LoadProfitLossData
+    ChangeProfitLossDateRange
+  }
+  class "States" as profitLossStates #FFFFFF {
+    ProfitLossInitial
+    ProfitLossLoading
+    ProfitLossLoaded
+    ProfitLossError
+  }
+  class "Repository" as profitLossRepo #FFFFFF {
+    +compute(startDate, endDate)
+  }
+  
+  profitLossUI -[#3399FF]-> profitLossEvents : triggers >
+  profitLossEvents -[#3399FF]-> profitLossBloc : handled by >
+  profitLossBloc -[#5AEBD0]-> profitLossStates : emits >
+  profitLossStates -[#5AEBD0]-> profitLossUI : updates >
+  
+  profitLossBloc -[#3399FF]-> profitLossRepo : requests data >
+  profitLossRepo -[#5AEBD0]-> profitLossBloc : provides data >
+}
+
+@enduml

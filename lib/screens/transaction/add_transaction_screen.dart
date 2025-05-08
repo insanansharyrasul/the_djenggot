@@ -21,6 +21,7 @@ import 'package:the_djenggot/models/transaction/transaction_item.dart';
 import 'package:the_djenggot/models/type/transaction_type.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/utils/theme/text_style.dart';
+import 'package:the_djenggot/widgets/currency_input_formatter.dart';
 import 'package:the_djenggot/widgets/dialogs/app_dialog.dart';
 import 'package:the_djenggot/widgets/dropdown_category.dart';
 import 'package:the_djenggot/widgets/full_screen_image_viewer.dart';
@@ -140,6 +141,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       if (currentStep == 1) {
         if (cartItems.isEmpty) {
           _showSnackBar("Pilih minimal satu menu!");
+          return;
+        }
+        if (CurrencyInputFormatter.getNumericalValue(moneyReceivedController.text) < totalAmount) {
+          _showSnackBar("Uang yang diterima kurang dari total pembelian!");
           return;
         }
       } else if (currentStep == 2) {
@@ -292,7 +297,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       navigator.pop();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -721,7 +725,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     if (value == null || value.isEmpty) {
       return "Harga tidak boleh kosong";
     }
-    final amount = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    // final amount = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    final amount = CurrencyInputFormatter.getNumericalValue(value);
     if (amount < totalAmount) {
       return "Uang yang diterima kurang dari total";
     }

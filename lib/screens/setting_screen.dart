@@ -6,6 +6,7 @@ import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -48,6 +49,12 @@ class SettingScreen extends StatelessWidget {
           const SizedBox(height: 24),
           _buildSectionHeader("Aplikasi"),
           _buildSettingItem(
+            icon: Iconsax.import,
+            title: "Impor Database",
+            subtitle: "Impor database dari file .db (akan menggantikan data yang ada)",
+            onTap: () => _confirmImportDatabase(context),
+          ),
+          _buildSettingItem(
             icon: Iconsax.export,
             title: "Ekspor Database",
             subtitle: "Simpan database ke folder Download",
@@ -71,6 +78,147 @@ class SettingScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _confirmImportDatabase(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Peringatan Import Database'),
+          content: const Text(
+            'Import database akan menimpa semua data yang ada saat ini. '
+            'Pastikan Anda telah melakukan backup data. Lanjutkan?',
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Batal'),
+              onPressed: () => Navigator.pop(dialogContext),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Impor'),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                _importDatabase(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _importDatabase(BuildContext context) async {
+    try {
+      // Try with a different approach using ANY file type
+      final result = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Pilih Database File (.db)',
+        // Don't use custom file filter since it doesn't work on Android
+      );
+
+      if (result == null || result.files.isEmpty) {
+        return; // User canceled the picker
+      }
+
+      final filePath = result.files.single.path;
+      if (filePath == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal mendapatkan path file')),
+        );
+        return;
+      }
+
+      // Check if it's a database file (ends with .db)
+      if (!filePath.toLowerCase().endsWith('.db')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('File harus berformat .db (SQLite Database)')),
+        );
+        return;
+      }
+
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext loadingContext) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+
+      // Import the database
+      final success = await DatabaseHelper.instance.importDatabase(filePath);
+
+      // Close loading indicator
+      Navigator.pop(context);
+
+      // Show result dialog
+      if (success) {
+        showDialog(
+          context: context,
+          builder: (BuildContext resultContext) {
+            return AlertDialog(
+              title: const Text('Import Berhasil'),
+              content: const Text('Database telah berhasil diimpor. Semua data telah diperbarui.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(resultContext);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext resultContext) {
+            return AlertDialog(
+              title: const Text('Import Gagal'),
+              content: const Text('Terjadi kesalahan saat mengimpor database. '
+                  'Pastikan file yang dipilih adalah database TheDjenggot yang valid.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(resultContext);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      // Close loading indicator if it's showing
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      showDialog(
+        context: context,
+        builder: (BuildContext errorContext) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Terjadi kesalahan: ${e.toString()}'),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.pop(errorContext);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> _exportDatabase(BuildContext context) async {

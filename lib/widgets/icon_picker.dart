@@ -21,7 +21,7 @@ class _IconPickerState extends State<IconPicker> {
   @override
   Widget build(BuildContext context) {
     // Get all Iconsax icons
-    final Map<String, IconData> iconsaxIcons = getAllIconsaxIcons();
+    final Map<String, IconData> iconsaxIcons = getAllIcons();
 
     // Filter icons based on search query
     final filteredIcons = searchQuery.isEmpty
@@ -116,8 +116,7 @@ class _IconPickerState extends State<IconPicker> {
     );
   }
 
-  // Function to get all available Iconsax icons
-  Map<String, IconData> getAllIconsaxIcons() {
+  Map<String, IconData> getAllIcons() {
     return {
       // Food-related icons
       'coffee': Icons.coffee,
@@ -144,6 +143,11 @@ class _IconPickerState extends State<IconPicker> {
       'breakfast': Icons.breakfast_dining,
       'ice_cream': Icons.icecream,
       'pizza': Icons.local_pizza,
+      'noodles': Icons.ramen_dining,
+      'soup': Icons.soup_kitchen,
+      'vegetable': Icons.grass,
+      'rice': Icons.rice_bowl,
+
 
 
       // Payment-related icons
@@ -249,6 +253,6 @@ void showIconPickerBottomSheet(
 IconData? getIconFromString(String? iconName) {
   if (iconName == null || iconName.isEmpty) return null;
 
-  final icons = _IconPickerState().getAllIconsaxIcons();
+  final icons = _IconPickerState().getAllIcons();
   return icons[iconName];
 }

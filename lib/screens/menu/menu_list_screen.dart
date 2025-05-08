@@ -103,28 +103,20 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildSearchBar(),
-            const SizedBox(height: 16),
-            Expanded(
-              child: RefreshIndicator(
+        child: BlocBuilder<MenuBloc, MenuState>(
+          builder: (context, state) {
+            if (state is MenuLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is MenuLoaded) {
+              return RefreshIndicator(
                 onRefresh: () async {
                   BlocProvider.of<MenuBloc>(context).add(LoadMenu());
                 },
-                child: BlocBuilder<MenuBloc, MenuState>(
-                  builder: (context, state) {
-                    if (state is MenuLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is MenuLoaded) {
-                      return _buildMenuList(state.menus);
-                    }
-                    return _buildEmptyMenuIndicator();
-                  },
-                ),
-              ),
-            ),
-          ],
+                child: _buildMenuContent(state.menus),
+              );
+            }
+            return _buildEmptyMenuIndicator();
+          },
         ),
       ),
       floatingActionButton: BlocBuilder<MenuTypeBloc, MenuTypeState>(
@@ -135,6 +127,53 @@ class _MenuScreenState extends State<MenuScreen> {
           return const SizedBox.shrink();
         },
       ),
+    );
+  }
+
+  Widget _buildMenuContent(List<Menu> menus) {
+    final filteredMenus = _getFilteredMenus(menus);
+
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSearchBar(),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+        if (filteredMenus.isEmpty)
+          const SliverFillRemaining(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                EmptyState(
+                  icon: Icons.egg_alt,
+                  title: "Tidak ada menu yang ditemukan.",
+                  subtitle: "Coba ubah filter atau kata kunci pencarian",
+                ),
+              ],
+            ),
+          )
+        else
+          SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.75,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return _MenuCard(menu: filteredMenus[index]);
+              },
+              childCount: filteredMenus.length,
+            ),
+          ),
+      ],
     );
   }
 
@@ -170,37 +209,6 @@ class _MenuScreenState extends State<MenuScreen> {
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),
       ),
-    );
-  }
-
-  Widget _buildMenuList(List<Menu> menus) {
-    final filteredMenus = _getFilteredMenus(menus);
-
-    if (filteredMenus.isEmpty) {
-      return ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-          const EmptyState(
-            icon: Icons.egg_alt,
-            title: "Tidak ada menu yang ditemukan.",
-            subtitle: "Coba ubah filter atau kata kunci pencarian",
-          )
-        ],
-      );
-    }
-
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 0.75,
-      ),
-      itemCount: filteredMenus.length,
-      itemBuilder: (context, index) {
-        return _MenuCard(menu: filteredMenus[index]);
-      },
     );
   }
 

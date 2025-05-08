@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -201,6 +202,43 @@ class DatabaseHelper {
       }
 
       return null;
+    }
+  }
+
+  Future<bool> importDatabase(String sourcePath) async {
+    try {
+      // Close current database connection if open
+      if (_database != null && _database!.isOpen) {
+        await _database!.close();
+        _database = null;
+      }
+
+      // Get destination path for app's database
+      final dbPath = await getDatabasesPath();
+      final destinationPath = join(dbPath, 'djenggot.db');
+
+      // Create source and destination file objects
+      final sourceFile = File(sourcePath);
+
+      // Check if source file exists
+      if (!await sourceFile.exists()) {
+        throw Exception('Import file not found');
+      }
+
+      // Copy the source file to the destination
+      await sourceFile.copy(destinationPath);
+
+      // Reopen the database connection
+      _database = await initDb();
+
+      return true;
+    } catch (e) {
+      // Handle any errors and ensure database is reopened
+      if (_database == null || !_database!.isOpen) {
+        _database = await initDb();
+      }
+      debugPrint('Database import error: $e');
+      return false;
     }
   }
 
