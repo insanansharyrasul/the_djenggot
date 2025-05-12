@@ -1,0 +1,65 @@
+@startuml transaction_tab_flow
+title The Djenggot - Transaction Tab Flow
+
+start
+
+:Display Transaction List Screen;
+
+if (User Action?) then (Filter Transactions)
+  :Apply Transaction Type Filters;
+  :Apply Date Range Filters;
+  :Update Transaction List;
+  
+elseif (User Action?) then (Search Transactions)
+  :Enter Search Query;
+  :Display Filtered Results;
+  
+elseif (User Action?) then (Add Transaction)
+  :Open Add Transaction Screen;
+  
+  partition "Transaction Process" {
+    :Step 1: Select Menu Items;
+    note right
+      - Browse menu items
+      - Filter by category
+      - Add items to cart
+      - Adjust quantities
+    end note
+    
+    :Step 2: Choose Transaction Type;
+    note right
+      - Select transaction category
+      - Add new type if needed
+    end note
+    
+    :Step 3: Upload Payment Evidence (if needed);
+    note right
+      - Take photo or select from gallery
+      - Optional depending on transaction type
+    end note
+    
+    :Step 4: Confirm Payment Details;
+    note right
+      - Review items and quantities
+      - Enter received payment amount
+      - Calculate change
+    end note
+    
+    :Process Transaction;
+    :Generate Receipt;
+  }
+  
+elseif (User Action?) then (View Transaction Details)
+  :Open Transaction Detail Screen;
+  if (Action in Detail Screen?) then (View Receipt)
+    :Display Transaction Receipt;
+  elseif (Action in Detail Screen?) then (Delete)
+    :Confirm Deletion;
+    :Remove Transaction;
+  elseif (Action in Detail Screen?) then (View Evidence)
+    :Display Payment Evidence;
+  endif
+endif
+
+stop
+@enduml

@@ -1,0 +1,50 @@
+@startuml menu_tab_flow
+title The Djenggot - Menu Tab Flow
+
+start
+
+:Display Menu List Screen;
+
+if (User Action?) then (Filter Menus)
+  :Apply Menu Type Filters;
+  :Update Menu List;
+  
+elseif (User Action?) then (Search Menus)
+  :Enter Search Query;
+  :Display Filtered Results;
+  
+elseif (User Action?) then (Add Menu)
+  :Open Add Menu Screen;
+  :Enter Menu Details;
+  :Upload Menu Image;
+  :Select Menu Type;
+  :Set Menu Price;
+  :Save Menu Data;
+  
+elseif (User Action?) then (Edit Menu)
+  :Open Edit Menu Screen;
+  :Update Menu Details;
+  :Save Menu Data;
+  
+elseif (User Action?) then (View Menu Details)
+  :Open Menu Detail Screen;
+  if (Action in Detail Screen?) then (Edit)
+    :Edit Menu Data;
+  elseif (Action in Detail Screen?) then (Delete)
+    :Confirm Deletion;
+    :Remove Menu;
+  endif
+  
+elseif (User Action?) then (View Analytics)
+  :Open Menu Analytics Screen;
+  if (Select Tab?) then (Most Ordered)
+    :View Most Ordered Menu Items;
+  elseif (Select Tab?) then (Sales Detail)
+    :View Detailed Sales Data;
+  elseif (Select Tab?) then (Category Sales)
+    :View Sales by Category;
+  endif
+endif
+
+stop
+@enduml

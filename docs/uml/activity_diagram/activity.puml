@@ -1,0 +1,109 @@
+@startuml activity_diagram
+title The Djenggot - Application Flow
+
+start
+
+:Launch Application;
+
+:App Initialize;
+note right
+  - Load Database
+  - Initialize BLoC providers
+  - Generate dummy data (debug mode)
+end note
+
+:Display Main Dashboard;
+
+partition "Main Navigation" {
+  :Display Bottom Navigation Bar with 5 options;
+  note right
+    - Beranda (Home)
+    - Stok (Stock)
+    - Menu (Menu) 
+    - Transaksi (Transaction)
+    - Setting
+  end note
+
+  while (User navigates through app) is (continues)
+    if (Selected Tab?) then (Beranda/Home)
+      :Display Dashboard Screen;
+      note right
+        - Daily Sales Chart
+        - Top Selling Products
+        - Sales by Category
+        - Recent Transactions
+      end note
+  
+    elseif (Selected Tab?) then (Stok/Stock)
+      :Display Stock List Screen;
+      if (User Action?) then (Add/Edit Stock)
+        :Open Add/Edit Stock Screen;
+        :Save Stock Data;
+      elseif (User Action?) then (View Stock Details)
+        :Open Stock Detail Screen;
+      elseif (User Action?) then (View Analytics)
+        :Open Stock Analytics Screen;
+        note right
+          - Stock Distribution
+          - Usage Analysis
+          - Stock Movement
+        end note
+      endif
+  
+    elseif (Selected Tab?) then (Menu)
+      :Display Menu List Screen;
+      if (User Action?) then (Add/Edit Menu)
+        :Open Add/Edit Menu Screen;
+        :Save Menu Data;
+      elseif (User Action?) then (View Menu Details)
+        :Open Menu Detail Screen;
+      elseif (User Action?) then (View Analytics)
+        :Open Menu Analytics Screen;
+        note right
+          - Most Ordered
+          - Sales Details
+          - Category Sales
+        end note
+      endif
+  
+    elseif (Selected Tab?) then (Transaksi/Transaction)
+      :Display Transaction List Screen;
+      if (User Action?) then (Add Transaction)
+        :Open Add Transaction Screen;
+        partition "Transaction Process" {
+          :Step 1: Select Menu Items;
+          :Step 2: Choose Transaction Type;
+          :Step 3: Upload Payment Evidence (if needed);
+          :Step 4: Confirm Payment Details;
+          :Process Transaction;
+        }
+      elseif (User Action?) then (View Transaction Details)
+        :Open Transaction Detail Screen;
+      endif
+  
+    elseif (Selected Tab?) then (Setting)
+      :Display Settings Screen;
+      if (User Action?) then (Manage Types)
+        if (Type Selection?) then (Menu Types)
+          :Open Menu Type Management;
+        elseif (Type Selection?) then (Stock Types)
+          :Open Stock Type Management;
+        elseif (Type Selection?) then (Transaction Types)
+          :Open Transaction Type Management;
+        endif
+      elseif (User Action?) then (View Profit/Loss)
+        :Open Profit Loss Screen;
+        note right
+          - Overview
+          - Profit Chart
+          - Expenses
+        end note
+      elseif (User Action?) then (Export/Import Database)
+        :Process Database Operation;
+      endif
+    endif
+  endwhile (exit app)
+}
+
+stop
+@enduml

@@ -1,0 +1,52 @@
+@startuml main_application_flow
+title The Djenggot - Main Application Flow
+
+start
+
+:Launch Application;
+
+:App Initialize;
+note right
+  - Load Database
+  - Initialize BLoC providers
+  - Generate dummy data (debug mode)
+end note
+
+:Display Main Dashboard;
+
+partition "Main Navigation" {
+  :Display Bottom Navigation Bar with 5 options;
+  note right
+    - Beranda (Home)
+    - Stok (Stock)
+    - Menu (Menu) 
+    - Transaksi (Transaction)
+    - Setting
+  end note
+
+  while (User navigates through app) is (continues)
+    if (Selected Tab?) then (Beranda/Home)
+      :Navigate to Home Tab;
+      note right: See home_tab_flow.puml
+  
+    elseif (Selected Tab?) then (Stok/Stock)
+      :Navigate to Stock Tab;
+      note right: See stock_tab_flow.puml
+  
+    elseif (Selected Tab?) then (Menu)
+      :Navigate to Menu Tab;
+      note right: See menu_tab_flow.puml
+  
+    elseif (Selected Tab?) then (Transaksi/Transaction)
+      :Navigate to Transaction Tab;
+      note right: See transaction_tab_flow.puml
+  
+    elseif (Selected Tab?) then (Setting)
+      :Navigate to Settings Tab;
+      note right: See settings_tab_flow.puml
+    endif
+  endwhile (exit app)
+}
+
+stop
+@enduml

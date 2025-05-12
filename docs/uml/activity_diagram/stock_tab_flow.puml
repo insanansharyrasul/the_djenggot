@@ -1,0 +1,54 @@
+@startuml stock_tab_flow
+title The Djenggot - Stock Tab Flow
+
+start
+
+:Display Stock List Screen;
+
+if (User Action?) then (Filter Stocks)
+  :Apply Stock Filters;
+  :Update Stock List;
+  
+elseif (User Action?) then (Search Stocks)
+  :Enter Search Query;
+  :Display Filtered Results;
+  
+elseif (User Action?) then (Add Stock)
+  :Open Add Stock Screen;
+  :Enter Stock Details;
+  :Save Stock Data;
+  
+elseif (User Action?) then (Edit Stock)
+  :Open Edit Stock Screen;
+  :Update Stock Details;
+  :Save Stock Data;
+  
+elseif (User Action?) then (View Stock Details)
+  :Open Stock Detail Screen;
+  if (Action in Detail Screen?) then (Edit)
+    :Edit Stock Data;
+  elseif (Action in Detail Screen?) then (Delete)
+    :Confirm Deletion;
+    :Remove Stock;
+  elseif (Action in Detail Screen?) then (Adjust Quantity)
+    :Enter New Quantity;
+    :Update Stock;
+  endif
+  
+elseif (User Action?) then (View Analytics)
+  :Open Stock Analytics Screen;
+  if (Select Tab?) then (Distribution)
+    :View Stock Distribution Charts;
+  elseif (Select Tab?) then (Usage)
+    :View Usage Analysis Data;
+  elseif (Select Tab?) then (Movement)
+    :View Stock Movement Trends;
+  endif
+  
+elseif (User Action?) then (View History)
+  :Open Stock History Screen;
+  :Display Stock Taking History;
+endif
+
+stop
+@enduml

@@ -1,0 +1,23 @@
+@startuml home_tab_flow
+title The Djenggot - Home Tab Flow
+
+start
+
+:Launch Home Tab;
+
+:Display Dashboard Screen;
+note right
+  - Daily Sales Chart
+  - Top Selling Products
+  - Sales by Category
+  - Recent Transactions
+end note
+
+if (User Action?) then (View Recent Transaction)
+  :Open Transaction Detail Screen;
+elseif (User Action?) then (Refresh Data)
+  :Reload Dashboard Data;
+endif
+
+stop
+@enduml
