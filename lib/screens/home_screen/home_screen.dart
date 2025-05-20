@@ -136,9 +136,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 12),
                 const StatsGrid(),
-                const SizedBox(height: 32),
+                const SizedBox(height: 12),
                 const DailySalesChart(),
                 const SizedBox(height: 32),
                 const TopSellingProducts(),

@@ -143,7 +143,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           _showSnackBar("Pilih minimal satu menu!");
           return;
         }
-        if (CurrencyInputFormatter.getNumericalValue(moneyReceivedController.text) < totalAmount) {
+        if (!isExactChange &&
+            (moneyReceivedController.text.isEmpty ||
+                CurrencyInputFormatter.getNumericalValue(moneyReceivedController.text) <
+                    totalAmount)) {
           _showSnackBar("Uang yang diterima kurang dari total pembelian!");
           return;
         }
