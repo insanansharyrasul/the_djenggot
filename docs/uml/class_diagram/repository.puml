@@ -1,0 +1,42 @@
+@startuml "Repositories - Class Diagram"
+
+package "Repositories" {
+    class "DatabaseHelper" as DatabaseHelper {
+        - Database? _database
+        + Future<Database> initDb()
+        + Future<List<Map<String, dynamic>>> getAllQuery(String, String, List<dynamic>)
+        + Future<int> insertQuery(String, Map<String, dynamic>)
+        + Future<int> truncateQuery(String)
+        + Future<String?> exportDatabase()
+        + Future<bool> importDatabase(String)
+    }
+    
+    class "StockRepository" as StockRepository {
+        - DatabaseHelper _databaseHelper
+        + Future<List<Stock>> getStocks()
+        + Future<int> addStock(Map<String, dynamic>)
+        + Future<int> updateStock(Map<String, dynamic>, String)
+        + Future<int> deleteStock(String)
+    }
+    
+    class "MenuRepository" as MenuRepository {
+        - DatabaseHelper _databaseHelper
+        + Future<List<Menu>> getMenusWithTypeObjects()
+        + Future<Menu?> getMenuWithType(String)
+        + Future<int> addMenu(Map<String, dynamic>)
+        + Future<int> updateMenu(Map<String, dynamic>, String)
+        + Future<int> deleteMenu(String)
+    }
+    
+    class "TransactionRepository" as TransactionRepository {
+        - DatabaseHelper _databaseHelper
+        + Future<int> addTransaction(Map<String, dynamic>)
+        + Future<List<TransactionHistory>> getTransactions()
+    }
+    
+    StockRepository --> DatabaseHelper : uses >
+    MenuRepository --> DatabaseHelper : uses >
+    TransactionRepository --> DatabaseHelper : uses >
+}
+
+@enduml

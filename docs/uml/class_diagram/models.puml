@@ -1,0 +1,120 @@
+@startuml "Models - Class Diagram"
+
+package "Models" {
+    package "Stock" {
+        class Stock {
+            - String idStock
+            - String stockName
+            - int stockQuantity 
+            - StockType idStockType
+            - int? stockThreshold
+            - int price
+            + AddStock()
+            + UpdateStock()
+            + DeleteStock()
+            + SearchStock()
+        }
+        
+        class StockType {
+            - String idStockType
+            - String stockTypeName
+            - String stockTypeIcon
+            - String stockUnit
+            + AddStockType()
+            + UpdateStockType()
+            + DeleteStockType()
+        }
+        
+        Stock "1" *-- "1" StockType : has >
+    }
+    
+    package "Menu" {
+        class Menu {
+            - String idMenu
+            - String menuName
+            - int menuPrice
+            - Uint8List menuImage
+            - MenuType idMenuType
+            + AddMenu()
+            + UpdateMenu()
+            + DeleteMenu()
+            + GetMenu()
+        }
+        
+        class MenuType {
+            - String idMenuType
+            - String menuTypeName
+            - String menuTypeIcon
+            + AddMenuType()
+            + UpdateMenuType()
+            + DeleteMenuType()
+            + GetMenuType()
+        }
+        
+        Menu "1" *-- "1" MenuType : has >
+    }
+    
+    package "Transaction" {
+        class TransactionHistory {
+            - String idTransactionHistory
+            - TransactionType transactionType
+            - int transactionAmount
+            - int moneyReceived
+            - Uint8List imageEvident
+            - String timestamp
+            - List<TransactionItem>? items
+            + AddTransactionHistory()
+            + UpdateTransactionHistory()
+            + GetTransactionHistory()
+        }
+        
+        class TransactionItem {
+            - String idTransactionItem
+            - String idTransactionHistory
+            - Menu menu
+            - int transactionQuantity
+        }
+
+        
+        class TransactionType {
+            - String idTransactionType
+            - String transactionTypeName
+            - String transactionTypeIcon
+            - bool needEvidence
+            + AddTransactionType()
+            + UpdateTransactionType()
+            + DeleteTransactionType()
+        }
+        
+        TransactionHistory "1" *-- "1" TransactionType : has >
+        TransactionHistory "1" *-- "0..*" TransactionItem : contains >
+    }
+
+    package "Order" {
+        class OrderList {
+            - String idOrder
+            - String customerName
+            - String customerPhone
+            - TransactionType transactionTypeName
+            - OrderStatus orderStatus
+            - Timestamp timestamp
+
+            + MakeOrder()
+            + UpdateOrder()
+            + DeleteOrder()
+            + GetOrder()
+        }
+
+        class OrderStatus {
+            - String idOrderStatus
+            - String orderStatusName
+        }
+
+        OrderList "1" o-- "1" OrderStatus : has >
+    }
+
+    TransactionItem "1" o-- "1" Menu : references >
+    OrderList "1" o-- "1" TransactionType : references >
+}
+
+@enduml
