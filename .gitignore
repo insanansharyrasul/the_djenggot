@@ -46,3 +46,9 @@ app.*.map.json
 /android/app/release
 
 expressions.txt
+
+# Firebase related
+firebase.json
+firebase-debug.log
+firebase_options.dart
+google-services.json

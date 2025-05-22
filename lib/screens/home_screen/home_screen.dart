@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/bloc/menu/menu_event.dart';
 import 'package:the_djenggot/bloc/stock/stock_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_event.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_event.dart';
+import 'package:the_djenggot/services/firestore_service.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'package:the_djenggot/widgets/transaction/daily_sales_card.dart';
 import 'package:intl/intl.dart';
@@ -32,6 +34,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectedDate = DateTime.now();
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void initState() {
@@ -98,10 +101,58 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: const Icon(Iconsax.refresh),
                   onPressed: refresh,
                 ),
-                IconButton(
-                  icon: const Icon(Iconsax.setting_2),
-                  onPressed: () {
-                    widget.pageController.jumpToPage(4);
+                StreamBuilder<int>(
+                  stream: _firestoreService.streamPendingOrdersCount(),
+                  builder: (context, snapshot) {
+                    final pendingCount = snapshot.data ?? 0;
+
+                    return Stack(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Iconsax.notification),
+                          onPressed: () {
+                            context.push('/orders');
+                          },
+                        ),
+                        if (pendingCount > 0)
+                          Positioned(
+                            right: 8,
+                            top: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 14,
+                                minHeight: 14,
+                              ),
+                              child: pendingCount > 9
+                                  ? const Text(
+                                      '9+',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )
+                                  : pendingCount > 0
+                                      ? Text(
+                                          '$pendingCount',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      : const SizedBox.shrink(),
+                            ),
+                          ),
+                      ],
+                    );
                   },
                 ),
               ],

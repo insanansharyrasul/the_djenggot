@@ -1,9 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/database/dummy_generator.dart';
+import 'package:the_djenggot/firebase_options.dart';
 import 'package:the_djenggot/routing/app_router.dart';
 import 'package:the_djenggot/bloc/providers.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
@@ -17,6 +19,10 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _requestPermissions();
 
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     runApp(MultiBlocProvider(
       providers: getTypeProviders(),
       child: const MainApp(),
@@ -24,7 +30,11 @@ void main() async {
   } else {
     debugPrint('Running in debug mode');
     WidgetsFlutterBinding.ensureInitialized();
+
     await _requestPermissions();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     final dummyDataGenerator = DummyDataGenerator();
     await dummyDataGenerator.generateDummyData();
