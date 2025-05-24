@@ -13,6 +13,7 @@ import 'package:the_djenggot/models/stock.dart';
 import 'package:the_djenggot/models/type/menu_type.dart';
 import 'package:the_djenggot/models/type/stock_type.dart';
 import 'package:the_djenggot/models/type/transaction_type.dart';
+import 'package:the_djenggot/screens/order/order_list_screen.dart';
 import 'package:the_djenggot/screens/page_manager_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_screen.dart';
 import 'package:the_djenggot/screens/menu/add_edit_menu_type_screen.dart';
@@ -272,6 +273,17 @@ class AppRouter {
             path: '/profit-loss',
             builder: (BuildContext context, GoRouterState state) {
               return const ProfitLossScreen();
+            },
+          ),
+
+          // ==========================================
+          // ORDER ROUTES
+          // ==========================================
+
+          GoRoute(
+            path: '/orders',
+            builder: (BuildContext context, GoRouterState state) {
+              return const OrderListScreen();
             },
           ),
         ],

@@ -28,8 +28,12 @@ pencatatan pesanan dari WhatsApp.
 
 - **Pencatatan Penjualan**: Mencatat setiap transaksi penjualan yang dilakukan oleh pelanggan.
 - **Manajemen Stok**: Menyimpan data stok barang dan memungkinkan penambahan atau pengurangan stok sesuai kebutuhan.
-- **Menerima pesanan**: Menerima pesanan melalui WhatsApp yang akan muncul sebagai notifikasi
-dari aplikasi dan mencatatnya di aplikasi.
+- **Integrasi WhatsApp & Notifikasi**: 
+  - Menerima pesanan melalui WhatsApp yang tersinkronisasi dengan Firebase Firestore
+  - Notifikasi real-time untuk pesanan baru dengan badge indicator
+  - Manajemen status pesanan (Pending, On Work, Selesai)
+- **Firebase Integration**: Sinkronisasi data pesanan online menggunakan Cloud Firestore
+- **Push Notifications**: Notifikasi lokal untuk pesanan baru bahkan ketika aplikasi aktif
 - **Analisis Keuangan**: Melihat laporan keuntungan dan kerugian untuk membantu pengelolaan keuangan.
 - **UI yang Responsif**: Antarmuka pengguna yang mudah digunakan dan ramah pengguna.
 
@@ -37,7 +41,10 @@ dari aplikasi dan mencatatnya di aplikasi.
 
 - **Framework**: Flutter 3.29.2
 - **State Management**: Flutter Bloc (v9.1.0)
-- **Database**: SQLite (sqflite v2.4.2)
+- **Local Database**: SQLite (sqflite v2.4.2)
+- **Cloud Database**: Firebase Firestore (v5.6.8)
+- **Backend Services**: Firebase Core (v3.13.1)
+- **Notifications**: Flutter Local Notifications
 - **Navigation**: GoRouter (v14.8.1)
 - **Charts & Visualization**: FL Chart (v0.64.0)
 - **UI Components**: Custom widgets with Lexend font family
@@ -47,6 +54,8 @@ dari aplikasi dan mencatatnya di aplikasi.
 - Flutter SDK: 3.29.2
 - Dart: 3.7.2
 - Android Studio / VS Code with Flutter plugins
+- Firebase project setup (for WhatsApp integration and notifications)
+- WhatsApp Business API access (optional, for full WhatsApp integration)
 
 ## Installation
 
@@ -56,15 +65,35 @@ dari aplikasi dan mencatatnya di aplikasi.
    cd the_djenggot
    ```
 
-2. **Install dependencies** 
+2. **Firebase Setup**:
+   - Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Enable Firestore Database
+   - Download `google-services.json` and place it in `android/app/`
+   - Update Firebase configuration in `lib/firebase_options.dart`
+
+3. **Install dependencies** 
     ```sh
     flutter pub get
     ```
 
-3. **Run the app**
+4. **Run the app**
     ```sh
     flutter run
     ```
+
+5. **WhatsApp Integration** (Optional):
+   - Set up your WhatsApp bot to send order data to your Firestore collection
+   - Orders should be stored in the `orders` collection with the following structure:
+     ```json
+     {
+       "nama": "Customer Name",
+       "phoneNumber": "+1234567890",
+       "makanan": "Order Items",
+       "pembayaran": "Payment Method",
+       "status": "Pending",
+       "timestamp": "2025-01-01T00:00:00Z"
+     }
+     ```
 
 ## Screenshots
 
@@ -87,6 +116,7 @@ lib/
   ├── repository/      # Repository pattern implementation
   ├── routing/         # App navigation with GoRouter
   ├── screens/         # UI screens of the application
+  ├── services/        # External services integration
   ├── utils/           # Helper functions and utilities
   ├── widgets/         # Reusable UI components
   └── main.dart        # Entry point of the application
@@ -94,13 +124,23 @@ lib/
 
 ## Dependencies
 
+### Core Dependencies
 - **State Management**: flutter_bloc
 - **Navigation**: go_router
-- **Database**: sqflite
-- **UI Components**: flutter_speed_dial, iconsax
+- **Local Database**: sqflite
+- **Cloud Database**: cloud_firestore
+- **Firebase**: firebase_core
+- **Notifications**: flutter_local_notifications
+
+### UI & UX
+- **Icons**: iconsax
+- **Speed Dial**: flutter_speed_dial
+- **Charts**: fl_chart
+
+### Utilities
 - **Data Handling**: equatable, intl, uuid
-- **File Operations**: image_picker, path_provider
-- **Visualization**: fl_chart
+- **File Operations**: image_picker, path_provider, file_picker
+- **Permissions**: permission_handler
 - **External Communication**: url_launcher, share_plus
 
 ## Development Mode
@@ -110,6 +150,46 @@ Aplikasi ini menyediakaan dummy data untuk development. Untuk menggunakannya pas
 # Comment this if you want release mode
 - assets/dummy_images/
 ```
+
+## Firebase Configuration
+
+For WhatsApp integration and notifications to work properly:
+
+1. **Firestore Database Structure**:
+   ```
+   orders/ (collection)
+   ├── document_id/
+   │   ├── nama: string
+   │   ├── phoneNumber: string
+   │   ├── makanan: string
+   │   ├── pembayaran: string
+   │   ├── status: string ("Pending", "On work", "Selesai!")
+   │   └── timestamp: timestamp
+   ```
+
+2. **Firestore Security Rules** (Example):
+   ```javascript
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /orders/{document} {
+         allow read, write: if true; 
+       }
+     }
+   }
+   ```
+
+3. **Notification Features**:
+   - Real-time badge indicator on the notification icon
+   - Local notifications when new orders are added to Firestore
+   - Order status management with visual feedback
+
+## Known Limitations
+
+- Local notification hanya berfungsi jika aplikasinya berjalan (foreground/background)
+- Jika aplikasi tertutup sepenuhnya, Firebase Cloud Messaging (FCM) dibutuhkan
+- Integrasi WhatsApp bot harus dibuat sendiri. Untuk projek ini silahkan mengacu kepada https://github.com/insanansharyrasul/the-djenggot-wweb-bot
+  
 
 ## Contact
 

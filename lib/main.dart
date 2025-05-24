@@ -1,30 +1,42 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:the_djenggot/bloc/menu/menu_bloc.dart';
 import 'package:the_djenggot/database/dummy_generator.dart';
+import 'package:the_djenggot/firebase_options.dart';
 import 'package:the_djenggot/routing/app_router.dart';
 import 'package:the_djenggot/bloc/providers.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_bloc.dart';
+import 'package:the_djenggot/services/firestore_service.dart';
+import 'package:the_djenggot/services/notification_service.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'dart:io';
 
 void main() async {
-  if (kReleaseMode) {
-    WidgetsFlutterBinding.ensureInitialized();
-    await _requestPermissions();
+  WidgetsFlutterBinding.ensureInitialized();
+  await _requestPermissions();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final notificationService = NotificationService();
+  await notificationService.init();
+
+  final firestoreService = FirestoreService();
+  firestoreService.listenForNewOrders();
+
+  if (kReleaseMode) {
     runApp(MultiBlocProvider(
       providers: getTypeProviders(),
       child: const MainApp(),
     ));
   } else {
     debugPrint('Running in debug mode');
-    WidgetsFlutterBinding.ensureInitialized();
-    await _requestPermissions();
 
     final dummyDataGenerator = DummyDataGenerator();
     await dummyDataGenerator.generateDummyData();
@@ -43,6 +55,13 @@ Future<void> _requestPermissions() async {
       openAppSettings();
     } else {
       await Permission.manageExternalStorage.request();
+    }
+
+    await Permission.notification.request();
+    if (await Permission.notification.isPermanentlyDenied) {
+      openAppSettings();
+    } else {
+      await Permission.notification.request();
     }
   }
 }

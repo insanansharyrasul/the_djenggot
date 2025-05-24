@@ -29,6 +29,9 @@ dependencies:
   permission_handler: ^11.0.0
   share_plus: ^7.0.2
   file_picker: ^10.1.5
+  firebase_core: ^3.13.1
+  cloud_firestore: ^5.6.8
+  flutter_local_notifications: ^19.2.1
 
 dev_dependencies:
   flutter_test:
@@ -43,7 +46,7 @@ flutter:
   assets:
     - assets/images/
     # Comment this if you want release mode
-    - assets/dummy_images/
+    # - assets/dummy_images/
 
   fonts:
     - family: Lexend
