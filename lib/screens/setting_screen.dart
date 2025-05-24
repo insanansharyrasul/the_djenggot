@@ -71,7 +71,7 @@ class SettingScreen extends StatelessWidget {
           _buildSettingItem(
             icon: Iconsax.information,
             title: "Versi Aplikasi",
-            subtitle: "1.0.0",
+            subtitle: "1.1.0",
             showArrow: false,
             onTap: () {},
           ),
