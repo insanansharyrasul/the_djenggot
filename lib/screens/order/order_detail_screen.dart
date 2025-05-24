@@ -199,7 +199,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: OutlinedButton(
         onPressed: isSelected ? null : () => _updateOrderStatus(status),
         style: OutlinedButton.styleFrom(
-          backgroundColor: isSelected ? color.withOpacity(0.2) : null,
+          backgroundColor: isSelected ? color.withValues(alpha: 51) : null,
           side: BorderSide(
             color: isSelected ? color : Colors.grey,
             width: 1.5,

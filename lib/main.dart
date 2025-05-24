@@ -11,30 +11,32 @@ import 'package:the_djenggot/bloc/providers.dart';
 import 'package:the_djenggot/bloc/type/menu_type/menu_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/stock_type/stock_type_bloc.dart';
 import 'package:the_djenggot/bloc/type/transaction_type/transaction_type_bloc.dart';
+import 'package:the_djenggot/services/firestore_service.dart';
+import 'package:the_djenggot/services/notification_service.dart';
 import 'package:the_djenggot/utils/theme/app_theme.dart';
 import 'dart:io';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _requestPermissions();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final notificationService = NotificationService();
+  await notificationService.init();
+
+  final firestoreService = FirestoreService();
+  firestoreService.listenForNewOrders();
+
   if (kReleaseMode) {
-    WidgetsFlutterBinding.ensureInitialized();
-    await _requestPermissions();
-
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
     runApp(MultiBlocProvider(
       providers: getTypeProviders(),
       child: const MainApp(),
     ));
   } else {
     debugPrint('Running in debug mode');
-    WidgetsFlutterBinding.ensureInitialized();
-
-    await _requestPermissions();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
 
     final dummyDataGenerator = DummyDataGenerator();
     await dummyDataGenerator.generateDummyData();
@@ -53,6 +55,13 @@ Future<void> _requestPermissions() async {
       openAppSettings();
     } else {
       await Permission.manageExternalStorage.request();
+    }
+
+    await Permission.notification.request();
+    if (await Permission.notification.isPermanentlyDenied) {
+      openAppSettings();
+    } else {
+      await Permission.notification.request();
     }
   }
 }

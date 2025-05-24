@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:the_djenggot/services/notification_service.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final NotificationService _notificationService = NotificationService();
 
   Future<Map<String, dynamic>?> getDocument(String collection, String docId) async {
     try {
@@ -22,7 +24,7 @@ class FirestoreService {
       QuerySnapshot snapshot = await _firestore.collection(collection).get();
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        data['id'] = doc.id; // Add the document ID to the data
+        data['id'] = doc.id;
         return data;
       }).toList();
     } catch (e) {
@@ -77,5 +79,46 @@ class FirestoreService {
         .where('status', isEqualTo: 'Pending')
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
+  }
+
+  void listenForNewOrders() {
+    DateTime lastCheckTime = DateTime.now();
+
+    _firestore
+        .collection('orders')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      for (var docChange in snapshot.docChanges) {
+        if (docChange.type == DocumentChangeType.added) {
+          final data = docChange.doc.data() as Map<String, dynamic>;
+
+          final timestampData = data['timestamp'];
+          if (timestampData != null) {
+            final timestamp = (timestampData as Timestamp).toDate();
+            if (timestamp.isAfter(lastCheckTime)) {
+              final customerName = data['nama'] ?? 'Customer';
+              final orderItems = data['makanan'] ?? 'New order';
+
+              _notificationService.showNewOrderNotification(
+                customerName: customerName,
+                orderItems: orderItems,
+              );
+            }
+          } else {
+            final customerName = data['nama'] ?? 'Customer';
+            final orderItems = data['makanan'] ?? 'New order';
+
+            _notificationService.showNewOrderNotification(
+              customerName: customerName,
+              orderItems: orderItems,
+            );
+
+            debugPrint('Warning: Document ${docChange.doc.id} has no timestamp');
+          }
+        }
+      }
+      lastCheckTime = DateTime.now();
+    });
   }
 }
