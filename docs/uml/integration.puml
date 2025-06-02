@@ -1,0 +1,7 @@
+@startuml integration
+
+:Presentation Layer;
+:Business Logic;
+:Database;
+
+@enduml
