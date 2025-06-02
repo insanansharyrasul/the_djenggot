@@ -8,13 +8,13 @@ di semester 4, Institut Pertanian Bogor (IPB).
 
 ## Team Members
 
-| Name                            | NIM         |
-| ------------------------------- | ----------- |
-| Ludwig Alven Tama Lumban Tobing | G6401231006 |
-| Kivi Adelio                     | G6401231047 |
-| Jofattan Faiz Betryan           | G6401231066 |
-| Jason Bagaskara Mulyono         | G6401231088 |
-| Insan Anshary Rasul             | G6401231132 |
+| Name                            | NIM         | Job                   |
+| ------------------------------- | ----------- | --------------------- |
+| Ludwig Alven Tama Lumban Tobing | G6401231006 | UI/UX Designer        |
+| Kivi Adelio                     | G6401231047 | UI/UX Designer        |
+| Jofattan Faiz Betryan           | G6401231066 | UI/UX Designer        |
+| Jason Bagaskara Mulyono         | G6401231088 | UI/UX Designer        |
+| Insan Anshary Rasul             | G6401231132 | Mobile Apps Developer |
 
 ## Overview
 
