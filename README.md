@@ -184,6 +184,18 @@ For WhatsApp integration and notifications to work properly:
    - Local notifications when new orders are added to Firestore
    - Order status management with visual feedback
 
+## Diagram
+
+### Activity Diagram
+![Activity  Diagram](docs/uml/activity_diagram/activity_diagram.png)
+
+### ERD
+![ERD](docs/images/ERD.png)
+
+### Class Diagram
+
+![Class Diagram](docs/uml/class_diagram/Models%20-%20Class%20Diagram.png)
+
 ## Known Limitations
 
 - Local notification hanya berfungsi jika aplikasinya berjalan (foreground/background)
@@ -199,4 +211,4 @@ Untuk pertanyaan atau feedback, silahkan kontak project mantainer.
 
 ---
 
-© 2025 TheDjenggot Team | Made with ❤️ at Institut Pertanian Bogor
+2025 TheDjenggot Team | Made at Institut Pertanian Bogor
