@@ -457,12 +457,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: AppTheme.primary.withValues(alpha: 23),
+                color: AppTheme.primary.withAlpha(23),
               ),
               child: Center(
                   child: Image.memory(
                 item.menuImage,
-                fit: BoxFit.cover,
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover, // Ensure the image fits well
               )),
             ),
             const SizedBox(width: 8),

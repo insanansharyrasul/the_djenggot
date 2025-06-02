@@ -189,6 +189,7 @@ For WhatsApp integration and notifications to work properly:
 - Local notification hanya berfungsi jika aplikasinya berjalan (foreground/background)
 - Jika aplikasi tertutup sepenuhnya, Firebase Cloud Messaging (FCM) dibutuhkan
 - Integrasi WhatsApp bot harus dibuat sendiri. Untuk projek ini silahkan mengacu kepada https://github.com/insanansharyrasul/the-djenggot-wweb-bot
+- Apabila sebuah item menu terhapus, menu tersebut akan hilang dari riwayat transaksi.
   
 
 ## Contact
