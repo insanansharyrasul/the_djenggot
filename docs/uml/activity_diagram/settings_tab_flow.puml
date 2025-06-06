@@ -8,11 +8,13 @@ start
 if (User Action?) then (Manage Menu Types)
   :Open Menu Type Management Screen;
   if (Action?) then (Add Type)
-    :Create New Menu Type;
+    :Create New
+     Menu Type;
     :Select Icon;
     :Save Menu Type;
   elseif (Action?) then (Edit Type)
-    :Modify Menu Type Details;
+    :Modify Menu
+     Type Details;
     :Save Changes;
   elseif (Action?) then (Delete Type)
     :Confirm Deletion;
@@ -22,12 +24,14 @@ if (User Action?) then (Manage Menu Types)
 elseif (User Action?) then (Manage Stock Types)
   :Open Stock Type Management Screen;
   if (Action?) then (Add Type)
-    :Create New Stock Type;
+    :Create New
+     Stock Type;
     :Select Icon;
     :Define Units;
     :Save Stock Type;
   elseif (Action?) then (Edit Type)
-    :Modify Stock Type Details;
+    :Modify Stock
+     Type Details;
     :Save Changes;
   elseif (Action?) then (Delete Type)
     :Confirm Deletion;
@@ -37,28 +41,18 @@ elseif (User Action?) then (Manage Stock Types)
 elseif (User Action?) then (Manage Transaction Types)
   :Open Transaction Type Management Screen;
   if (Action?) then (Add Type)
-    :Create New Transaction Type;
+    :Create New
+     Transaction Type;
     :Select Icon;
     :Save Transaction Type;
   elseif (Action?) then (Edit Type)
-    :Modify Transaction Type Details;
+    :Modify Transaction
+     Type Details;
     :Save Changes;
   elseif (Action?) then (Delete Type)
     :Confirm Deletion;
     :Remove Transaction Type;
   endif
-  
-elseif (User Action?) then (View Profit/Loss)
-  :Open Profit Loss Screen;
-  if (Select Tab?) then (Overview)
-    :View Overall Financial Summary;
-  elseif (Select Tab?) then (Profit Chart)
-    :View Profit Trends;
-  elseif (Select Tab?) then (Expenses)
-    :View Detailed Expenses;
-  endif
-  :Apply Date Range Filters;
-  :Update Financial Data;
   
 elseif (User Action?) then (Export Database)
   :Request Storage Permissions;
