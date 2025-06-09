@@ -113,6 +113,46 @@ package "Models" {
         OrderList "1" o-- "1" OrderStatus : has >
     }
 
+    package "Admin" {
+        class Admin {
+            - String adminId
+            - String adminName
+            - String adminEmail
+            - String passwordHash
+            - String lastLogin
+            - List<Stock> managedStocks
+            - List<Menu> managedMenus
+            - List<TransactionHistory> transactionRecords
+            - List<OrderList> orderRecords
+            
+            + ManageStock()
+            + ManageStockTypes()
+            + ManageMenu()
+            + ManageMenuTypes()
+            + ViewTransactionHistory()
+            + ManageTransactionTypes()
+            + ManageOrders()
+            + ManageOrderStatus()
+            + GenerateReports()
+            + ExportData()
+            + ImportData()
+            + BackupDatabase()
+            + RestoreDatabase()
+            + ViewAnalytics()
+            + ManageSystemSettings()
+        }
+    }
+
+    ' Admin relationships with all packages
+    Admin "1" --> "0..*" Stock : manages >
+    Admin "1" --> "0..*" StockType : configures >
+    Admin "1" --> "0..*" Menu : manages >
+    Admin "1" --> "0..*" MenuType : configures >
+    Admin "1" --> "0..*" TransactionHistory : monitors >
+    Admin "1" --> "0..*" TransactionType : configures >
+    Admin "1" --> "0..*" OrderList : manages >
+    Admin "1" --> "0..*" OrderStatus : configures >
+
     TransactionItem "1" o-- "1" Menu : references >
     OrderList "1" o-- "1" TransactionType : references >
 }
