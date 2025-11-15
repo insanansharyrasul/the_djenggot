@@ -52,3 +52,6 @@ firebase.json
 firebase-debug.log
 firebase_options.dart
 google-services.json
+
+# FVM Version Cache
+.fvm/

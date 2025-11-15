@@ -95,6 +95,8 @@ pencatatan pesanan dari WhatsApp.
      }
      ```
 
+NOTE: If you use windows, please change the line `dart.flutterSdkPath` on the `settings.json`
+
 ## Screenshots
 
 <table>
